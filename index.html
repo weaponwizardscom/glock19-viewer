@@ -16,8 +16,7 @@
             margin: 0;
         }
         #spritespin {
-            width: 600px;
-            height: 400px;
+            display: inline-block;
             box-shadow: 0 0 20px rgba(255,255,255,0.3);
         }
     </style>
@@ -26,22 +25,15 @@
     <div id="spritespin"></div>
 
     <script>
-    // Lista Twoich gotowych JPG
-    const frames = [];
-    for (let i = 0; i <= 40; i++) {
-        const filename = `output/c${i}.jpg`;
-        frames.push(filename);
-    }
+        // Lista Twoich gotowych JPG
+        const frames = [];
+        for (let i = 0; i <= 40; i++) {
+            const filename = `output/c${i}.jpg`;
+            frames.push(filename);
+        }
 
-    $("#spritespin").spritespin({
-        source: frames,
-        width: 600,
-        height: 400,
-        sense: -1,
-        frameTime: 60,
-        animate: true, // AUTOPLAY włączony
-        loop: true
-    });
-    </script>
-</body>
-</html>
+        $("#spritespin").spritespin({
+            source: frames,
+            sense: 1,          // normalny kierunek myszy
+            animate: false,    // BEZ autoplay — sterujesz myszką
+            loop: false,
