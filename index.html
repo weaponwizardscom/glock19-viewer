@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="360-image-viewer.min.css" />
     <style>
         body {
-            background: transparent; /* przezroczyste tło */
+            background: transparent;
             margin: 0;
             display: flex;
             flex-direction: column;
@@ -52,14 +52,12 @@
 
     <script src="360-image-viewer.min.js"></script>
     <script>
-        let viewer;
-
         function initViewer(images) {
-            if (viewer) {
-                viewer.destroy();
-            }
+            const viewerElement = document.getElementById('viewer');
+            viewerElement.innerHTML = ''; // zamiast destroy() — czyścimy viewer
 
-            viewer = new ImageViewer360('#viewer', {
+            // Nowy viewer:
+            new ImageViewer360('#viewer', {
                 imageSources: images,
                 autoRotate: false,
                 rotateSpeed: 5,
@@ -72,6 +70,7 @@
         function loadBLACK() {
             const images = [];
             for (let i = 0; i <= 9; i++) {
+                if (i === 7) continue; // pomijamy c7.png
                 images.push(`BLACK/c${i}.png`);
             }
             initViewer(images);
@@ -80,6 +79,7 @@
         function loadRED() {
             const images = [];
             for (let i = 0; i <= 9; i++) {
+                if (i === 7) continue; // pomijamy c7_r.png
                 images.push(`RED/c${i}_r.png`);
             }
             initViewer(images);
