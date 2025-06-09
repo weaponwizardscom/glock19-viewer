@@ -25,15 +25,37 @@
     <div id="spritespin"></div>
 
     <script>
-        // Lista Twoich gotowych JPG
-        const frames = [];
-        for (let i = 0; i <= 40; i++) {
-            const filename = `output/c${i}.jpg`;
-            frames.push(filename);
-        }
+        // RĘCZNA lista istniejących plików — BEZ dziur!
+        const frames = [
+            'output/c0.jpg',
+            'output/c1.jpg',
+            'output/c2.jpg',
+            'output/c3.jpg',
+            'output/c4.jpg',
+            'output/c5.jpg',
+            'output/c6.jpg',
+            'output/c7.jpg',
+            'output/c8.jpg',
+            'output/c9.jpg',
+            'output/c10.jpg',
+            'output/c11.jpg',
+            'output/c22.jpg',
+            'output/c23.jpg',
+            'output/c35.jpg',
+            'output/c36.jpg',
+            'output/c37.jpg',
+            'output/c38.jpg',
+            'output/c39.jpg',
+            'output/c40.jpg'
+        ];
 
         $("#spritespin").spritespin({
             source: frames,
-            sense: 1,          // normalny kierunek myszy
-            animate: false,    // BEZ autoplay — sterujesz myszką
+            sense: 1,
+            animate: false,
             loop: false,
+            responsive: true
+        });
+    </script>
+</body>
+</html>
