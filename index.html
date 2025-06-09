@@ -108,7 +108,7 @@
             window.addEventListener('mousemove', (e) => {
                 if (isDragging) {
                     const dx = e.clientX - startX;
-                    if (Math.abs(dx) > 30) { // ZWIĘKSZONY PRÓG czułości
+                    if (Math.abs(dx) > 60) { // ZWIĘKSZONY PRÓG czułości
                         updateFrame(dx, img);
                         startX = e.clientX;
                     }
