@@ -1,63 +1,47 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="pl">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2575.6">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
-  </style>
+    <meta charset="UTF-8" />
+    <title>Glock 19 - Obrót 360°</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/spritespin@4.0.11/release/spritespin.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/spritespin@4.0.11/release/spritespin.min.css" />
+    <style>
+        body {
+            background: #111;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #spritespin {
+            width: 600px;
+            height: 400px;
+            box-shadow: 0 0 20px rgba(255,255,255,0.3);
+        }
+    </style>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="pl"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Glock 19 - Obrót 360°&lt;/title&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://code.jquery.com/jquery-3.6.0.min.js"&gt;&lt;/script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdn.jsdelivr.net/npm/spritespin@4.0.11/release/spritespin.min.js"&gt;&lt;/script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/spritespin@4.0.11/release/spritespin.min.css" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>body {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background: #111;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>justify-content: center;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>align-items: center;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>height: 100vh;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin: 0;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>#spritespin {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>width: 600px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>height: 400px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 0 20px rgba(255,255,255,0.3);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="spritespin"&gt;&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Lista Twoich gotowych JPG</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const frames = [];</p>
-<p class="p1"><span class="Apple-converted-space">    </span>for (let i = 0; i &lt;= 40; i++) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const filename = `output/c${i}.jpg`;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>frames.push(filename);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>$("#spritespin").spritespin({</p>
-<p class="p1"><span class="Apple-converted-space">        </span>source: frames,</p>
-<p class="p1"><span class="Apple-converted-space">        </span>width: 600,</p>
-<p class="p1"><span class="Apple-converted-space">        </span>height: 400,</p>
-<p class="p1"><span class="Apple-converted-space">        </span>sense: -1,</p>
-<p class="p1"><span class="Apple-converted-space">        </span>frameTime: 60,</p>
-<p class="p1"><span class="Apple-converted-space">        </span>animate: true, // AUTOPLAY włączony</p>
-<p class="p1"><span class="Apple-converted-space">        </span>loop: true</p>
-<p class="p1"><span class="Apple-converted-space">    </span>});</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+    <div id="spritespin"></div>
+
+    <script>
+    // Lista Twoich gotowych JPG
+    const frames = [];
+    for (let i = 0; i <= 40; i++) {
+        const filename = `output/c${i}.jpg`;
+        frames.push(filename);
+    }
+
+    $("#spritespin").spritespin({
+        source: frames,
+        width: 600,
+        height: 400,
+        sense: -1,
+        frameTime: 60,
+        animate: true, // AUTOPLAY włączony
+        loop: true
+    });
+    </script>
 </body>
 </html>
