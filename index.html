@@ -52,26 +52,62 @@
 
     <script src="360-image-viewer.min.js"></script>
     <script>
+        let viewer;
+        let currentFrameIndex = 0; // tutaj zapamiętujemy na której ramce jesteśmy
+        let currentImages = []; // aktualny zestaw obrazków
+
         function initViewer(images) {
             const viewerElement = document.getElementById('viewer');
-            viewerElement.innerHTML = ''; // zamiast destroy() — czyścimy viewer
+            viewerElement.innerHTML = '';
 
-            // Nowy viewer:
-            new ImageViewer360('#viewer', {
-                imageSources: images,
-                autoRotate: false,
-                rotateSpeed: 5,
-                loop: true,
-                drag: true,
-                keys: true
+            currentImages = images; // zapamiętaj aktualny zestaw obrazków
+
+            // Rysujemy aktualną ramkę:
+            const img = document.createElement('img');
+            img.src = currentImages[currentFrameIndex];
+            img.style.width = '100%';
+            img.style.height = '100%';
+            img.style.objectFit = 'contain';
+            viewerElement.appendChild(img);
+
+            // Obsługa myszki:
+            let isDragging = false;
+            let startX = 0;
+
+            viewerElement.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                startX = e.clientX;
+            });
+
+            window.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    const dx = e.clientX - startX;
+                    if (Math.abs(dx) > 10) {
+                        if (dx > 0) {
+                            currentFrameIndex = (currentFrameIndex + 1) % currentImages.length;
+                        } else {
+                            currentFrameIndex = (currentFrameIndex - 1 + currentImages.length) % currentImages.length;
+                        }
+                        img.src = currentImages[currentFrameIndex];
+                        startX = e.clientX;
+                    }
+                }
             });
         }
 
         function loadBLACK() {
             const images = [];
             for (let i = 0; i <= 9; i++) {
-                if (i === 7) continue; // pomijamy c7.png
+                if (i === 7) continue;
                 images.push(`BLACK/c${i}.png`);
+            }
+            // Jeśli byliśmy na ramce większej niż nowy zakres — cofamy do ostatniej dostępnej
+            if (currentFrameIndex >= images.length) {
+                currentFrameIndex = images.length - 1;
             }
             initViewer(images);
         }
@@ -79,13 +115,16 @@
         function loadRED() {
             const images = [];
             for (let i = 0; i <= 9; i++) {
-                if (i === 7) continue; // pomijamy c7_r.png
+                if (i === 7) continue;
                 images.push(`RED/c${i}_r.png`);
+            }
+            if (currentFrameIndex >= images.length) {
+                currentFrameIndex = images.length - 1;
             }
             initViewer(images);
         }
 
-        // Load BLACK by default on page load
+        // Startujemy od BLACK
         window.onload = loadBLACK;
     </script>
 
