@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <title>Glock 19 - Obrót 360° (360-image-viewer)</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/360-image-viewer@2.0.0/dist/360-image-viewer.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/360-image-viewer@2.0.5/dist/360-image-viewer.min.css" />
     <style>
         body {
             background: #111;
@@ -23,7 +23,7 @@
 <body>
     <div id="viewer"></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/360-image-viewer@2.0.0/dist/360-image-viewer.min.js"></script>
+    <script src="https://unpkg.com/360-image-viewer@2.0.5/dist/360-image-viewer.min.js"></script>
     <script>
         const viewer = new ImageViewer360('#viewer', {
             imageSources: [
@@ -38,11 +38,11 @@
                 'output/c8.jpg',
                 'output/c9.jpg'
             ],
-            autoRotate: false,      // NIE autoplay — ręczne sterowanie myszką
+            autoRotate: false,
             rotateSpeed: 5,
             loop: true,
-            drag: true,             // sterowanie myszką
-            keys: true              // sterowanie strzałkami klawiatury
+            drag: true,
+            keys: true
         });
     </script>
 </body>
