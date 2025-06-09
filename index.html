@@ -108,7 +108,7 @@
             window.addEventListener('mousemove', (e) => {
                 if (isDragging) {
                     const dx = e.clientX - startX;
-                    if (Math.abs(dx) > 60) { // ZWIĘKSZONY PRÓG czułości
+                    if (Math.abs(dx) > 60) { // ZWIĘKSZONY PRÓG do 60 px
                         updateFrame(dx, img);
                         startX = e.clientX;
                     }
@@ -130,7 +130,7 @@
             viewerElement.addEventListener('touchmove', (e) => {
                 if (isDragging && e.touches.length === 1) {
                     const dx = e.touches[0].clientX - startX;
-                    if (Math.abs(dx) > 30) { // ZWIĘKSZONY PRÓG czułości
+                    if (Math.abs(dx) > 60) { // ZWIĘKSZONY PRÓG do 60 px
                         updateFrame(dx, img);
                         startX = e.touches[0].clientX;
                     }
