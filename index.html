@@ -21,6 +21,7 @@
             background: transparent;
             box-shadow: 0 0 20px rgba(255,255,255,0.1);
             margin-bottom: 20px;
+            touch-action: none;
         }
         .button-container {
             display: flex;
@@ -53,16 +54,37 @@
     <script src="360-image-viewer.min.js"></script>
     <script>
         let viewer;
-        let currentFrameIndex = 0; // tutaj zapamiętujemy na której ramce jesteśmy
-        let currentImages = []; // aktualny zestaw obrazków
+        let currentFrameIndex = 0;
+        let currentImages = [];
+
+        function preloadImages(images) {
+            images.forEach(src => {
+                const img = new Image();
+                img.src = src;
+            });
+        }
+
+        const blackImages = [];
+        for (let i = 0; i <= 9; i++) {
+            if (i === 7) continue;
+            blackImages.push(`BLACK/c${i}.png`);
+        }
+
+        const redImages = [];
+        for (let i = 0; i <= 9; i++) {
+            if (i === 7) continue;
+            redImages.push(`RED/c${i}_r.png`);
+        }
+
+        preloadImages(blackImages);
+        preloadImages(redImages);
 
         function initViewer(images) {
             const viewerElement = document.getElementById('viewer');
             viewerElement.innerHTML = '';
 
-            currentImages = images; // zapamiętaj aktualny zestaw obrazków
+            currentImages = images;
 
-            // Rysujemy aktualną ramkę:
             const img = document.createElement('img');
             img.src = currentImages[currentFrameIndex];
             img.style.width = '100%';
@@ -70,7 +92,7 @@
             img.style.objectFit = 'contain';
             viewerElement.appendChild(img);
 
-            // Obsługa myszki:
+            // MYSZKA
             let isDragging = false;
             let startX = 0;
 
@@ -86,45 +108,59 @@
             window.addEventListener('mousemove', (e) => {
                 if (isDragging) {
                     const dx = e.clientX - startX;
-                    if (Math.abs(dx) > 10) {
-                        if (dx > 0) {
-                            currentFrameIndex = (currentFrameIndex + 1) % currentImages.length;
-                        } else {
-                            currentFrameIndex = (currentFrameIndex - 1 + currentImages.length) % currentImages.length;
-                        }
-                        img.src = currentImages[currentFrameIndex];
+                    if (Math.abs(dx) > 30) { // ZWIĘKSZONY PRÓG czułości
+                        updateFrame(dx, img);
                         startX = e.clientX;
+                    }
+                }
+            });
+
+            // TOUCH (iPhone, Android)
+            viewerElement.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    isDragging = true;
+                    startX = e.touches[0].clientX;
+                }
+            });
+
+            viewerElement.addEventListener('touchend', () => {
+                isDragging = false;
+            });
+
+            viewerElement.addEventListener('touchmove', (e) => {
+                if (isDragging && e.touches.length === 1) {
+                    const dx = e.touches[0].clientX - startX;
+                    if (Math.abs(dx) > 30) { // ZWIĘKSZONY PRÓG czułości
+                        updateFrame(dx, img);
+                        startX = e.touches[0].clientX;
                     }
                 }
             });
         }
 
+        function updateFrame(dx, imgElement) {
+            if (dx > 0) {
+                currentFrameIndex = (currentFrameIndex + 1) % currentImages.length;
+            } else {
+                currentFrameIndex = (currentFrameIndex - 1 + currentImages.length) % currentImages.length;
+            }
+            imgElement.src = currentImages[currentFrameIndex];
+        }
+
         function loadBLACK() {
-            const images = [];
-            for (let i = 0; i <= 9; i++) {
-                if (i === 7) continue;
-                images.push(`BLACK/c${i}.png`);
+            if (currentFrameIndex >= blackImages.length) {
+                currentFrameIndex = blackImages.length - 1;
             }
-            // Jeśli byliśmy na ramce większej niż nowy zakres — cofamy do ostatniej dostępnej
-            if (currentFrameIndex >= images.length) {
-                currentFrameIndex = images.length - 1;
-            }
-            initViewer(images);
+            initViewer(blackImages);
         }
 
         function loadRED() {
-            const images = [];
-            for (let i = 0; i <= 9; i++) {
-                if (i === 7) continue;
-                images.push(`RED/c${i}_r.png`);
+            if (currentFrameIndex >= redImages.length) {
+                currentFrameIndex = redImages.length - 1;
             }
-            if (currentFrameIndex >= images.length) {
-                currentFrameIndex = images.length - 1;
-            }
-            initViewer(images);
+            initViewer(redImages);
         }
 
-        // Startujemy od BLACK
         window.onload = loadBLACK;
     </script>
 
