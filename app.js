@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const PARTS_TO_CONFIGURE = [
         { id: 'szkielet', label: 'Szkielet' },
         { id: 'blokada1', label: 'Blokada' }
-        // Gdy dorysujesz więcej części, dodaj je tutaj.
     ];
 
     // ZMIANA: Zaktualizowana i rozszerzona paleta kolorów
@@ -25,9 +24,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         "H-236 O.D. Green": "#5A6349",
         "H-171 NRA Blue": "#00387B",
         "H-216 Smith & Wesson Red": "#B70101",
-        "H-168 Zombie Green": "#66ff00",
-        "H-122 Gold": "#D4AF37",
-        "H-327 Guncandy Pineapple": "#E4BE0D"
+        "H-168 Zombie Green": "#84C341",
+        "H-122 Gold": "#B79436",
+        "H-245 Socom Blue": "#3B4B5A"
     };
     // --- KONIEC KONFIGURACJI ---
 
@@ -43,6 +42,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         const response = await fetch(SVG_FILE_PATH);
         if (!response.ok) throw new Error(`Nie udało się wczytać pliku ${SVG_FILE_PATH}`);
+        
         const svgText = await response.text();
         gunViewContainer.innerHTML = svgText;
         const svgElement = gunViewContainer.querySelector('svg');
@@ -55,10 +55,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         PARTS_TO_CONFIGURE.forEach(part => {
             const originalPath = svgElement.querySelector(`#${part.id}`);
-            if (!originalPath) {
-                console.warn(`Nie znaleziono w SVG części o ID: ${part.id}`);
-                return;
-            }
+            if (!originalPath) return;
+            
             const colorOverlay = originalPath.cloneNode(true);
             colorOverlay.id = `color-overlay-${part.id}`;
             colorOverlay.setAttribute('class', 'color-overlay');
@@ -76,14 +74,25 @@ document.addEventListener('DOMContentLoaded', async () => {
             partSelectionContainer.appendChild(button);
         });
 
+        // ZMIANA: Nowy sposób tworzenia palety kolorów z etykietami
         for (const [name, hex] of Object.entries(CERAKOTE_COLORS)) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'color-swatch-wrapper';
+
             const swatch = document.createElement('div');
             swatch.className = 'color-swatch';
             swatch.style.backgroundColor = hex;
             swatch.title = name;
             swatch.addEventListener('click', () => applyColor(hex));
-paletteContainer.appendChild(swatch);
-        }
+
+            const label = document.createElement('div');
+            label.className = 'color-swatch-label';
+            label.textContent = name; // Używamy pełnej nazwy
+
+            wrapper.appendChild(swatch);
+            wrapper.appendChild(label);
+            paletteContainer.appendChild(wrapper);
+}
         
         resetButton.addEventListener('click', resetAllColors);
 
@@ -104,11 +113,8 @@ paletteContainer.appendChild(swatch);
     }
 
     function resetAllColors() {
-        PARTS_TO_CONFIGURE.forEach(part => {
-            const colorElement = document.getElementById(`color-overlay-${part.id}`);
-            if (colorElement) {
-                colorElement.setAttribute('fill', 'transparent');
-            }
+        document.querySelectorAll('.color-overlay').forEach(overlay => {
+            overlay.setAttribute('fill', 'transparent');
         });
         if (selectedPartButton) {
             selectedPartButton.classList.remove('selected');

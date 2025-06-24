@@ -6,9 +6,9 @@
     <title>Weapon-Wizards.com - Konfigurator</title>
     <style>
         :root {
-            --page-background: #121212; /* Główne tło strony */
-            --container-background: #ffffff; /* Tło kontenera z menu */
-            --gun-view-background: #000000; /* Tło pod grafiką */
+            --page-background: #121212;
+            --container-background: #ffffff;
+            --gun-view-background: #000000;
             --text-color: #1c1e21;
             --border-color: #dee2e6;
             --primary-color: #007bff;
@@ -37,7 +37,6 @@
             width: 100%;
             max-width: 800px;
             aspect-ratio: 1289.29 / 1040;
-            /* ZMIANA: Tło pod grafiką na czarne */
             background-color: var(--gun-view-background);
             border-radius: 6px;
         }
@@ -68,15 +67,36 @@
         }
         .color-palette {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 20px 15px; /* Zwiększony odstęp dla nowych kształtów */
         }
+        /* ZMIANA: Dodajemy wrapper, aby etykieta była powiązana z kafelkiem */
+        .color-swatch-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 75px; /* Wysokość na kafelek i etykietę */
+        }
+        /* ZMIANA: Nowy kształt kafelków */
         .color-swatch {
-            width: 45px;
-            height: 45px;
-            border-radius: 6px;
+            width: 60px;
+            height: 50px;
             cursor: pointer;
-            border: 2px solid rgba(0,0,0,0.1);
+            border: 1px solid rgba(0,0,0,0.2);
+            clip-path: polygon(0% 15%, 100% 0%, 100% 85%, 0% 100%);
+            transition: transform 0.2s ease;
+        }
+        .color-swatch:hover {
+            transform: scale(1.1);
+            border: 2px solid var(--primary-color);
+        }
+        /* ZMIANA: Style dla etykiet pod kafelkami */
+        .color-swatch-label {
+            margin-top: 6px;
+            font-size: 9px;
+            color: #6c757d;
+            text-align: center;
+            word-break: break-word;
         }
         .reset-button {
             margin-top: 16px;
@@ -97,7 +117,6 @@
     </style>
 </head>
 <body>
-
     <div class="configurator-container">
         <div class="gun-view" id="gun-view-container">
             <p style="text-align:center; padding-top:20px; color: #6c757d;">Ładowanie konfiguratora...</p>
@@ -108,7 +127,6 @@
             <div class="control-section"><button class="reset-button" id="reset-button">Resetuj Kolory</button></div>
         </div>
     </div>
-    
     <script src="app.js"></script>
 </body>
 </html>
