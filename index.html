@@ -11,7 +11,6 @@
             --text-color: #1c1e21;
             --border-color: #ccd0d5;
             --primary-color: #007bff;
-            --primary-hover: #0056b3;
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -46,100 +45,58 @@
         }
         .gun-layer {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none;
         }
         .gun-layer img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
+            width: 100%; height: 100%; object-fit: contain;
         }
-        .color-overlay {
+        .color-mask {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            background-color: transparent;
+            -webkit-mask-size: contain;
+            mask-size: contain;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-position: center;
+            
+            /* ---- TO BYŁ BRAKUJĄCY ELEMENT! ---- */
             mix-blend-mode: color;
-            opacity: 0.85;
+            /* ------------------------------------ */
         }
         .controls {
-            flex: 1 1 300px;
-            min-width: 300px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
+            flex: 1 1 300px; min-width: 300px; display: flex; flex-direction: column; gap: 16px;
         }
         .control-section h3 {
-            margin-top: 0;
-            margin-bottom: 12px;
-            border-bottom: 1px solid #e0e0e0;
-            padding-bottom: 8px;
-            font-size: 18px;
+            margin-top: 0; margin-bottom: 12px; border-bottom: 1px solid #e0e0e0; padding-bottom: 8px; font-size: 18px;
         }
         .part-selection button {
-            display: block;
-            width: 100%;
-            padding: 10px 12px;
-            margin-bottom: 8px;
-            font-size: 14px;
-            text-align: left;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            background-color: #f5f6f7;
-            cursor: pointer;
-            transition: all 0.2s;
+            display: block; width: 100%; padding: 10px 12px; margin-bottom: 8px; font-size: 14px; text-align: left;
+            border-radius: 6px; border: 1px solid var(--border-color); background-color: #f5f6f7;
+            cursor: pointer; transition: all 0.2s;
         }
-        .part-selection button:hover {
-            background-color: #e9ebee;
-            border-color: #adb5bd;
-        }
+        .part-selection button:hover { background-color: #e9ebee; border-color: #adb5bd; }
         .part-selection button.selected {
-            background-color: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
+            background-color: var(--primary-color); color: white; border-color: var(--primary-color);
             box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
         }
         .color-palette {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
-            gap: 10px;
-            max-height: 400px;
-            overflow-y: auto;
-            padding-right: 10px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(45px, 1fr)); gap: 10px;
+            max-height: 400px; overflow-y: auto; padding-right: 10px;
         }
-        .color-swatch-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+        .color-swatch-wrapper { display: flex; flex-direction: column; align-items: center; }
         .color-swatch {
-            width: 45px;
-            height: 45px;
-            border-radius: 6px;
-            cursor: pointer;
-            border: 2px solid rgba(0,0,0,0.1);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-            transition: all 0.1s;
+            width: 45px; height: 45px; border-radius: 6px; cursor: pointer; border: 2px solid rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2); transition: all 0.1s;
         }
-        .color-swatch:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 0 3px var(--primary-color);
-        }
-        .color-swatch-label {
-            font-size: 9px;
-            text-align: center;
-            margin-top: 4px;
-            color: #606770;
-            height: 20px;
-        }
+        .color-swatch:hover { transform: scale(1.1); box-shadow: 0 0 0 3px var(--primary-color); }
+        .color-swatch-label { font-size: 9px; text-align: center; margin-top: 4px; color: #606770; height: 20px; }
         .reset-button {
-            padding: 12px;
-            font-size: 16px;
-            border: none;
-            background-color: #dc3545;
-            color: white;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background-color 0.2s;
+            padding: 12px; font-size: 16px; border: none; background-color: #dc3545; color: white;
+            border-radius: 6px; cursor: pointer; transition: background-color 0.2s;
         }
         .reset-button:hover { background-color: #c82333; }
     </style>
@@ -150,25 +107,16 @@
         <div class="gun-view" id="gun-view-container">
             </div>
         <div class="controls">
-            <div class="control-section">
-                <h3>1. Wybierz część</h3>
-                <div class="part-selection" id="part-selection-container">
-                    </div>
-            </div>
-            <div class="control-section">
-                <h3>2. Wybierz kolor (Cerakote H-Series)</h3>
-                <div id="color-palette-container" class="color-palette">
-                    </div>
-            </div>
-            <div class="control-section">
-                <button class="reset-button" id="reset-button">Resetuj Kolory</button>
-            </div>
+            <div class="control-section"><h3>1. Wybierz część</h3><div class="part-selection" id="part-selection-container"></div></div>
+            <div class="control-section"><h3>2. Wybierz kolor (Cerakote H-Series)</h3><div id="color-palette-container" class="color-palette"></div></div>
+            <div class="control-section"><button class="reset-button" id="reset-button">Resetuj Kolory</button></div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const parts = [
+                { label: 'Lufa',                  files: ['lufa1.png', 'lufa2.png'], zIndex: 5 },
                 { label: 'Szkielet',              files: ['szkielet.png'],        zIndex: 10 },
                 { label: 'Spust',                 files: ['spust.png'],           zIndex: 20 },
                 { label: 'Pin',                   files: ['pin.png'],             zIndex: 21 },
@@ -178,21 +126,11 @@
                 { label: 'Zamek',                 files: ['zamek.png'],           zIndex: 30 },
                 { label: 'Pazur wyciągu',         files: ['pazur.png'],           zIndex: 31 },
                 { label: 'Żerdź',                 files: ['zerdz.png'],           zIndex: 32 },
-                { label: 'Lufa',                  files: ['lufa1.png', 'lufa2.png'], zIndex: 33 },
                 { label: 'Przyrządy celownicze',  files: ['przyrzady.png'],       zIndex: 40 }
             ];
 
             const cerakoteColors = {
-                "H-146 Graphite Black": "#333333", "H-190 Armor Black": "#212121",
-                "H-148 Burnt Bronze": "#8C6A48", "H-237 Tungsten": "#6E7176",
-                "H-267 MagPul FDE": "#A48F6A", "H-236 O.D. Green": "#5A6349",
-                "H-122 Gold": "#D4AF37", "H-216 Smith & Wesson Red": "#B70101",
-                "H-226 Patriot Brown": "#6A5445", "H-265 Jesse James Cold War Grey": "#999B9E",
-                "H-235 Coyote Tan": "#A48B68", "H-300 High-Gloss Armor Clear": "#FFFFFF",
-                "H-140 Bright White": "#FAFAFA", "H-136 Snow White": "#F5F5F5",
-                "H-258 Socom Blue": "#3B4B5A", "H-327 Guncandy Pineapple": "#E4BE0D",
-                "H-217 Bright Purple": "#8A2BE2", "H-169 Zombie Green": "#7FFF00",
-                "H-242 Hidden White": "#E5E4E2", "H-171 NRA Blue": "#00387B"
+                "H-146 Graphite Black": "#333333", "H-190 Armor Black": "#212121", "H-148 Burnt Bronze": "#8C6A48", "H-237 Tungsten": "#6E7176", "H-267 MagPul FDE": "#A48F6A", "H-236 O.D. Green": "#5A6349", "H-122 Gold": "#D4AF37", "H-216 S&W Red": "#B70101", "H-226 Patriot Brown": "#6A5445", "H-265 Cold War Grey": "#999B9E", "H-235 Coyote Tan": "#A48B68", "H-140 Bright White": "#FAFAFA", "H-258 Socom Blue": "#3B4B5A", "H-171 NRA Blue": "#00387B"
             };
 
             const gunViewContainer = document.getElementById('gun-view-container');
@@ -203,44 +141,37 @@
             let activeTargets = [];
             let selectedPartButton = null;
 
-            // --- Inicjalizacja Aplikacji ---
             function initialize() {
-                // 1. Stwórz warstwy i przyciski
                 parts.forEach(part => {
                     const targetsForThisButton = [];
-
-                    // Stwórz warstwy obrazków dla tej części
                     part.files.forEach(file => {
                         const fileId = file.replace('.png', '').replace(/ /g, '-');
-                        targetsForThisButton.push(`overlay-${fileId}`);
+                        targetsForThisButton.push(fileId);
 
-                        const layerDiv = document.createElement('div');
-                        layerDiv.className = 'gun-layer';
-                        layerDiv.style.zIndex = part.zIndex;
-                        
+                        const imageLayer = document.createElement('div');
+                        imageLayer.className = 'gun-layer';
+                        imageLayer.style.zIndex = part.zIndex;
                         const img = document.createElement('img');
                         img.src = `img/${file}`;
-                        layerDiv.appendChild(img);
+                        imageLayer.appendChild(img);
+                        gunViewContainer.appendChild(imageLayer);
 
-                        const colorOverlay = document.createElement('div');
-                        colorOverlay.className = 'gun-layer color-overlay';
-                        colorOverlay.style.zIndex = part.zIndex + 1;
-                        colorOverlay.id = `overlay-${fileId}`;
-                        
-                        gunViewContainer.appendChild(layerDiv);
-                        gunViewContainer.appendChild(colorOverlay);
+                        const colorMask = document.createElement('div');
+                        colorMask.className = 'color-mask';
+                        colorMask.id = `mask-${fileId}`;
+                        colorMask.style.zIndex = part.zIndex + 1;
+                        colorMask.style.webkitMaskImage = `url(img/${file})`;
+                        colorMask.style.maskImage = `url(img/${file})`;
+                        colorMask.style.backgroundColor = 'transparent';
+                        gunViewContainer.appendChild(colorMask);
                     });
 
-                    // Stwórz przycisk dla tej części
                     const button = document.createElement('button');
                     button.textContent = part.label;
-                    // Zapisz listę celów bezpośrednio w przycisku
                     button.dataset.targets = JSON.stringify(targetsForThisButton);
                     
                     button.addEventListener('click', () => {
-                        if (selectedPartButton) {
-                            selectedPartButton.classList.remove('selected');
-                        }
+                        if (selectedPartButton) selectedPartButton.classList.remove('selected');
                         button.classList.add('selected');
                         selectedPartButton = button;
                         activeTargets = JSON.parse(button.dataset.targets);
@@ -248,47 +179,42 @@
                     partSelectionContainer.appendChild(button);
                 });
 
-                // 2. Stwórz paletę kolorów
                 for (const [name, hex] of Object.entries(cerakoteColors)) {
-                    const swatchWrapper = document.createElement('div');
+                     const swatchWrapper = document.createElement('div');
                     swatchWrapper.className = 'color-swatch-wrapper';
                     const swatch = document.createElement('div');
                     swatch.className = 'color-swatch';
                     swatch.style.backgroundColor = hex;
                     swatch.title = name;
                     swatch.addEventListener('click', () => applyColor(hex));
-                    
                     const label = document.createElement('div');
                     label.className = 'color-swatch-label';
                     label.textContent = name.split(' ')[0];
-
                     swatchWrapper.appendChild(swatch);
                     swatchWrapper.appendChild(label);
                     paletteContainer.appendChild(swatchWrapper);
                 }
-
-                // 3. Ustaw nasłuchiwanie na przycisk resetu
+                
                 resetButton.addEventListener('click', resetAllColors);
             }
 
-            // --- Funkcje Aplikacji ---
             function applyColor(hexColor) {
                 if (activeTargets.length === 0) {
                     alert("Proszę najpierw wybrać część do pomalowania.");
                     return;
                 }
                 activeTargets.forEach(targetId => {
-                    const overlayElement = document.getElementById(targetId);
-                    if (overlayElement) {
-                        overlayElement.style.backgroundColor = hexColor;
+                    const maskElement = document.getElementById(`mask-${targetId}`);
+                    if (maskElement) {
+                        maskElement.style.backgroundColor = hexColor;
                     }
                 });
             }
 
             function resetAllColors() {
-                const overlays = document.querySelectorAll('.color-overlay');
-                overlays.forEach(overlay => {
-                    overlay.style.backgroundColor = 'transparent';
+                const masks = document.querySelectorAll('.color-mask');
+                masks.forEach(mask => {
+                    mask.style.backgroundColor = 'transparent';
                 });
                 if (selectedPartButton) {
                     selectedPartButton.classList.remove('selected');
