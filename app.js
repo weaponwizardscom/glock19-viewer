@@ -1,26 +1,34 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     // --- KONFIGURACJA APLIKACJI ---
 
-    const SVG_FILE_PATH = 'glock-wektor.svg'; // Ścieżka do Twojego pliku SVG na serwerze
-    const IMG_DIR_PATH = 'img/'; // Ścieżka do folderu z teksturami PNG
-
-    // Definicja części, które mają być interaktywne.
-    // 'id' musi DOKŁADNIE odpowiadać 'id' w pliku SVG.
-    // 'textureFile' musi DOKŁADNIE odpowiadać nazwie pliku PNG w folderze 'img/'.
-    const parts = [
-        { id: 'zamek',    label: 'Zamek',             textureFile: 'zamek.png' },
-        { id: 'szkielet', label: 'Szkielet',          textureFile: 'szkielet.png' },
-        { id: 'spust',    label: 'Spust',             textureFile: 'spust.png' },
-        { id: 'zerdz',    label: 'Żerdź',             textureFile: 'zerdz.png' },
-        { id: 'zrzut',    label: 'Zrzut magazynka',   textureFile: 'zrzut.png' }
-        // Gdy dorysujesz w przyszłości więcej części, dodaj je tutaj.
+    const SVG_FILE_PATH = 'g17.svg';
+    const IMG_DIR_PATH = 'img/';
+    
+    const PARTS_TO_CONFIGURE = [
+        { id: 'szkielet', label: 'Szkielet' },
+        { id: 'blokada1', label: 'Blokada' }
+        // Gdy dorysujesz więcej części, dodaj je tutaj.
     ];
 
-    const cerakoteColors = {
-        "Burnt Bronze": "#8C6A48", "Tungsten": "#6E7176", "O.D. Green": "#5A6349", 
-        "Armor Black": "#212121", "MagPul FDE": "#A48F6A", "Gold": "#D4AF37", "S&W Red": "#B70101"
+    // ZMIANA: Zaktualizowana i rozszerzona paleta kolorów
+    const CERAKOTE_COLORS = {
+        "H-190 Armor Black": "#212121",
+        "H-146 Graphite Black": "#3B3B3B",
+        "H-237 Tungsten": "#6E7176",
+        "H-214 Smith & Wesson Grey": "#8D918D",
+        "H-297 Stormtrooper White": "#F2F2F2",
+        "H-140 Bright White": "#FAFAFA",
+        "H-267 Magpul FDE": "#A48F6A",
+        "H-235 Coyote Tan": "#A48B68",
+        "H-226 Patriot Brown": "#6A5445",
+        "H-148 Burnt Bronze": "#8C6A48",
+        "H-236 O.D. Green": "#5A6349",
+        "H-171 NRA Blue": "#00387B",
+        "H-216 Smith & Wesson Red": "#B70101",
+        "H-168 Zombie Green": "#66ff00",
+        "H-122 Gold": "#D4AF37",
+        "H-327 Guncandy Pineapple": "#E4BE0D"
     };
-    
     // --- KONIEC KONFIGURACJI ---
 
 
@@ -32,90 +40,63 @@ document.addEventListener('DOMContentLoaded', () => {
     let activePartId = null;
     let selectedPartButton = null;
 
-    async function initialize() {
-        try {
-            // 1. Wczytaj zewnętrzny plik SVG z serwera
-            const response = await fetch(SVG_FILE_PATH);
-            if (!response.ok) throw new Error(`Nie można wczytać pliku SVG: ${response.statusText}`);
-            
-            const svgText = await response.text();
-            const svgContainer = document.createElement('div');
-            svgContainer.innerHTML = svgText;
-            const svgElement = svgContainer.querySelector('svg');
-            
-            if (!svgElement) throw new Error("Wczytany plik nie zawiera tagu SVG.");
-            
-            svgElement.setAttribute('class', 'gun-svg');
-            const defs = svgElement.querySelector('defs') || document.createElementNS("http://www.w3.org/2000/svg", 'defs');
-            svgElement.prepend(defs);
+    try {
+        const response = await fetch(SVG_FILE_PATH);
+        if (!response.ok) throw new Error(`Nie udało się wczytać pliku ${SVG_FILE_PATH}`);
+        const svgText = await response.text();
+        gunViewContainer.innerHTML = svgText;
+        const svgElement = gunViewContainer.querySelector('svg');
+        if (!svgElement) throw new Error("Wczytany plik nie zawiera tagu SVG.");
+        svgElement.setAttribute('class', 'gun-svg');
 
-            // 2. Przetwórz każdą część
-            parts.forEach(part => {
-                const partNode = svgElement.querySelector(`#${part.id}`);
-                if (!partNode) {
-                    console.warn(`Nie znaleziono w SVG części o ID: ${part.id}`);
-                    return;
-                }
+        const colorLayerGroup = document.createElementNS("http://www.w3.org/2000/svg", 'g');
+        colorLayerGroup.id = 'color-overlays';
+        svgElement.appendChild(colorLayerGroup);
 
-                // Stwórz wzór (pattern) z teksturą PNG
-                const svgNS = "http://www.w3.org/2000/svg";
-                const pattern = document.createElementNS(svgNS, 'pattern');
-                pattern.setAttribute('id', `texture-${part.id}`);
-                pattern.setAttribute('patternUnits', 'userSpaceOnUse');
-                pattern.setAttribute('width', '1600');
-                pattern.setAttribute('height', '1200');
-                const image = document.createElementNS(svgNS, 'image');
-                image.setAttributeNS('http://www.w3.org/1999/xlink', 'href', IMG_DIR_PATH + part.textureFile);
-                image.setAttribute('width', '1600');
-                image.setAttribute('height', '1200');
-                pattern.appendChild(image);
-                defs.appendChild(pattern);
-
-                // Ustaw teksturę jako wypełnienie
-                partNode.setAttribute('fill', `url(#texture-${part.id})`);
-
-                // Stwórz kopię na warstwę koloru
-                const colorOverlay = partNode.cloneNode(true);
-                colorOverlay.id = `color-overlay-${part.id}`;
-                colorOverlay.setAttribute('class', 'color-overlay');
-                colorOverlay.setAttribute('fill', 'transparent');
-                colorOverlay.setAttribute('fill-opacity', '0.75');
-                partNode.parentNode.insertBefore(colorOverlay, partNode.nextSibling);
-
-                // Stwórz przycisk
-                const button = document.createElement('button');
-                button.textContent = part.label;
-                button.addEventListener('click', () => {
-                    if (selectedPartButton) selectedPartButton.classList.remove('selected');
-                    button.classList.add('selected');
-                    selectedPartButton = button;
-                    activePartId = part.id;
-                });
-                partSelectionContainer.appendChild(button);
-            });
-
-            gunViewContainer.appendChild(svgElement);
-
-            // 3. Stwórz paletę kolorów
-            for (const [name, hex] of Object.entries(cerakoteColors)) {
-                const swatch = document.createElement('div');
-                swatch.className = 'color-swatch';
-                swatch.style.backgroundColor = hex;
-                swatch.title = name;
-                swatch.addEventListener('click', () => applyColor(hex));
-                paletteContainer.appendChild(swatch);
+        PARTS_TO_CONFIGURE.forEach(part => {
+            const originalPath = svgElement.querySelector(`#${part.id}`);
+            if (!originalPath) {
+                console.warn(`Nie znaleziono w SVG części o ID: ${part.id}`);
+                return;
             }
-            
-            resetButton.addEventListener('click', resetAllColors);
+            const colorOverlay = originalPath.cloneNode(true);
+            colorOverlay.id = `color-overlay-${part.id}`;
+            colorOverlay.setAttribute('class', 'color-overlay');
+            colorOverlay.setAttribute('fill', 'transparent');
+            colorLayerGroup.appendChild(colorOverlay);
 
-        } catch (error) {
-            console.error("Błąd inicjalizacji aplikacji:", error);
-            gunViewContainer.innerHTML = `<p style="color:red; font-weight:bold;">Wystąpił krytyczny błąd. Sprawdź, czy plik <code>${SVG_FILE_PATH}</code> znajduje się na serwerze i czy jest dostępny. Szczegóły w konsoli deweloperskiej (F12).</p>`;
+            const button = document.createElement('button');
+            button.textContent = part.label;
+            button.addEventListener('click', () => {
+                if (selectedPartButton) selectedPartButton.classList.remove('selected');
+                button.classList.add('selected');
+                selectedPartButton = button;
+                activePartId = part.id;
+            });
+            partSelectionContainer.appendChild(button);
+        });
+
+        for (const [name, hex] of Object.entries(CERAKOTE_COLORS)) {
+            const swatch = document.createElement('div');
+            swatch.className = 'color-swatch';
+            swatch.style.backgroundColor = hex;
+            swatch.title = name;
+            swatch.addEventListener('click', () => applyColor(hex));
+paletteContainer.appendChild(swatch);
         }
+        
+        resetButton.addEventListener('click', resetAllColors);
+
+    } catch (error) {
+        console.error("Błąd krytyczny aplikacji:", error);
+        gunViewContainer.innerHTML = `<p style="color:red; font-weight:bold;">Wystąpił błąd podczas ładowania konfiguratora. Sprawdź konsolę deweloperską (F12) po więcej szczegółów.</p>`;
     }
 
     function applyColor(hexColor) {
-        if (!activePartId) { alert("Proszę najpierw wybrać część."); return; }
+        if (!activePartId) {
+            alert("Proszę najpierw wybrać część do pokolorowania.");
+            return;
+        }
         const colorElement = document.getElementById(`color-overlay-${activePartId}`);
         if (colorElement) {
             colorElement.setAttribute('fill', hexColor);
@@ -123,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function resetAllColors() {
-        parts.forEach(part => {
+        PARTS_TO_CONFIGURE.forEach(part => {
             const colorElement = document.getElementById(`color-overlay-${part.id}`);
             if (colorElement) {
                 colorElement.setAttribute('fill', 'transparent');
@@ -135,6 +116,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         activePartId = null;
     }
-    
-    initialize();
 });
