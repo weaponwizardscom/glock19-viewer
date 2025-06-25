@@ -46,8 +46,10 @@
         }
         .color-overlay {
             transition: fill 0.2s ease-in-out;
-            mix-blend-mode: soft-light;
-            opacity: 0.7; /* ZMIANA: Lekko zmniejszone krycie dla dwóch warstw */
+            /* ZMIANA: Mocniejszy tryb mieszania */
+            mix-blend-mode: hard-light;
+            /* ZMIANA: Dostosowane krycie dla dwóch warstw */
+            opacity: 0.65; 
             pointer-events: none;
         }
         .controls {
@@ -85,7 +87,7 @@
         .swatch-graphic-container {
             position: relative;
             width: 80px;
-            height: 60px; /* Dopasowujemy wysokość do bardziej standardowych proporcji */
+            height: 60px;
             border-radius: 4px;
             overflow: hidden;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
@@ -104,8 +106,9 @@
             object-fit: cover;
         }
         .swatch-color-overlay {
-            mix-blend-mode: soft-light;
-            opacity: 0.7; /* ZMIANA: Ta sama wartość co dla pistoletu */
+             /* ZMIANA: Ten sam mocniejszy tryb dla spójności */
+            mix-blend-mode: hard-light;
+            opacity: 0.65;
         }
         .color-swatch-label {
             margin-top: 8px;
