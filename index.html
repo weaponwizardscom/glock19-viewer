@@ -44,6 +44,17 @@
             width: 100%;
             height: 100%;
         }
+        /* Definiujemy wygląd obu warstw nakładki */
+        .color-overlay-luminosity, .color-overlay-hue {
+            transition: fill 0.2s ease-in-out;
+            pointer-events: none;
+        }
+        .color-overlay-luminosity {
+            mix-blend-mode: luminosity;
+        }
+        .color-overlay-hue {
+            mix-blend-mode: color;
+        }
         .controls {
             flex: 1 1 300px;
             min-width: 300px;
@@ -68,16 +79,14 @@
         .color-palette {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-            gap: 20px 15px; /* Zwiększony odstęp dla nowych kształtów */
+            gap: 20px 15px;
         }
-        /* ZMIANA: Dodajemy wrapper, aby etykieta była powiązana z kafelkiem */
         .color-swatch-wrapper {
             display: flex;
             flex-direction: column;
             align-items: center;
-            height: 75px; /* Wysokość na kafelek i etykietę */
+            height: 75px;
         }
-        /* ZMIANA: Nowy kształt kafelków */
         .color-swatch {
             width: 60px;
             height: 50px;
@@ -90,7 +99,6 @@
             transform: scale(1.1);
             border: 2px solid var(--primary-color);
         }
-        /* ZMIANA: Style dla etykiet pod kafelkami */
         .color-swatch-label {
             margin-top: 6px;
             font-size: 9px;
@@ -109,14 +117,10 @@
             border-radius: 6px;
             cursor: pointer;
         }
-        .color-overlay {
-    transition: fill 0.2s ease-in-out;
-    mix-blend-mode: hard-light; /* ZMIANA NA BARDZIEJ REALISTYCZNY TRYB */
-    opacity: 0.65; /* LEKKA KOREKTA KRYCIA DLA LEPSZEGO EFEKTU */
-}
     </style>
 </head>
 <body>
+
     <div class="configurator-container">
         <div class="gun-view" id="gun-view-container">
             <p style="text-align:center; padding-top:20px; color: #6c757d;">Ładowanie konfiguratora...</p>
