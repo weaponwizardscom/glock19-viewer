@@ -40,20 +40,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             const originalPath = svgElement.querySelector(`#${part.id}`);
             if (!originalPath) return;
             
-            // ZMIANA: Tworzymy DWIE warstwy koloru
-            // 1. Warstwa Jasności (Luminosity)
-            const luminosityOverlay = originalPath.cloneNode(true);
-            luminosityOverlay.id = `luma-overlay-${part.id}`;
-            luminosityOverlay.setAttribute('class', 'color-overlay-luma');
-            luminosityOverlay.setAttribute('fill', 'transparent');
-            colorLayerGroup.appendChild(luminosityOverlay);
-
-            // 2. Warstwa Koloru (Hue/Saturation)
-            const hueOverlay = originalPath.cloneNode(true);
-            hueOverlay.id = `hue-overlay-${part.id}`;
-            hueOverlay.setAttribute('class', 'color-overlay-hue');
-            hueOverlay.setAttribute('fill', 'transparent');
-            colorLayerGroup.appendChild(hueOverlay);
+            // Wracamy do tworzenia tylko JEDNEJ warstwy koloru
+            const colorOverlay = originalPath.cloneNode(true);
+            colorOverlay.id = `color-overlay-${part.id}`;
+            colorOverlay.setAttribute('class', 'color-overlay');
+            colorOverlay.setAttribute('fill', 'transparent');
+            colorLayerGroup.appendChild(colorOverlay);
 
             const button = document.createElement('button');
             button.textContent = part.label;
@@ -94,25 +86,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             alert("Proszę najpierw wybrać część do pokolorowania.");
             return;
         }
-        // ZMIANA: Ustawiamy kolor na OBU warstwach
-        const lumaElement = document.getElementById(`luma-overlay-${activePartId}`);
-        const hueElement = document.getElementById(`hue-overlay-${activePartId}`);
-        if (lumaElement && hueElement) {
-            lumaElement.setAttribute('fill', hexColor);
-            hueElement.setAttribute('fill', hexColor);
+        const colorElement = document.getElementById(`color-overlay-${activePartId}`);
+        if (colorElement) {
+            colorElement.setAttribute('fill', hexColor);
         }
     }
 
     function resetAllColors() {
-        // ZMIANA: Resetujemy OBIE warstwy
-        document.querySelectorAll('.color-overlay-luma, .color-overlay-hue').forEach(overlay => {
+        document.querySelectorAll('.color-overlay').forEach(overlay => {
             overlay.setAttribute('fill', 'transparent');
         });
-
         if (selectedPartButton) {
             selectedPartButton.classList.remove('selected');
-            selectedPartButton = null;
-        }
-        activePartId = null;
-    }
-});
