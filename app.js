@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
     // --- KONFIGURACJA APLIKACJI ---
     const SVG_FILE_PATH = 'g17.svg';
+    const SWATCH_TEXTURE_FILE = 'cerakote.png'; // Nowy plik tekstury dla próbek
     const PARTS_TO_CONFIGURE = [
         { id: 'szkielet', label: 'Szkielet' },
         { id: 'blokada1', label: 'Blokada' }
@@ -40,18 +41,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             const originalPath = svgElement.querySelector(`#${part.id}`);
             if (!originalPath) return;
             
-            // ZMIANA: Tworzymy DWIE identyczne warstwy koloru dla każdej części
-            const colorOverlay1 = originalPath.cloneNode(true);
-            colorOverlay1.id = `color-overlay-1-${part.id}`;
-            colorOverlay1.setAttribute('class', 'color-overlay');
-            colorOverlay1.setAttribute('fill', 'transparent');
-            colorLayerGroup.appendChild(colorOverlay1);
-
-            const colorOverlay2 = originalPath.cloneNode(true);
-            colorOverlay2.id = `color-overlay-2-${part.id}`;
-            colorOverlay2.setAttribute('class', 'color-overlay');
-            colorOverlay2.setAttribute('fill', 'transparent');
-            colorLayerGroup.appendChild(colorOverlay2);
+            const colorOverlay = originalPath.cloneNode(true);
+            colorOverlay.id = `color-overlay-${part.id}`;
+            colorOverlay.setAttribute('class', 'color-overlay');
+            colorOverlay.setAttribute('fill', 'transparent');
+            colorLayerGroup.appendChild(colorOverlay);
 
             const button = document.createElement('button');
             button.textContent = part.label;
@@ -64,18 +58,31 @@ document.addEventListener('DOMContentLoaded', async () => {
             partSelectionContainer.appendChild(button);
         });
 
+        // ZMIANA: Całkowicie nowa logika generowania palety kolorów
         for (const [name, hex] of Object.entries(CERAKOTE_COLORS)) {
             const wrapper = document.createElement('div');
             wrapper.className = 'color-swatch-wrapper';
-            const swatch = document.createElement('div');
-            swatch.className = 'color-swatch';
-            swatch.style.backgroundColor = hex;
-            swatch.title = name;
-            swatch.addEventListener('click', () => applyColor(hex));
+            wrapper.title = name;
+            wrapper.addEventListener('click', () => applyColor(hex));
+
+            const graphicContainer = document.createElement('div');
+            graphicContainer.className = 'swatch-graphic-container';
+
+            const baseTexture = document.createElement('img');
+            baseTexture.className = 'swatch-base-texture';
+            baseTexture.src = SWATCH_TEXTURE_FILE;
+
+            const colorOverlay = document.createElement('div');
+            colorOverlay.className = 'swatch-color-overlay';
+            colorOverlay.style.backgroundColor = hex;
+
             const label = document.createElement('div');
             label.className = 'color-swatch-label';
             label.textContent = name;
-            wrapper.appendChild(swatch);
+
+            graphicContainer.appendChild(baseTexture);
+            graphicContainer.appendChild(colorOverlay);
+            wrapper.appendChild(graphicContainer);
             wrapper.appendChild(label);
             paletteContainer.appendChild(wrapper);
         }
@@ -92,17 +99,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             alert("Proszę najpierw wybrać część do pokolorowania.");
             return;
         }
-        // ZMIANA: Ustawiamy kolor na OBU warstwach
-        const colorElement1 = document.getElementById(`color-overlay-1-${activePartId}`);
-        const colorElement2 = document.getElementById(`color-overlay-2-${activePartId}`);
-        if (colorElement1 && colorElement2) {
-            colorElement1.setAttribute('fill', hexColor);
-            colorElement2.setAttribute('fill', hexColor);
+        const colorElement = document.getElementById(`color-overlay-${activePartId}`);
+        if (colorElement) {
+            colorElement.setAttribute('fill', hexColor);
         }
     }
 
     function resetAllColors() {
-        // ZMIANA: Resetujemy OBIE warstwy
         document.querySelectorAll('.color-overlay').forEach(overlay => {
             overlay.setAttribute('fill', 'transparent');
         });
