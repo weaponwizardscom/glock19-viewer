@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
     // --- KONFIGURACJA APLIKACJI ---
     const SVG_FILE_PATH = 'g17.svg';
+    const MAIN_TEXTURE_FILE_PATH = 'img/glock17.png';
     
     const PARTS_TO_CONFIGURE = [
         { id: 'zamek',    pl: 'Zamek', en: 'Slide' },
@@ -15,76 +16,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         { id: 'pin',      pl: 'Pin', en: 'Trigger pin' },
         { id: 'stopka',   pl: 'Stopka magazynka', en: 'Magazine floorplate' }
     ];
+    const CERAKOTE_COLORS = { "H-190 Armor Black": "#212121", "H-146 Graphite Black": "#3B3B3B", "H-237 Tungsten": "#6E7176", "H-234 Sniper Grey": "#5B6063", "H-130 Combat Grey": "#6a6a6a", "H-214 S&W Grey": "#8D918D", "H-265 Cold War Grey": "#999B9E", "H-259 Barrett Bronze": "#655951", "H-267 Magpul FDE": "#A48F6A", "H-235 Coyote Tan": "#A48B68", "H-226 Patriot Brown": "#6A5445", "H-148 Burnt Bronze": "#8C6A48", "H-294 Midnight Bronze": "#51463C", "H-347 Copper": "#B87333", "H-236 O.D. Green": "#5A6349", "H-240 Mil-Spec Green": "#5F604F", "H-203 McMillan Tan": "#9F9473", "H-168 Zombie Green": "#84C341", "H-20150 Bazooka Green": "#596C43", "H-171 NRA Blue": "#00387B", "H-258 Socom Blue": "#3B4B5A", "H-185 Blue Titanium": "#647C93", "H-175 Robins Egg Blue": "#75C8C7", "H-328 Navy Blue": "#2E3A47", "H-216 S&W Red": "#B70101", "H-167 USMC Red": "#9E2B2F", "H-221 Crimson": "#891F2B", "H-142 Prison Pink": "#E55C9C", "H-30118 Crushed Orchid": "#8A4F80", "H-122 Gold": "#B79436", "H-151 Hunter Orange": "#F26522", "H-327 Guncandy Pineapple": "#E4BE0D", "H-256 Cobalt": "#395173", "H-166 Highland Green": "#434B3F", "H-140 Bright White": "#FAFAFA" };
 
-    // ZMIANA: Nowa, posortowana i rozszerzona paleta kolorów
-    const CERAKOTE_COLORS = {
-        // Biale
-        "H-140 Bright White": "#FAFAFA",
-        // Szare i Srebrne
-        "H-141 Prison Pink": "#E55C9C", // To jest błąd w oryginalnej liście, H-141 to Satin Aluminum
-        "H-305 Light Sand": "#DBCDBE", // Zakładając, że to H-305
-        "H-242 Hidden White": "#E5E4E2",
-        "H-297 Stormtrooper White": "#F2F2F2",
-        "H-136 Snow White": "#f5f5f5",
-        "H-214 S&W Grey": "#8D918D",
-        "H-265 Cold War Grey": "#999B9E",
-        "H-130 Combat Grey": "#6a6a6a",
-        "H-237 Tungsten": "#6E7176",
-        "H-234 Sniper Grey": "#5B6063",
-        // Czarne
-        "H-146 Graphite Black": "#3B3B3B",
-        "H-199 Cobalt Kinetics Slate": "#4A4E54", // Zakładając H-199
-        "H-190 Armor Black": "#212121",
-        "E-100 Blackout": "#1C1C1C", // Z serii Elite, jako bonus
-        // Brązy i Beże
-        "H-267 Magpul FDE": "#A48F6A",
-        "H-235 Coyote Tan": "#A48B68",
-        "H-229 Patina Copper": "#8A5A3C", // Zakładając H-229
-        "H-227 Tactical Grey": "#8D8A82",
-        "H-259 Barrett Bronze": "#655951",
-        "H-226 Patriot Brown": "#6A5445",
-        "H-148 Burnt Bronze": "#8C6A48",
-        "H-294 Midnight Bronze": "#51463C",
-        "H-347 Copper": "#B87333",
-        // Zielone
-        "H-213 Battleship Green": "#4B534B", // Zakładając H-213
-        "H-240 Mil-Spec Green": "#5F604F",
-        "H-236 O.D. Green": "#5A6349",
-        "H-247 WWII O.D. Green": "#595943",
-        "H-166 Highland Green": "#434B3F",
-        "H-269 Charlie Brown": "#8D7854", // To brąz, ale pasuje do grupy
-        // Niebieskie
-        "H-171 NRA Blue": "#00387B",
-        "H-258 Socom Blue": "#3B4B5A",
-        "H-256 Cobalt": "#395173",
-        "H-328 Navy Blue": "#2E3A47",
-        "H-329 G.I. Blue": "#596C80", // Zakładając H-329
-        "H-188 Magpul Stealth Grey": "#5C6670", // To szary, ale pasuje do grupy
-        // Czerwone, Różowe, Fioletowe
-        "H-216 S&W Red": "#B70101",
-        "H-167 USMC Red": "#9E2B2F",
-        "H-217 Bright Purple": "#8A2BE2",
-        "H-221 Crimson": "#891F2B",
-        "H-142 Prison Pink": "#E55C9C",
-        "H-224 Sig Pink": "#E8A7B3",
-        "H-311 Clear - Aluminum": "#C0C0C0", // To clear, ale wizualnie srebrny
-        "H-312 Clear - Stainless": "#A9A9A9",
-        "H-317 Clear - Titanium": "#878787",
-        "H-331 Covert Clear": "#FFFFFF",
-        "H-332 Clear - Gold": "#CFB53B",
-        "H-339 Federal Brown": "#5E5044",
-        "H-341 NFA Brown": "#4B3621",
-        "H-342 Smoke": "#84888B",
-        "H-344 Magpul OD Green": "#575B4A",
-        "H-345 Magpul Foliage Green": "#74786A",
-        "H-353 Cerakote Blue": "#0072CE",
-        "H-354 Cerakote Red": "#ED1C24",
-        "H-357 Cerakote Yellow": "#FFDE00",
-        "H-362 Light Grey": "#D3D3D3",
-        "H-8000 20150": "#5F6553" // H-8000 to numer bazowy dla 20150
-    };
-    
-    // --- SILNIK APLIKACJI (BEZ ZMIAN) ---
+    // --- SILNIK APLIKACJI ---
     const gunViewContainer = document.getElementById('gun-view-container');
     const partSelectionContainer = document.getElementById('part-selection-container');
     const paletteContainer = document.getElementById('color-palette');
@@ -96,9 +30,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     let activePartId = null;
     let selectedPartButton = null;
     let currentLang = 'pl';
+    let textureAsDataUrl = '';
 
     async function initialize() {
         try {
+            const toDataURL = async url => {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Nie znaleziono pliku tekstury: ${url}`);
+                const blob = await response.blob();
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
+                });
+            };
+            textureAsDataUrl = await toDataURL(MAIN_TEXTURE_FILE_PATH);
+
             const response = await fetch(SVG_FILE_PATH);
             if (!response.ok) throw new Error(`Nie udało się wczytać pliku ${SVG_FILE_PATH}`);
             
@@ -120,22 +68,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             const colorLayerGroup = document.createElementNS("http://www.w3.org/2000/svg", 'g');
             colorLayerGroup.id = 'color-overlays';
             svgElement.appendChild(colorLayerGroup);
-
-            const allAppParts = [...PARTS_TO_CONFIGURE, 
-                { id: 'all-parts', pl: 'Wszystkie Części', en: 'All Parts' },
-                { id: 'mix', pl: 'MIX', en: 'MIX' }
-            ];
+            
+            const allAppParts = [...PARTS_TO_CONFIGURE, { id: 'all-parts', pl: 'Wszystkie Części', en: 'All Parts' }, { id: 'mix', pl: 'MIX', en: 'MIX' }];
 
             allAppParts.forEach(part => {
                 if (part.id !== 'all-parts' && part.id !== 'mix') {
                     const originalElement = svgElement.querySelector(`#${part.id}`);
                     if (!originalElement) { console.warn(`Nie znaleziono części o ID: ${part.id}`); return; }
-                    
                     const colorOverlay1 = originalElement.cloneNode(true);
                     colorOverlay1.id = `color-overlay-1-${part.id}`;
                     colorOverlay1.setAttribute('class', 'color-overlay');
                     colorLayerGroup.appendChild(colorOverlay1);
-
                     const colorOverlay2 = colorOverlay1.cloneNode(true);
                     colorOverlay2.id = `color-overlay-2-${part.id}`;
                     colorLayerGroup.appendChild(colorOverlay2);
@@ -252,28 +195,45 @@ document.addEventListener('DOMContentLoaded', async () => {
         activePartId = null;
     }
     
-    async function saveAsPng() {
+    function saveAsPng() {
         const gunView = document.getElementById('gun-view-container');
-        if (!window.html2canvas) {
-            alert("Błąd: Biblioteka do zapisu obrazu nie jest gotowa.");
+        if (!window.html2canvas) { alert("Błąd: Biblioteka do zapisu obrazu nie jest gotowa."); return; }
+        
+        const svgElement = gunView.querySelector('.gun-svg');
+        if (!svgElement) return;
+
+        const serializer = new XMLSerializer();
+        const svgClone = svgElement.cloneNode(true);
+        const imageElement = svgClone.querySelector('image');
+
+        if (imageElement && textureAsDataUrl) {
+            imageElement.setAttributeNS('http://www.w3.org/1999/xlink', 'href', textureAsDataUrl);
+        } else {
+            alert("Błąd: Tekstura nie jest gotowa do zapisu.");
             return;
         }
-        try {
-            const canvas = await html2canvas(gunView, {
-                backgroundColor: null,
-                logging: false,
-                useCORS: true,
-                scale: 2 
-            });
+
+        const svgString = serializer.serializeToString(svgClone);
+        const canvas = document.createElement('canvas');
+        const scaleFactor = 2;
+        const svgSize = svgElement.getBoundingClientRect();
+        canvas.width = svgSize.width * scaleFactor;
+        canvas.height = svgSize.height * scaleFactor;
+        
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+
+        img.onload = function () {
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
             const link = document.createElement('a');
             link.download = 'weapon-wizards-projekt.png';
-            link.href = canvas.toDataURL("image/png");
+            link.href = canvas.toDataURL('image/png');
             link.click();
-        } catch(e) {
-            console.error("Błąd podczas generowania obrazu PNG:", e);
-            alert("Wystąpił nieoczekiwany błąd podczas próby zapisu obrazu.");
-        }
+        };
+        
+        img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgString)));
     }
     
-    main();
+    // ZMIANA: Poprawne wywołanie funkcji inicjalizującej
+    initialize();
 });
