@@ -45,7 +45,7 @@
             height: 100%;
         }
         .color-overlay {
-            transition: fill 0.2s ease-in-out, opacity 0.2s ease-in-out;
+            transition: fill 0.2s ease-in-out;
             mix-blend-mode: hard-light;
             opacity: 0.65;
             pointer-events: none;
@@ -85,14 +85,14 @@
         .swatch-graphic-container {
             position: relative;
             width: 80px;
-            /* ZMIANA: Przywracamy proporcje Twojego obrazka */
             aspect-ratio: 121 / 131;
             border-radius: 4px;
             overflow: hidden;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             transition: transform 0.2s ease;
-            /* ZMIANA: Dodajemy białe tło, aby odizolować próbkę */
             background-color: #fff;
+            /* ZMIANA: Dodana właściwość izolująca */
+            isolation: isolate;
         }
         .color-swatch-wrapper:hover .swatch-graphic-container {
             transform: scale(1.1);
@@ -104,12 +104,12 @@
             left: 0;
             width: 100%;
             height: 100%;
-            /* ZMIANA: Używamy 'contain', aby cała grafika była widoczna */
             object-fit: contain;
         }
         .swatch-color-overlay {
-            mix-blend-mode: hard-light;
-            opacity: 0.65;
+            /* ZMIANA: Powrót do delikatniejszego trybu dla próbek */
+            mix-blend-mode: soft-light;
+            opacity: 0.9;
         }
         .color-swatch-label {
             margin-top: 8px;
@@ -133,6 +133,7 @@
     </style>
 </head>
 <body>
+
     <div class="configurator-container">
         <div class="gun-view" id="gun-view-container">
             <p style="text-align:center; padding-top:20px; color: #6c757d;">Ładowanie konfiguratora...</p>
