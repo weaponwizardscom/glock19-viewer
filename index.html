@@ -105,17 +105,16 @@
             color: white;
             border-color: var(--primary-color);
         }
-        #mix-button, #all-parts-button {
-            grid-column: 1 / -1; /* Rozciągnij na obie kolumny */
-            text-align: center;
-            font-weight: bold;
-        }
         #mix-button {
             background: linear-gradient(45deg, #f3ec78, #af4261, #43cea2, #185a9d);
             color: white;
+            font-weight: bold;
         }
         #all-parts-button {
-            margin-top: 8px; /* Dodatkowy margines na górze */
+            grid-column: 1 / -1;
+            text-align: center;
+            font-weight: bold;
+            margin-top: 8px;
         }
         .color-palette-container {
             max-height: 400px;
@@ -192,8 +191,7 @@
                         <img id="lang-gb" src="https://flagicons.lipis.dev/flags/4x3/gb.svg" alt="GB" title="English">
                     </div>
                 </div>
-                <div class="part-selection" id="part-selection-container">
-                    </div>
+                <div class="part-selection" id="part-selection-container"></div>
             </div>
             <div class="control-section">
                 <h3>2. Wybierz kolor (Cerakote)</h3>
