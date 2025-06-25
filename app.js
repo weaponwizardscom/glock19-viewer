@@ -2,12 +2,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     // --- KONFIGURACJA APLIKACJI ---
     const SVG_FILE_PATH = 'g17.svg';
     
-    // Pełna lista części zgodnie z Twoim SVG i listą
     const PARTS_TO_CONFIGURE = [
         { id: 'zamek',    pl: 'Zamek', en: 'Slide' },
         { id: 'szkielet', pl: 'Szkielet', en: 'Frame' },
         { id: 'spust',    pl: 'Język spustowy z szyną', en: 'Trigger with trigger bar' },
-        { id: 'lufa',     pl: 'Lufa', en: 'Barrel' }, // Grupa lufa1 i lufa2
+        { id: 'lufa',     pl: 'Lufa', en: 'Barrel' },
         { id: 'zerdz',    pl: 'Żerdź', en: 'Recoil spring' },
         { id: 'pazur',    pl: 'Pazur wyciągu', en: 'Extractor' },
         { id: 'zrzut',    pl: 'Zatrzask magazynka', en: 'Magazine catch' },
@@ -16,14 +15,61 @@ document.addEventListener('DOMContentLoaded', async () => {
         { id: 'pin',      pl: 'Pin', en: 'Trigger pin' },
         { id: 'stopka',   pl: 'Stopka magazynka', en: 'Magazine floorplate' }
     ];
-
-    const CERAKOTE_COLORS = { "H-140 Bright White": "#FAFAFA", "H-190 Armor Black": "#212121", "H-146 Graphite Black": "#3B3B3B", "H-237 Tungsten": "#6E7176", "H-234 Sniper Grey": "#5B6063", "H-130 Combat Grey": "#6a6a6a", "H-214 S&W Grey": "#8D918D", "H-265 Cold War Grey": "#999B9E", "H-259 Barrett Bronze": "#655951", "H-267 Magpul FDE": "#A48F6A", "H-235 Coyote Tan": "#A48B68", "H-226 Patriot Brown": "#6A5445", "H-148 Burnt Bronze": "#8C6A48", "H-294 Midnight Bronze": "#51463C", "H-347 Copper": "#B87333", "H-236 O.D. Green": "#5A6349", "H-240 Mil-Spec Green": "#5F604F", "H-203 McMillan Tan": "#9F9473", "H-168 Zombie Green": "#84C341", "H-20150 Bazooka Green": "#596C43", "H-171 NRA Blue": "#00387B", "H-258 Socom Blue": "#3B4B5A", "H-185 Blue Titanium": "#647C93", "H-175 Robins Egg Blue": "#75C8C7", "H-328 Navy Blue": "#2E3A47", "H-216 Smith & Wesson Red": "#B70101", "H-167 USMC Red": "#9E2B2F", "H-221 Crimson": "#891F2B", "H-142 Prison Pink": "#E55C9C", "H-30118 Crushed Orchid": "#8A4F80", "H-122 Gold": "#B79436", "H-151 Hunter Orange": "#F26522", "H-327 Guncandy Pineapple": "#E4BE0D", "H-256 Cobalt": "#395173", "H-166 Highland Green": "#434B3F" };
+    // ZMIANA: Posortowana paleta kolorów
+    const CERAKOTE_COLORS = { 
+        // Biale i Szare
+        "H-140 Bright White": "#FAFAFA", 
+        "H-297 Stormtrooper White": "#F2F2F2",
+        "H-265 Cold War Grey": "#999B9E",
+        "H-214 S&W Grey": "#8D918D",
+        "H-130 Combat Grey": "#6a6a6a",
+        "H-237 Tungsten": "#6E7176",
+        "H-234 Sniper Grey": "#5B6063",
+        // Czarne
+        "H-146 Graphite Black": "#3B3B3B",
+        "H-190 Armor Black": "#212121",
+        // Brązy i Beże
+        "H-267 Magpul FDE": "#A48F6A",
+        "H-235 Coyote Tan": "#A48B68",
+        "H-203 McMillan Tan": "#9F9473",
+        "H-250 A.I. Dark Earth": "#786959",
+        "H-226 Patriot Brown": "#6A5445",
+        "H-148 Burnt Bronze": "#8C6A48",
+        "H-294 Midnight Bronze": "#51463C",
+        "H-259 Barrett Bronze": "#655951",
+        "H-347 Copper": "#B87333",
+        // Zielone
+        "H-236 O.D. Green": "#5A6349",
+        "H-240 Mil-Spec Green": "#5F604F",
+        "H-20150 Bazooka Green": "#596C43",
+        "H-166 Highland Green": "#434B3F",
+        "H-168 Zombie Green": "#84C341",
+        // Niebieskie
+        "H-175 Robins Egg Blue": "#75C8C7",
+        "H-185 Blue Titanium": "#647C93",
+        "H-258 Socom Blue": "#3B4B5A",
+        "H-328 Navy Blue": "#2E3A47",
+        "H-256 Cobalt": "#395173",
+        "H-171 NRA Blue": "#00387B",
+        // Czerwone, Różowe, Fioletowe
+        "H-216 S&W Red": "#B70101",
+        "H-167 USMC Red": "#9E2B2F",
+        "H-221 Crimson": "#891F2B",
+        "H-224 Sig Pink": "#E8A7B3",
+        "H-142 Prison Pink": "#E55C9C",
+        "H-30118 Crushed Orchid": "#8A4F80",
+        // Żółte i Pomarańczowe
+        "H-122 Gold": "#B79436",
+        "H-327 Guncandy Pineapple": "#E4BE0D",
+        "H-151 Hunter Orange": "#F26522"
+    };
     
     // --- SILNIK APLIKACJI ---
     const gunViewContainer = document.getElementById('gun-view-container');
     const partSelectionContainer = document.getElementById('part-selection-container');
     const paletteContainer = document.getElementById('color-palette');
     const resetButton = document.getElementById('reset-button');
+    const saveButton = document.getElementById('save-button');
     const langPl = document.getElementById('lang-pl');
     const langGb = document.getElementById('lang-gb');
     
@@ -40,8 +86,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const svgElement = gunViewContainer.querySelector('svg');
         if (!svgElement) throw new Error("Wczytany plik nie zawiera tagu SVG.");
         svgElement.setAttribute('class', 'gun-svg');
-        
-        // Zgrupuj lufę w jedną całość
+
         const lufaGroup = document.createElementNS("http://www.w3.org/2000/svg", 'g');
         lufaGroup.id = 'lufa';
         const lufaPaths = Array.from(svgElement.querySelectorAll('#lufa1, #lufa2'));
@@ -73,11 +118,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             partSelectionContainer.appendChild(button);
         });
         
+        // DODATEK: Tworzenie przycisku MIX
+        const mixButton = document.createElement('button');
+        mixButton.id = 'mix-button';
+        mixButton.textContent = 'MIX';
+        partSelectionContainer.appendChild(mixButton);
+
         resetAllColors();
         updateButtonLabels();
         createColorPalette();
 
         resetButton.addEventListener('click', resetAllColors);
+        mixButton.addEventListener('click', applyRandomColors);
+        saveButton.addEventListener('click', saveAsPng);
         langPl.addEventListener('click', () => switchLang('pl'));
         langGb.addEventListener('click', () => switchLang('en'));
 
@@ -88,13 +141,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     function switchLang(lang) {
         currentLang = lang;
-        langPl.classList.toggle('active', lang === 'pl');
-        langGb.classList.toggle('active', lang === 'en');
         updateButtonLabels();
     }
 
     function updateButtonLabels() {
-        partSelectionContainer.querySelectorAll('button').forEach(button => {
+        partSelectionContainer.querySelectorAll('button:not(#mix-button)').forEach(button => {
             const partId = button.dataset.partId;
             const partConfig = PARTS_TO_CONFIGURE.find(p => p.id === partId);
             if (partConfig) {
@@ -107,8 +158,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 };
             }
         });
-        langPl.classList.add('active');
-        langGb.classList.remove('active');
+        langPl.classList.toggle('active', currentLang === 'pl');
+        langGb.classList.toggle('active', currentLang === 'en');
     }
 
     function createColorPalette() {
@@ -117,7 +168,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const wrapper = document.createElement('div');
             wrapper.className = 'color-swatch-wrapper';
             wrapper.title = name;
-            wrapper.addEventListener('click', () => applyColor(hex));
+            wrapper.addEventListener('click', () => applyColorToPart(activePartId, hex));
             const swatch = document.createElement('div');
             swatch.className = 'color-swatch';
             swatch.style.backgroundColor = hex;
@@ -130,34 +181,73 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    function applyColor(hexColor) {
-        if (!activePartId) { alert("Proszę najpierw wybrać część."); return; }
+    function applyColorToPart(partId, hexColor) {
+        if (!partId) { alert("Proszę najpierw wybrać część."); return; }
         
-        const colorElement1 = document.getElementById(`color-overlay-1-${activePartId}`);
-        const colorElement2 = document.getElementById(`color-overlay-2-${activePartId}`);
+        const colorElement1 = document.getElementById(`color-overlay-1-${partId}`);
+        const colorElement2 = document.getElementById(`color-overlay-2-${partId}`);
         
         if (colorElement1 && colorElement2) {
             const elementsToColor = [colorElement1, colorElement2];
             elementsToColor.forEach(el => {
-                // Ta funkcja teraz poprawnie koloruje całe grupy
                 const shapes = el.tagName.toLowerCase() === 'g' ? el.querySelectorAll('path, polygon, ellipse, circle, rect') : [el];
-                shapes.forEach(shape => {
-                    // Nadpisujemy styl inline, co jest silniejsze niż klasa CSS
-                    shape.style.fill = hexColor;
-                });
+                shapes.forEach(shape => shape.style.fill = hexColor);
             });
         }
     }
 
+    // DODATEK: Funkcja losująca kolory
+    function applyRandomColors() {
+        const colorList = Object.values(CERAKOTE_COLORS);
+        PARTS_TO_CONFIGURE.forEach(part => {
+            const randomColor = colorList[Math.floor(Math.random() * colorList.length)];
+            applyColorToPart(part.id, randomColor);
+        });
+    }
+
     function resetAllColors() {
-        document.querySelectorAll('.color-overlay').forEach(overlay => {
-            const shapes = overlay.tagName.toLowerCase() === 'g' ? overlay.querySelectorAll('path, polygon, ellipse, circle, rect') : [overlay];
-            shapes.forEach(shape => {
-                shape.style.fill = 'transparent';
-            });
+        PARTS_TO_CONFIGURE.forEach(part => {
+            const colorElement1 = document.getElementById(`color-overlay-1-${part.id}`);
+            const colorElement2 = document.getElementById(`color-overlay-2-${part.id}`);
+            if(colorElement1) {
+                const shapes1 = colorElement1.tagName.toLowerCase() === 'g' ? colorElement1.querySelectorAll('path, polygon, ellipse, circle, rect') : [colorElement1];
+                shapes1.forEach(s => s.style.fill = 'transparent');
+            }
+            if(colorElement2) {
+                const shapes2 = colorElement2.tagName.toLowerCase() === 'g' ? colorElement2.querySelectorAll('path, polygon, ellipse, circle, rect') : [colorElement2];
+                shapes2.forEach(s => s.style.fill = 'transparent');
+            }
         });
         if (selectedPartButton) { selectedPartButton.classList.remove('selected'); selectedPartButton = null; }
         activePartId = null;
+    }
+
+    // DODATEK: Funkcja zapisująca obraz
+    function saveAsPng() {
+        const svgElement = document.querySelector('.gun-svg');
+        const serializer = new XMLSerializer();
+        const svgString = serializer.serializeToString(svgElement);
+
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const svgSize = svgElement.getBoundingClientRect();
+        canvas.width = svgSize.width;
+        canvas.height = svgSize.height;
+
+        const img = new Image();
+        const svgBlob = new Blob([svgString], {type: 'image/svg+xml;charset=utf-8'});
+        const url = URL.createObjectURL(svgBlob);
+
+        img.onload = function () {
+            ctx.drawImage(img, 0, 0);
+            URL.revokeObjectURL(url);
+            
+            const link = document.createElement('a');
+            link.download = 'moj-projekt-glock.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        };
+        img.src = url;
     }
     
     initialize();

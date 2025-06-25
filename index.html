@@ -31,8 +31,13 @@
             max-width: 1200px;
             gap: 24px;
         }
-        .gun-view {
+        .gun-view-wrapper {
             flex: 2 1 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .gun-view {
             position: relative;
             width: 100%;
             max-width: 800px;
@@ -99,6 +104,12 @@
             color: white;
             border-color: var(--primary-color);
         }
+        /* Styl dla przycisku MIX */
+        #mix-button {
+            background: linear-gradient(45deg, #f3ec78, #af4261, #43cea2, #185a9d);
+            color: white;
+            font-weight: bold;
+        }
         .color-palette-container {
             max-height: 400px;
             overflow-y: auto;
@@ -135,26 +146,35 @@
             line-height: 1.2;
             width: 100%;
         }
+        .action-button {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: center;
+        }
+        #save-button {
+            background-color: var(--primary-color);
+        }
         .reset-button-container {
             margin-top: auto;
             padding-top: 20px;
         }
         .reset-button {
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            border: none;
             background-color: #dc3545;
-            color: white;
-            border-radius: 6px;
-            cursor: pointer;
         }
     </style>
 </head>
 <body>
     <div class="configurator-container">
-        <div class="gun-view" id="gun-view-container">
-            <p style="text-align:center; padding-top:20px; color: #6c757d;">Ładowanie konfiguratora...</p>
+        <div class="gun-view-wrapper">
+            <div class="gun-view" id="gun-view-container">
+                <p style="text-align:center; padding-top:20px; color: #6c757d;">Ładowanie konfiguratora...</p>
+            </div>
+            <button id="save-button" class="action-button">Zapisz Obraz</button>
         </div>
         <div class="controls">
             <div class="control-section">
@@ -174,7 +194,7 @@
                 </div>
             </div>
             <div class="reset-button-container">
-                <button class="reset-button" id="reset-button">Resetuj Kolory</button>
+                <button class="reset-button action-button" id="reset-button">Resetuj Kolory</button>
             </div>
         </div>
     </div>
