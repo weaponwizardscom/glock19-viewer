@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     // --- KONFIGURACJA APLIKACJI ---
     const SVG_FILE_PATH = 'g17.svg';
     const MAIN_TEXTURE_FILE_PATH = 'img/glock17.png';
-    
     const PARTS_TO_CONFIGURE = [
         { id: 'zamek',    pl: 'Zamek', en: 'Slide' },
         { id: 'szkielet', pl: 'Szkielet', en: 'Frame' },
@@ -32,7 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let currentLang = 'pl';
     let textureAsDataUrl = ''; // Zmienna na wbudowaną teksturę
 
-    // Funkcja do konwersji obrazka na Data URL (Base64)
+    // ZMIANA: Funkcja do konwersji obrazka na Data URL (Base64)
     const toDataURL = async url => {
         const response = await fetch(url);
         if (!response.ok) throw new Error(`Nie znaleziono pliku tekstury: ${url}`);
@@ -47,7 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function initialize() {
         try {
-            // Wczytujemy i konwertujemy główną teksturę na starcie aplikacji
+            // ZMIANA: Wczytujemy teksturę na starcie, aby była gotowa do zapisu
             textureAsDataUrl = await toDataURL(MAIN_TEXTURE_FILE_PATH);
 
             const response = await fetch(SVG_FILE_PATH);
@@ -184,37 +183,50 @@ document.addEventListener('DOMContentLoaded', async () => {
         activePartId = null;
     }
     
-    // ZMIANA: Poprawiona funkcja zapisywania obrazu
-    function saveAsPng() {
+    // ZMIANA: Całkowicie nowa funkcja zapisu obrazu
+    async function saveAsPng() {
         const gunView = document.getElementById('gun-view-container');
         const svgElement = gunView.querySelector('.gun-svg');
         if (!svgElement) return;
-
-        // Klonujemy SVG, żeby nie modyfikować widocznej grafiki
+        
+        // Stwórz tymczasową kopię SVG, aby bezpiecznie ją zmodyfikować
         const svgClone = svgElement.cloneNode(true);
         const imageElement = svgClone.querySelector('image');
 
-        // Podmieniamy link do pliku na wbudowaną wersję Base64
+        // Podmień link do pliku na wbudowaną wersję Base64
         if (imageElement && textureAsDataUrl) {
             imageElement.setAttributeNS('http://www.w3.org/1999/xlink', 'href', textureAsDataUrl);
         } else {
             console.error("Nie można zapisać obrazu - tekstura (Data URL) nie jest gotowa.");
+            alert("Błąd podczas przygotowywania obrazu do zapisu.");
             return;
         }
 
-        // Używamy html2canvas na kontenerze, aby poprawnie wyrenderować tło i SVG
-        html2canvas(gunView, {
-            backgroundColor: null, // Zachowaj tło z CSS
-            logging: false,
-            useCORS: true,
-            // Zwiększamy rozdzielczość dla lepszej jakości
-            scale: 2
-        }).then(canvas => {
+        // Użyj biblioteki html2canvas na zmodyfikowanym klonie
+        // Musimy go na chwilę dodać do strony, żeby biblioteka go 'zobaczyła'
+        svgClone.style.position = 'absolute';
+        svgClone.style.left = '-9999px'; // Schowaj go poza ekranem
+        document.body.appendChild(svgClone);
+
+        try {
+            const canvas = await html2canvas(svgClone, {
+                backgroundColor: null, // Użyj tła z kontenera nadrzędnego
+                logging: false,
+                scale: 2 // Zapisz w 2x większej rozdzielczości dla lepszej jakości
+            });
+            
             const link = document.createElement('a');
             link.download = 'weapon-wizards-projekt.png';
             link.href = canvas.toDataURL("image/png");
             link.click();
-        });
+
+        } catch(e) {
+            console.error("Błąd podczas generowania obrazu PNG:", e);
+            alert("Wystąpił błąd podczas zapisu obrazu.");
+        } finally {
+            // Zawsze usuwaj tymczasowy klon ze strony
+            document.body.removeChild(svgClone);
+        }
     }
     
     initialize();
