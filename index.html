@@ -6,9 +6,9 @@
     <title>Weapon-Wizards.com - Konfigurator</title>
     <style>
         :root {
-            --page-background: #121212;
+            --page-background: #ffffff;
             --container-background: #ffffff;
-            --gun-view-background: #000000;
+            --gun-view-background: #ffffff;
             --text-color: #1c1e21;
             --border-color: #dee2e6;
             --primary-color: #007bff;
@@ -81,7 +81,7 @@
         }
         .part-selection button {
             padding: 10px 12px;
-            font-size: 11px; /* Zmniejszona dla dłuższych nazw */
+            font-size: 11px;
             text-align: left;
             border-radius: 6px;
             border: 1px solid var(--border-color);
@@ -96,6 +96,12 @@
             background-color: var(--primary-color);
             color: white;
             border-color: var(--primary-color);
+        }
+        /* ZMIANA: Przewijana paleta kolorów */
+        .color-palette-container {
+            max-height: 300px; /* Maksymalna wysokość kontenera */
+            overflow-y: auto; /* Włączenie paska przewijania, gdy jest potrzebny */
+            padding-right: 10px; /* Miejsce na pasek przewijania */
         }
         .color-palette {
             display: grid;
@@ -157,7 +163,12 @@
                 </div>
                 <div class="part-selection" id="part-selection-container"></div>
             </div>
-            <div class="control-section"><h3>2. Wybierz kolor (Cerakote)</h3><div id="color-palette-container" class="color-palette"></div></div>
+            <div class="control-section">
+                <h3>2. Wybierz kolor (Cerakote)</h3>
+                <div class="color-palette-container" id="color-palette-container">
+                    <div class="color-palette" id="color-palette"></div>
+                </div>
+            </div>
             <div class="control-section"><button class="reset-button" id="reset-button">Resetuj Kolory</button></div>
         </div>
     </div>
