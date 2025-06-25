@@ -1,17 +1,33 @@
 document.addEventListener('DOMContentLoaded', async () => {
     // --- KONFIGURACJA APLIKACJI ---
     const SVG_FILE_PATH = 'g17.svg';
-    const SWATCH_TEXTURE_FILE = 'cerakote.png';
     const PARTS_TO_CONFIGURE = [
         { id: 'szkielet', label: 'Szkielet' },
         { id: 'blokada1', label: 'Blokada' }
     ];
+
+    // ZMIANA: Nowa, zróżnicowana paleta ~20 kolorów
     const CERAKOTE_COLORS = {
-        "H-190 Armor Black": "#212121", "H-146 Graphite Black": "#3B3B3B", "H-237 Tungsten": "#6E7176",
-        "H-214 S&W Grey": "#8D918D", "H-297 Stormtrooper White": "#F2F2F2", "H-140 Bright White": "#FAFAFA",
-        "H-267 Magpul FDE": "#A48F6A", "H-235 Coyote Tan": "#A48B68", "H-226 Patriot Brown": "#6A5445",
-        "H-148 Burnt Bronze": "#8C6A48", "H-236 O.D. Green": "#5A6349", "H-171 NRA Blue": "#00387B",
-        "H-216 S&W Red": "#B70101", "H-168 Zombie Green": "#84C341", "H-122 Gold": "#B79436"
+        "H-190 Armor Black": "#212121",
+        "H-148 Burnt Bronze": "#8C6A48",
+        "H-236 O.D. Green": "#5A6349",
+        "H-237 Tungsten": "#6E7176",
+        "H-267 Magpul FDE": "#A48F6A",
+        "H-140 Bright White": "#FAFAFA",
+        "H-216 Smith & Wesson Red": "#B70101",
+        "H-171 NRA Blue": "#00387B",
+        "H-122 Gold": "#B79436",
+        "H-234 Sniper Grey": "#5B6063",
+        "H-168 Zombie Green": "#84C341",
+        "H-224 Sig Pink": "#E8A7B3",
+        "H-258 Socom Blue": "#3B4B5A",
+        "H-226 Patriot Brown": "#6A5445",
+        "H-185 Blue Titanium": "#647C93",
+        "H-30118 Crushed Orchid": "#8A4F80",
+        "H-136 Snow White": "#f5f5f5",
+        "H-235 Coyote Tan": "#A48B68",
+        "H-151 Hunter Orange": "#F26522",
+        "H-142 Prison Pink": "#E55C9C"
     };
     // --- KONIEC KONFIGURACJI ---
 
@@ -41,11 +57,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             const originalPath = svgElement.querySelector(`#${part.id}`);
             if (!originalPath) return;
             
-            const colorOverlay = originalPath.cloneNode(true);
-            colorOverlay.id = `color-overlay-${part.id}`;
-            colorOverlay.setAttribute('class', 'color-overlay');
-            colorOverlay.setAttribute('fill', 'transparent');
-            colorLayerGroup.appendChild(colorOverlay);
+            // ZMIANA: Wracamy do tworzenia DWÓCH warstw koloru dla pistoletu
+            const colorOverlay1 = originalPath.cloneNode(true);
+            colorOverlay1.id = `color-overlay-1-${part.id}`;
+            colorOverlay1.setAttribute('class', 'color-overlay');
+            colorOverlay1.setAttribute('fill', 'transparent');
+            colorLayerGroup.appendChild(colorOverlay1);
+
+            const colorOverlay2 = originalPath.cloneNode(true);
+            colorOverlay2.id = `color-overlay-2-${part.id}`;
+            colorOverlay2.setAttribute('class', 'color-overlay');
+            colorOverlay2.setAttribute('fill', 'transparent');
+            colorLayerGroup.appendChild(colorOverlay2);
 
             const button = document.createElement('button');
             button.textContent = part.label;
@@ -58,30 +81,22 @@ document.addEventListener('DOMContentLoaded', async () => {
             partSelectionContainer.appendChild(button);
         });
 
+        // ZMIANA: Uproszczone tworzenie palety kolorów (kółka)
         for (const [name, hex] of Object.entries(CERAKOTE_COLORS)) {
             const wrapper = document.createElement('div');
             wrapper.className = 'color-swatch-wrapper';
             wrapper.title = name;
             wrapper.addEventListener('click', () => applyColor(hex));
 
-            const graphicContainer = document.createElement('div');
-            graphicContainer.className = 'swatch-graphic-container';
-
-            const baseTexture = document.createElement('img');
-            baseTexture.className = 'swatch-base-texture';
-            baseTexture.src = SWATCH_TEXTURE_FILE;
-
-            const swatchOverlay = document.createElement('div');
-            swatchOverlay.className = 'swatch-color-overlay';
-            swatchOverlay.style.backgroundColor = hex;
+            const swatch = document.createElement('div');
+            swatch.className = 'color-swatch';
+            swatch.style.backgroundColor = hex;
 
             const label = document.createElement('div');
             label.className = 'color-swatch-label';
             label.textContent = name;
 
-            graphicContainer.appendChild(baseTexture);
-            graphicContainer.appendChild(swatchOverlay);
-            wrapper.appendChild(graphicContainer);
+            wrapper.appendChild(swatch);
             wrapper.appendChild(label);
             paletteContainer.appendChild(wrapper);
         }
@@ -90,7 +105,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     } catch (error) {
         console.error("Błąd krytyczny aplikacji:", error);
-        gunViewContainer.innerHTML = `<p style="color:red; font-weight:bold;">Wystąpił błąd: ${error.message}. Sprawdź, czy plik ${SVG_FILE_PATH} jest na serwerze i czy jego nazwa jest poprawna.</p>`;
+        gunViewContainer.innerHTML = `<p style="color:red; font-weight:bold;">Wystąpił błąd podczas ładowania konfiguratora. Sprawdź konsolę (F12).</p>`;
     }
 
     function applyColor(hexColor) {
@@ -98,13 +113,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             alert("Proszę najpierw wybrać część do pokolorowania.");
             return;
         }
-        const colorElement = document.getElementById(`color-overlay-${activePartId}`);
-        if (colorElement) {
-            colorElement.setAttribute('fill', hexColor);
+        // ZMIANA: Ustawiamy kolor na OBU warstwach dla pistoletu
+        const colorElement1 = document.getElementById(`color-overlay-1-${activePartId}`);
+        const colorElement2 = document.getElementById(`color-overlay-2-${activePartId}`);
+        if (colorElement1 && colorElement2) {
+            colorElement1.setAttribute('fill', hexColor);
+            colorElement2.setAttribute('fill', hexColor);
         }
     }
 
     function resetAllColors() {
+        // ZMIANA: Resetujemy OBIE warstwy
         document.querySelectorAll('.color-overlay').forEach(overlay => {
             overlay.setAttribute('fill', 'transparent');
         });
