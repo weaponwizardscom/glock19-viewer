@@ -81,8 +81,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             partSelectionContainer.appendChild(mixButton);
 
             resetAllColors();
-            updateUIText(); // ZMIANA: Zmiana nazwy funkcji
+            updateUIText(); 
             createColorPalette();
+            
+            // ZMIANA: Ustawienie domyślnego koloru po załadowaniu
+            setDefaultColor();
 
             resetButton.addEventListener('click', resetAllColors);
             mixButton.addEventListener('click', applyRandomColors);
@@ -98,12 +101,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     function switchLang(lang) {
         currentLang = lang;
-        updateUIText(); // ZMIANA: Zmiana nazwy funkcji
+        updateUIText();
     }
 
-    // ZMIANA: Rozszerzona funkcja do aktualizacji całego UI
     function updateUIText() {
-        // Tłumaczenie przycisków
         partSelectionContainer.querySelectorAll('button:not(#mix-button)').forEach(button => {
             const partId = button.dataset.partId;
             const partConfig = PARTS_TO_CONFIGURE.find(p => p.id === partId);
@@ -120,7 +121,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const mixButton = document.getElementById('mix-button');
         if(mixButton) mixButton.textContent = 'MIX';
 
-        // Tłumaczenie nagłówków
         if(headerPartSelection) {
             headerPartSelection.textContent = currentLang === 'pl' ? '1. Wybierz część' : '1. Select part';
         }
@@ -128,7 +128,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             headerColorSelection.textContent = currentLang === 'pl' ? '2. Wybierz kolor (Cerakote)' : '2. Select color (Cerakote)';
         }
 
-        // Aktywna flaga
         langPl.classList.toggle('active', currentLang === 'pl');
         langGb.classList.toggle('active', currentLang === 'en');
     }
@@ -153,7 +152,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function applyColorToPart(partId, hexColor) {
-        if (!partId) { alert("Proszę najpierw wybrać część."); return; }
+        if (!partId) { 
+            // Ta modyfikacja zapobiega wyświetlaniu alertu, gdy funkcja jest wywoływana na starcie,
+            // ale nadal wyświetla go, gdy użytkownik kliknie kolor bez wybranej części.
+            if(selectedPartButton) {
+                alert("Proszę najpierw wybrać część.");
+            }
+            return; 
+        }
         const colorElement1 = document.getElementById(`color-overlay-1-${partId}`);
         const colorElement2 = document.getElementById(`color-overlay-2-${partId}`);
         if (colorElement1 && colorElement2) {
@@ -161,6 +167,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             elementsToColor.forEach(el => {
                 const shapes = el.tagName.toLowerCase() === 'g' ? el.querySelectorAll('path, polygon, ellipse, circle, rect') : [el];
                 shapes.forEach(shape => shape.style.fill = hexColor);
+            });
+        }
+    }
+
+    // ZMIANA: Nowa funkcja do ustawiania domyślnego koloru
+    function setDefaultColor() {
+        const defaultColor = CERAKOTE_COLORS["H-146 Graphite Black"];
+        if (defaultColor) {
+            PARTS_TO_CONFIGURE.forEach(part => {
+                applyColorToPart(part.id, defaultColor);
             });
         }
     }
