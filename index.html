@@ -71,10 +71,10 @@
             color: white;
             border-color: var(--primary-color);
         }
-        /* ZMIANA: Style dla nowej palety kolorów */
+        /* ZMIANA: Dopasowujemy siatkę do nowych próbek */
         .color-palette {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
             gap: 25px 15px;
         }
         .color-swatch-wrapper {
@@ -83,10 +83,11 @@
             align-items: center;
             cursor: pointer;
         }
+        /* ZMIANA: Dopasowujemy kontener próbki do proporcji Twojego obrazka */
         .swatch-graphic-container {
             position: relative;
-            width: 80px;
-            height: 55px;
+            width: 70px; /* Możesz dostosować tę szerokość */
+            aspect-ratio: 121 / 131; /* Zachowujemy proporcje Twojego pliku */
             border-radius: 4px;
             overflow: hidden;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
@@ -102,6 +103,7 @@
             left: 0;
             width: 100%;
             height: 100%;
+            object-fit: cover; /* Upewniamy się, że obrazek wypełnia kontener */
         }
         .swatch-color-overlay {
             mix-blend-mode: soft-light;
@@ -113,6 +115,7 @@
             color: #6c757d;
             text-align: center;
             line-height: 1.2;
+            width: 100%;
         }
         .reset-button {
             margin-top: 16px;
@@ -128,6 +131,7 @@
     </style>
 </head>
 <body>
+
     <div class="configurator-container">
         <div class="gun-view" id="gun-view-container">
             <p style="text-align:center; padding-top:20px; color: #6c757d;">Ładowanie konfiguratora...</p>
