@@ -40,11 +40,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             const originalPath = svgElement.querySelector(`#${part.id}`);
             if (!originalPath) return;
             
-            const colorOverlay = originalPath.cloneNode(true);
-            colorOverlay.id = `color-overlay-${part.id}`;
-            colorOverlay.setAttribute('class', 'color-overlay');
-            colorOverlay.setAttribute('fill', 'transparent');
-            colorLayerGroup.appendChild(colorOverlay);
+            // ZMIANA: Tworzymy DWIE identyczne warstwy koloru dla każdej części
+            const colorOverlay1 = originalPath.cloneNode(true);
+            colorOverlay1.id = `color-overlay-1-${part.id}`;
+            colorOverlay1.setAttribute('class', 'color-overlay');
+            colorOverlay1.setAttribute('fill', 'transparent');
+            colorLayerGroup.appendChild(colorOverlay1);
+
+            const colorOverlay2 = originalPath.cloneNode(true);
+            colorOverlay2.id = `color-overlay-2-${part.id}`;
+            colorOverlay2.setAttribute('class', 'color-overlay');
+            colorOverlay2.setAttribute('fill', 'transparent');
+            colorLayerGroup.appendChild(colorOverlay2);
 
             const button = document.createElement('button');
             button.textContent = part.label;
@@ -85,13 +92,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             alert("Proszę najpierw wybrać część do pokolorowania.");
             return;
         }
-        const colorElement = document.getElementById(`color-overlay-${activePartId}`);
-        if (colorElement) {
-            colorElement.setAttribute('fill', hexColor);
+        // ZMIANA: Ustawiamy kolor na OBU warstwach
+        const colorElement1 = document.getElementById(`color-overlay-1-${activePartId}`);
+        const colorElement2 = document.getElementById(`color-overlay-2-${activePartId}`);
+        if (colorElement1 && colorElement2) {
+            colorElement1.setAttribute('fill', hexColor);
+            colorElement2.setAttribute('fill', hexColor);
         }
     }
 
     function resetAllColors() {
+        // ZMIANA: Resetujemy OBIE warstwy
         document.querySelectorAll('.color-overlay').forEach(overlay => {
             overlay.setAttribute('fill', 'transparent');
         });
