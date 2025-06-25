@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         { id: 'zamek',    pl: 'Zamek', en: 'Slide' },
         { id: 'szkielet', pl: 'Szkielet', en: 'Frame' },
         { id: 'spust',    pl: 'Język spustowy z szyną', en: 'Trigger with trigger bar' },
-        { id: 'lufa',     pl: 'Lufa', en: 'Barrel' }, // Ta grupa zostanie stworzona dynamicznie
+        { id: 'lufa',     pl: 'Lufa', en: 'Barrel' }, // Grupa lufa1 i lufa2
         { id: 'zerdz',    pl: 'Żerdź', en: 'Recoil spring' },
         { id: 'pazur',    pl: 'Pazur wyciągu', en: 'Extractor' },
         { id: 'zrzut',    pl: 'Zatrzask magazynka', en: 'Magazine catch' },
@@ -40,8 +40,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const svgElement = gunViewContainer.querySelector('svg');
         if (!svgElement) throw new Error("Wczytany plik nie zawiera tagu SVG.");
         svgElement.setAttribute('class', 'gun-svg');
-
-        // Dynamiczne grupowanie lufy
+        
+        // Zgrupuj lufę w jedną całość
         const lufaGroup = document.createElementNS("http://www.w3.org/2000/svg", 'g');
         lufaGroup.id = 'lufa';
         const lufaPaths = Array.from(svgElement.querySelectorAll('#lufa1, #lufa2'));
@@ -64,9 +64,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             colorOverlay1.setAttribute('class', 'color-overlay');
             colorLayerGroup.appendChild(colorOverlay1);
 
-            const colorOverlay2 = originalElement.cloneNode(true);
+            const colorOverlay2 = colorOverlay1.cloneNode(true);
             colorOverlay2.id = `color-overlay-2-${part.id}`;
-            colorOverlay2.setAttribute('class', 'color-overlay');
             colorLayerGroup.appendChild(colorOverlay2);
 
             const button = document.createElement('button');
@@ -74,7 +73,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             partSelectionContainer.appendChild(button);
         });
         
-        resetAllColors(); // Ustawienie przezroczystości na starcie
+        resetAllColors();
         updateButtonLabels();
         createColorPalette();
 
@@ -136,26 +135,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         const colorElement1 = document.getElementById(`color-overlay-1-${activePartId}`);
         const colorElement2 = document.getElementById(`color-overlay-2-${activePartId}`);
+        
         if (colorElement1 && colorElement2) {
             const elementsToColor = [colorElement1, colorElement2];
             elementsToColor.forEach(el => {
-                // POPRAWKA: Ustawiamy styl 'fill' bezpośrednio, aby nadpisać wewnętrzne style SVG
-                if (el.tagName.toLowerCase() === 'g') {
-                    el.querySelectorAll('path, polygon, ellipse, circle, rect').forEach(shape => shape.style.fill = hexColor);
-                } else {
-                    el.style.fill = hexColor;
-                }
+                // Ta funkcja teraz poprawnie koloruje całe grupy
+                const shapes = el.tagName.toLowerCase() === 'g' ? el.querySelectorAll('path, polygon, ellipse, circle, rect') : [el];
+                shapes.forEach(shape => {
+                    // Nadpisujemy styl inline, co jest silniejsze niż klasa CSS
+                    shape.style.fill = hexColor;
+                });
             });
         }
     }
 
     function resetAllColors() {
         document.querySelectorAll('.color-overlay').forEach(overlay => {
-            if (overlay.tagName.toLowerCase() === 'g') {
-                overlay.querySelectorAll('path, polygon, ellipse, circle, rect').forEach(shape => shape.style.fill = 'transparent');
-            } else {
-                overlay.style.fill = 'transparent';
-            }
+            const shapes = overlay.tagName.toLowerCase() === 'g' ? overlay.querySelectorAll('path, polygon, ellipse, circle, rect') : [overlay];
+            shapes.forEach(shape => {
+                shape.style.fill = 'transparent';
+            });
         });
         if (selectedPartButton) { selectedPartButton.classList.remove('selected'); selectedPartButton = null; }
         activePartId = null;
