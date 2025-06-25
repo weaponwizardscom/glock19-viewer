@@ -6,10 +6,9 @@
     <title>Weapon-Wizards.com - Konfigurator</title>
     <style>
         :root {
-            --page-background: #ffffff;
-            /* ZMIANA: Zastosowanie Twojej wartości */
+            --page-background: #121212;
             --container-background: #ffffff;
-            --gun-view-background: #ffffff;
+            --gun-view-background: #000000;
             --text-color: #1c1e21;
             --border-color: #dee2e6;
             --primary-color: #007bff;
@@ -37,7 +36,7 @@
             position: relative;
             width: 100%;
             max-width: 800px;
-            aspect-ratio: 1289.29 / 1040;
+            aspect-ratio: 1289.79 / 1040.4;
             background-color: var(--gun-view-background);
             border-radius: 6px;
         }
@@ -45,7 +44,6 @@
             width: 100%;
             height: 100%;
         }
-        /* ZMIANA: Zastosowanie Twoich ustawień */
         .color-overlay {
             transition: fill 0.2s ease-in-out;
             mix-blend-mode: hard-light;
@@ -56,12 +54,25 @@
             flex: 1 1 300px;
             min-width: 300px;
         }
-        .control-section h3 {
-            margin-top: 0;
-            margin-bottom: 12px;
+        .control-section { margin-bottom: 20px; }
+        .control-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 8px;
-            color: var(--text-color);
+            margin-bottom: 12px;
+        }
+        .control-section-header h3 { margin: 0; color: var(--text-color); }
+        .lang-switcher img {
+            width: 24px;
+            cursor: pointer;
+            margin-left: 8px;
+            border: 2px solid transparent;
+            border-radius: 3px;
+        }
+        .lang-switcher img.active {
+            border-color: var(--primary-color);
         }
         .part-selection {
             display: grid;
@@ -70,13 +81,16 @@
         }
         .part-selection button {
             padding: 10px 12px;
-            font-size: 14px;
+            font-size: 11px; /* Zmniejszona dla dłuższych nazw */
             text-align: left;
             border-radius: 6px;
             border: 1px solid var(--border-color);
             background-color: #f5f6f7;
             cursor: pointer;
             transition: all 0.2s;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .part-selection button.selected {
             background-color: var(--primary-color);
@@ -133,7 +147,16 @@
             <p style="text-align:center; padding-top:20px; color: #6c757d;">Ładowanie konfiguratora...</p>
         </div>
         <div class="controls">
-            <div class="control-section"><h3>1. Wybierz część</h3><div class="part-selection" id="part-selection-container"></div></div>
+            <div class="control-section">
+                <div class="control-section-header">
+                    <h3>1. Wybierz część</h3>
+                    <div class="lang-switcher">
+                        <img id="lang-pl" src="https://flagicons.lipis.dev/flags/4x3/pl.svg" alt="PL" title="Język Polski">
+                        <img id="lang-gb" src="https://flagicons.lipis.dev/flags/4x3/gb.svg" alt="GB" title="English">
+                    </div>
+                </div>
+                <div class="part-selection" id="part-selection-container"></div>
+            </div>
             <div class="control-section"><h3>2. Wybierz kolor (Cerakote)</h3><div id="color-palette-container" class="color-palette"></div></div>
             <div class="control-section"><button class="reset-button" id="reset-button">Resetuj Kolory</button></div>
         </div>
