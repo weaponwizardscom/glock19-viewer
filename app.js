@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
     // --- KONFIGURACJA APLIKACJI ---
     const SVG_FILE_PATH = 'g17.svg';
+    const MAIN_TEXTURE_FILE_PATH = 'img/glock17.png';
     
     const PARTS_TO_CONFIGURE = [
         { id: 'zamek',    pl: 'Zamek', en: 'Slide' },
@@ -29,10 +30,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     let activePartId = null;
     let selectedPartButton = null;
     let currentLang = 'pl';
+    let textureAsDataUrl = ''; // Zmienna na wbudowaną teksturę
 
-    // ZMIANA: Poprawiona funkcja inicjalizująca, która naprawia błąd w konsoli
+    // Funkcja do konwersji obrazka na Data URL (Base64)
+    const toDataURL = async url => {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Nie znaleziono pliku tekstury: ${url}`);
+        const blob = await response.blob();
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
+    };
+
     async function initialize() {
         try {
+            // Wczytujemy i konwertujemy główną teksturę na starcie aplikacji
+            textureAsDataUrl = await toDataURL(MAIN_TEXTURE_FILE_PATH);
+
             const response = await fetch(SVG_FILE_PATH);
             if (!response.ok) throw new Error(`Nie udało się wczytać pliku ${SVG_FILE_PATH}`);
             
@@ -75,7 +92,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             const mixButton = document.createElement('button');
             mixButton.id = 'mix-button';
-            mixButton.textContent = 'MIX';
             partSelectionContainer.appendChild(mixButton);
 
             resetAllColors();
@@ -113,6 +129,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 };
             }
         });
+        const mixButton = document.getElementById('mix-button');
+        if(mixButton) mixButton.textContent = 'MIX';
         langPl.classList.toggle('active', currentLang === 'pl');
         langGb.classList.toggle('active', currentLang === 'en');
     }
@@ -138,10 +156,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     function applyColorToPart(partId, hexColor) {
         if (!partId) { alert("Proszę najpierw wybrać część."); return; }
-        
         const colorElement1 = document.getElementById(`color-overlay-1-${partId}`);
         const colorElement2 = document.getElementById(`color-overlay-2-${partId}`);
-        
         if (colorElement1 && colorElement2) {
             const elementsToColor = [colorElement1, colorElement2];
             elementsToColor.forEach(el => {
@@ -160,29 +176,39 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function resetAllColors() {
-        PARTS_TO_CONFIGURE.forEach(part => {
-            const colorElement1 = document.getElementById(`color-overlay-1-${part.id}`);
-            const colorElement2 = document.getElementById(`color-overlay-2-${part.id}`);
-            if(colorElement1) {
-                const shapes1 = colorElement1.tagName.toLowerCase() === 'g' ? colorElement1.querySelectorAll('path, polygon, ellipse, circle, rect') : [colorElement1];
-                shapes1.forEach(s => s.style.fill = 'transparent');
-            }
-            if(colorElement2) {
-                const shapes2 = colorElement2.tagName.toLowerCase() === 'g' ? colorElement2.querySelectorAll('path, polygon, ellipse, circle, rect') : [colorElement2];
-                shapes2.forEach(s => s.style.fill = 'transparent');
-            }
+        document.querySelectorAll('.color-overlay').forEach(overlay => {
+            const shapes = overlay.tagName.toLowerCase() === 'g' ? overlay.querySelectorAll('path, polygon, ellipse, circle, rect') : [overlay];
+            shapes.forEach(shape => shape.style.fill = 'transparent');
         });
         if (selectedPartButton) { selectedPartButton.classList.remove('selected'); selectedPartButton = null; }
         activePartId = null;
     }
-
-    // ZMIANA: Poprawiona funkcja zapisywania obrazu za pomocą html2canvas
+    
+    // ZMIANA: Poprawiona funkcja zapisywania obrazu
     function saveAsPng() {
-        const elementToSave = document.getElementById('gun-view-container');
-        html2canvas(elementToSave, {
-            backgroundColor: null, // Użyj tła z CSS (<div class="gun-view">)
+        const gunView = document.getElementById('gun-view-container');
+        const svgElement = gunView.querySelector('.gun-svg');
+        if (!svgElement) return;
+
+        // Klonujemy SVG, żeby nie modyfikować widocznej grafiki
+        const svgClone = svgElement.cloneNode(true);
+        const imageElement = svgClone.querySelector('image');
+
+        // Podmieniamy link do pliku na wbudowaną wersję Base64
+        if (imageElement && textureAsDataUrl) {
+            imageElement.setAttributeNS('http://www.w3.org/1999/xlink', 'href', textureAsDataUrl);
+        } else {
+            console.error("Nie można zapisać obrazu - tekstura (Data URL) nie jest gotowa.");
+            return;
+        }
+
+        // Używamy html2canvas na kontenerze, aby poprawnie wyrenderować tło i SVG
+        html2canvas(gunView, {
+            backgroundColor: null, // Zachowaj tło z CSS
             logging: false,
-            useCORS: true // Kluczowe dla wczytywania zewnętrznych obrazków (np. z /img/)
+            useCORS: true,
+            // Zwiększamy rozdzielczość dla lepszej jakości
+            scale: 2
         }).then(canvas => {
             const link = document.createElement('a');
             link.download = 'weapon-wizards-projekt.png';
@@ -191,6 +217,5 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
     
-    // Uruchomienie aplikacji
     initialize();
 });
