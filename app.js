@@ -1,7 +1,7 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     // --- KONFIGURACJA APLIKACJI ---
     const SVG_FILE_PATH = 'g17.svg';
-    
+    const MAIN_TEXTURE_FILE_PATH = 'img/glock17.png';
     const PARTS_TO_CONFIGURE = [
         { id: 'zamek',    pl: 'Zamek', en: 'Slide' },
         { id: 'szkielet', pl: 'Szkielet', en: 'Frame' },
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'stopka',   pl: 'Stopka magazynka', en: 'Magazine floorplate' }
     ];
     const CERAKOTE_COLORS = { "H-190 Armor Black": "#212121", "H-146 Graphite Black": "#3B3B3B", "H-237 Tungsten": "#6E7176", "H-234 Sniper Grey": "#5B6063", "H-130 Combat Grey": "#6a6a6a", "H-214 S&W Grey": "#8D918D", "H-265 Cold War Grey": "#999B9E", "H-259 Barrett Bronze": "#655951", "H-267 Magpul FDE": "#A48F6A", "H-235 Coyote Tan": "#A48B68", "H-226 Patriot Brown": "#6A5445", "H-148 Burnt Bronze": "#8C6A48", "H-294 Midnight Bronze": "#51463C", "H-347 Copper": "#B87333", "H-236 O.D. Green": "#5A6349", "H-240 Mil-Spec Green": "#5F604F", "H-203 McMillan Tan": "#9F9473", "H-168 Zombie Green": "#84C341", "H-20150 Bazooka Green": "#596C43", "H-171 NRA Blue": "#00387B", "H-258 Socom Blue": "#3B4B5A", "H-185 Blue Titanium": "#647C93", "H-175 Robins Egg Blue": "#75C8C7", "H-328 Navy Blue": "#2E3A47", "H-216 S&W Red": "#B70101", "H-167 USMC Red": "#9E2B2F", "H-221 Crimson": "#891F2B", "H-142 Prison Pink": "#E55C9C", "H-30118 Crushed Orchid": "#8A4F80", "H-122 Gold": "#B79436", "H-151 Hunter Orange": "#F26522", "H-327 Guncandy Pineapple": "#E4BE0D", "H-256 Cobalt": "#395173", "H-166 Highland Green": "#434B3F", "H-140 Bright White": "#FAFAFA" };
-    
+
     // --- SILNIK APLIKACJI ---
     const gunViewContainer = document.getElementById('gun-view-container');
     const partSelectionContainer = document.getElementById('part-selection-container');
@@ -30,7 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedPartButton = null;
     let currentLang = 'pl';
 
-    // ZMIANA: Poprawiona struktura i wywołanie funkcji, aby uniknąć błędów
     async function main() {
         try {
             const response = await fetch(SVG_FILE_PATH);
@@ -42,7 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!svgElement) throw new Error("Wczytany plik nie zawiera tagu SVG.");
             svgElement.setAttribute('class', 'gun-svg');
 
-            // Dynamiczne grupowanie lufy
             const lufaGroup = document.createElementNS("http://www.w3.org/2000/svg", 'g');
             lufaGroup.id = 'lufa';
             const lufaPaths = Array.from(svgElement.querySelectorAll('#lufa1, #lufa2'));
@@ -56,21 +54,16 @@ document.addEventListener('DOMContentLoaded', () => {
             colorLayerGroup.id = 'color-overlays';
             svgElement.appendChild(colorLayerGroup);
             
-            const allAppParts = [...PARTS_TO_CONFIGURE, 
-                { id: 'all-parts', pl: 'Wszystkie Części', en: 'All Parts' },
-                { id: 'mix', pl: 'MIX', en: 'MIX' }
-            ];
+            const allAppParts = [...PARTS_TO_CONFIGURE, { id: 'all-parts', pl: 'Wszystkie Części', en: 'All Parts' }, { id: 'mix', pl: 'MIX', en: 'MIX' }];
 
             allAppParts.forEach(part => {
                 if (part.id !== 'all-parts' && part.id !== 'mix') {
                     const originalElement = svgElement.querySelector(`#${part.id}`);
                     if (!originalElement) { console.warn(`Nie znaleziono części o ID: ${part.id}`); return; }
-                    
                     const colorOverlay1 = originalElement.cloneNode(true);
                     colorOverlay1.id = `color-overlay-1-${part.id}`;
                     colorOverlay1.setAttribute('class', 'color-overlay');
                     colorLayerGroup.appendChild(colorOverlay1);
-
                     const colorOverlay2 = colorOverlay1.cloneNode(true);
                     colorOverlay2.id = `color-overlay-2-${part.id}`;
                     colorLayerGroup.appendChild(colorOverlay2);
@@ -104,12 +97,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateButtonLabels() {
         partSelectionContainer.querySelectorAll('button').forEach(button => {
             const partId = button.dataset.partId;
-            const partConfig = PARTS_TO_CONFIGURE.find(p => p.id === partId);
             const specialButtons = {
                 'mix': { pl: 'MIX', en: 'MIX' },
                 'all-parts': { pl: 'Wszystkie Części', en: 'All Parts' }
             };
-            const config = partConfig || specialButtons[partId];
+            const partConfig = PARTS_TO_CONFIGURE.find(p => p.id === partId) || specialButtons[partId];
             
             if (config) {
                 button.textContent = config[currentLang];
@@ -186,28 +178,66 @@ document.addEventListener('DOMContentLoaded', () => {
         activePartId = null;
     }
     
-    function saveAsPng() {
-        const gunView = document.getElementById('gun-view-container');
-        if (!window.html2canvas) {
-            alert("Błąd: Biblioteka do zapisu obrazu nie jest gotowa.");
-            return;
-        }
+    // ZMIANA: Niezawodna funkcja zapisu obrazu "jak na płótnie"
+    async function saveAsPng() {
+        const svgElement = document.querySelector('.gun-svg');
+        if (!svgElement) return;
+
+        // 1. Stwórz tymczasowe płótno (canvas)
+        const canvas = document.createElement('canvas');
+        const scaleFactor = 2;
+        const svgSize = svgElement.getBoundingClientRect();
+        canvas.width = svgSize.width * scaleFactor;
+        canvas.height = svgSize.height * scaleFactor;
+        const ctx = canvas.getContext('2d');
         
-        // ZMIANA: Używamy bezpośrednio kontenera gun-view, który zawiera SVG
-        html2canvas(gunView, {
-            backgroundColor: null, 
-            logging: false,
-            useCORS: true, 
-            scale: 2 
-        }).then(canvas => {
-            const link = document.createElement('a');
-            link.download = 'weapon-wizards-projekt.png';
-            link.href = canvas.toDataURL("image/png");
-            link.click();
-        }).catch(err => {
-            console.error("Błąd html2canvas:", err);
-            alert("Wystąpił nieoczekiwany błąd podczas próby zapisu obrazu.");
-        });
+        // Ustaw czarne tło, tak jak w podglądzie
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        try {
+            // 2. Stwórz obrazek z głównej tekstury
+            const textureImage = new Image();
+            textureImage.src = MAIN_TEXTURE_FILE_PATH;
+            
+            textureImage.onload = async () => {
+                // 3. Narysuj główną teksturę jako tło na płótnie
+                ctx.drawImage(textureImage, 0, 0, canvas.width, canvas.height);
+
+                // 4. Stwórz obrazek z samych warstw koloru
+                const colorOverlaysGroup = svgElement.querySelector('#color-overlays');
+                const serializer = new XMLSerializer();
+                const overlaySvgString = `
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="${svgElement.getAttribute('viewBox')}">
+                        <g style="mix-blend-mode: hard-light; opacity: 0.45;">
+                            ${colorOverlaysGroup.innerHTML}
+                        </g>
+                    </svg>`;
+                
+                const svgBlob = new Blob([overlaySvgString], { type: "image/svg+xml;charset=utf-8" });
+                const url = URL.createObjectURL(svgBlob);
+                const overlayImage = new Image();
+                overlayImage.src = url;
+
+                overlayImage.onload = () => {
+                    // 5. Narysuj warstwę kolorów na teksturze
+                    ctx.drawImage(overlayImage, 0, 0, canvas.width, canvas.height);
+                    URL.revokeObjectURL(url);
+                    
+                    // 6. Pobierz finalny obraz
+                    const link = document.createElement('a');
+                    link.download = 'weapon-wizards-projekt.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                };
+            };
+            textureImage.onerror = () => {
+                alert("Błąd: Nie można wczytać głównej tekstury do zapisu obrazu.");
+            };
+        } catch (e) {
+            console.error("Błąd podczas zapisu obrazu:", e);
+            alert("Wystąpił błąd podczas generowania obrazu do zapisu.");
+        }
     }
     
     main(); // Uruchomienie całej aplikacji
