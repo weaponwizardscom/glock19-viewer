@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
     // --- KONFIGURACJA APLIKACJI ---
     const SVG_FILE_PATH = 'g17.svg';
+    const MAIN_TEXTURE_FILE_PATH = 'img/glock17.png';
     
     const PARTS_TO_CONFIGURE = [
         { id: 'zamek',    pl: 'Zamek', en: 'Slide' },
@@ -29,9 +30,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     let activePartId = null;
     let selectedPartButton = null;
     let currentLang = 'pl';
+    let textureAsDataUrl = ''; // Zmienna na wbudowaną teksturę
+
+    const toDataURL = async url => {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Nie znaleziono pliku tekstury: ${url}`);
+        const blob = await response.blob();
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
+    };
 
     async function initialize() {
         try {
+            textureAsDataUrl = await toDataURL(MAIN_TEXTURE_FILE_PATH);
             const response = await fetch(SVG_FILE_PATH);
             if (!response.ok) throw new Error(`Nie udało się wczytać pliku ${SVG_FILE_PATH}`);
             
@@ -53,7 +68,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const colorLayerGroup = document.createElementNS("http://www.w3.org/2000/svg", 'g');
             colorLayerGroup.id = 'color-overlays';
             svgElement.appendChild(colorLayerGroup);
-
+            
             const allAppParts = [...PARTS_TO_CONFIGURE, 
                 { id: 'all-parts', pl: 'Wszystkie Części', en: 'All Parts' },
                 { id: 'mix', pl: 'MIX', en: 'MIX' }
@@ -100,37 +115,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     function updateButtonLabels() {
         partSelectionContainer.querySelectorAll('button').forEach(button => {
             const partId = button.dataset.partId;
-            const partConfig = PARTS_TO_CONFIGURE.find(p => p.id === partId);
             const specialButtons = {
                 'mix': { pl: 'MIX', en: 'MIX' },
                 'all-parts': { pl: 'Wszystkie Części', en: 'All Parts' }
             };
+            const partConfig = PARTS_TO_CONFIGURE.find(p => p.id === partId) || specialButtons[partId];
 
-            let label = '';
             if (partConfig) {
-                label = partConfig[currentLang];
-            } else if (specialButtons[partId]) {
-                label = specialButtons[partId][currentLang];
+                button.textContent = partConfig[currentLang];
+                button.onclick = () => {
+                    if (partId === 'mix') {
+                        applyRandomColors();
+                        return;
+                    }
+                    if (selectedPartButton) selectedPartButton.classList.remove('selected');
+                    button.classList.add('selected');
+                    selectedPartButton = button;
+                    activePartId = partId;
+                };
             }
-
-            button.textContent = label;
-            button.onclick = () => {
-                if (selectedPartButton) selectedPartButton.classList.remove('selected');
-                button.classList.add('selected');
-                selectedPartButton = button;
-                activePartId = partId;
-
-                if (partId === 'mix') {
-                    applyRandomColors();
-                }
-            };
         });
         langPl.classList.toggle('active', currentLang === 'pl');
         langGb.classList.toggle('active', currentLang === 'en');
     }
 
     function createColorPalette() {
-        paletteContainer.innerHTML = ''; // Ta linia już nie spowoduje błędu
+        paletteContainer.innerHTML = '';
         for (const [name, hex] of Object.entries(CERAKOTE_COLORS)) {
             const wrapper = document.createElement('div');
             wrapper.className = 'color-swatch-wrapper';
@@ -150,7 +160,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     function applyColor(hexColor) {
         if (!activePartId) { alert("Proszę najpierw wybrać część."); return; }
-
         if (activePartId === 'all-parts') {
             PARTS_TO_CONFIGURE.forEach(part => applyColorToSinglePart(part.id, hexColor));
         } else {
@@ -187,27 +196,48 @@ document.addEventListener('DOMContentLoaded', async () => {
         activePartId = null;
     }
     
-    async function saveAsPng() {
-        const gunView = document.getElementById('gun-view-container');
-        if (!window.html2canvas) {
-            alert("Błąd: Biblioteka do zapisu obrazu nie została wczytana.");
+    // ZMIANA: Niezawodna funkcja zapisu obrazu
+    function saveAsPng() {
+        const svgElement = document.querySelector('.gun-svg');
+        if (!svgElement) return;
+
+        const serializer = new XMLSerializer();
+        const svgClone = svgElement.cloneNode(true);
+        const imageElement = svgClone.querySelector('image');
+
+        if (imageElement && textureAsDataUrl) {
+            imageElement.setAttributeNS('http://www.w3.org/1999/xlink', 'href', textureAsDataUrl);
+        } else {
+            alert("Błąd: Tekstura nie jest gotowa do zapisu.");
             return;
         }
-        try {
-            const canvas = await html2canvas(gunView, {
-                backgroundColor: null,
-                logging: false,
-                useCORS: true,
-                scale: 2
-            });
+
+        const svgString = serializer.serializeToString(svgClone);
+        const svgBlob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
+        const url = URL.createObjectURL(svgBlob);
+
+        const img = new Image();
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const scale = 2;
+            const svgSize = svgElement.getBoundingClientRect();
+            canvas.width = svgSize.width * scale;
+            canvas.height = svgSize.height * scale;
+            const ctx = canvas.getContext('2d');
+            
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            URL.revokeObjectURL(url);
+            
             const link = document.createElement('a');
             link.download = 'weapon-wizards-projekt.png';
-            link.href = canvas.toDataURL("image/png");
+            link.href = canvas.toDataURL('image/png');
             link.click();
-        } catch(e) {
-            console.error("Błąd podczas generowania obrazu PNG:", e);
-            alert("Wystąpił błąd podczas zapisu obrazu.");
-        }
+        };
+        img.onerror = () => {
+            URL.revokeObjectURL(url);
+            alert("Wystąpił błąd podczas renderowania grafiki do zapisu.");
+        };
+        img.src = url;
     }
     
     initialize();
