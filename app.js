@@ -26,6 +26,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const langPl = document.getElementById('lang-pl');
     const langGb = document.getElementById('lang-gb');
     
+    // ZMIANA: Dodane odwołania do nagłówków
+    const headerPartSelection = document.getElementById('header-part-selection');
+    const headerColorSelection = document.getElementById('header-color-selection');
+
     let activePartId = null;
     let selectedPartButton = null;
     let currentLang = 'pl';
@@ -54,38 +58,34 @@ document.addEventListener('DOMContentLoaded', async () => {
             colorLayerGroup.id = 'color-overlays';
             svgElement.appendChild(colorLayerGroup);
 
-            const allAppParts = [...PARTS_TO_CONFIGURE, 
-                { id: 'all-parts', pl: 'Wszystkie Części', en: 'All Parts' },
-                { id: 'mix', pl: 'MIX', en: 'MIX' }
-            ];
+            PARTS_TO_CONFIGURE.forEach(part => {
+                const originalElement = svgElement.querySelector(`#${part.id}`);
+                if (!originalElement) { console.warn(`Nie znaleziono części o ID: ${part.id}`); return; }
+                
+                const colorOverlay1 = originalElement.cloneNode(true);
+                colorOverlay1.id = `color-overlay-1-${part.id}`;
+                colorOverlay1.setAttribute('class', 'color-overlay');
+                colorLayerGroup.appendChild(colorOverlay1);
 
-            allAppParts.forEach(part => {
-                if (part.id !== 'all-parts' && part.id !== 'mix') {
-                    const originalElement = svgElement.querySelector(`#${part.id}`);
-                    if (!originalElement) { console.warn(`Nie znaleziono części o ID: ${part.id}`); return; }
-                    const colorOverlay1 = originalElement.cloneNode(true);
-                    colorOverlay1.id = `color-overlay-1-${part.id}`;
-                    colorOverlay1.setAttribute('class', 'color-overlay');
-                    colorLayerGroup.appendChild(colorOverlay1);
+                const colorOverlay2 = colorOverlay1.cloneNode(true);
+                colorOverlay2.id = `color-overlay-2-${part.id}`;
+                colorLayerGroup.appendChild(colorOverlay2);
 
-                    const colorOverlay2 = colorOverlay1.cloneNode(true);
-                    colorOverlay2.id = `color-overlay-2-${part.id}`;
-                    colorLayerGroup.appendChild(colorOverlay2);
-                }
                 const button = document.createElement('button');
                 button.dataset.partId = part.id;
-                button.id = `${part.id}-button`;
                 partSelectionContainer.appendChild(button);
             });
             
+            const mixButton = document.createElement('button');
+            mixButton.id = 'mix-button';
+            partSelectionContainer.appendChild(mixButton);
+
             resetAllColors();
-            updateButtonLabels();
+            updateUIText(); // ZMIANA: Zmiana nazwy funkcji
             createColorPalette();
 
-            // ZMIANA: Ustawienie domyślnego koloru po zakończeniu inicjalizacji
-            setDefaultColor();
-
             resetButton.addEventListener('click', resetAllColors);
+            mixButton.addEventListener('click', applyRandomColors);
             saveButton.addEventListener('click', saveAsPng);
             langPl.addEventListener('click', () => switchLang('pl'));
             langGb.addEventListener('click', () => switchLang('en'));
@@ -98,25 +98,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     function switchLang(lang) {
         currentLang = lang;
-        updateButtonLabels();
+        updateUIText(); // ZMIANA: Zmiana nazwy funkcji
     }
 
-    function updateButtonLabels() {
-        partSelectionContainer.querySelectorAll('button').forEach(button => {
+    // ZMIANA: Rozszerzona funkcja do aktualizacji całego UI
+    function updateUIText() {
+        // Tłumaczenie przycisków
+        partSelectionContainer.querySelectorAll('button:not(#mix-button)').forEach(button => {
             const partId = button.dataset.partId;
-            const specialButtons = {
-                'mix': { pl: 'MIX', en: 'MIX' },
-                'all-parts': { pl: 'Wszystkie Części', en: 'All Parts' }
-            };
-            const partConfig = PARTS_TO_CONFIGURE.find(p => p.id === partId) || specialButtons[partId];
-            
+            const partConfig = PARTS_TO_CONFIGURE.find(p => p.id === partId);
             if (partConfig) {
                 button.textContent = partConfig[currentLang];
                 button.onclick = () => {
-                    if (partId === 'mix') {
-                        applyRandomColors();
-                        return;
-                    }
                     if (selectedPartButton) selectedPartButton.classList.remove('selected');
                     button.classList.add('selected');
                     selectedPartButton = button;
@@ -124,6 +117,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                 };
             }
         });
+        const mixButton = document.getElementById('mix-button');
+        if(mixButton) mixButton.textContent = 'MIX';
+
+        // Tłumaczenie nagłówków
+        if(headerPartSelection) {
+            headerPartSelection.textContent = currentLang === 'pl' ? '1. Wybierz część' : '1. Select part';
+        }
+        if(headerColorSelection) {
+            headerColorSelection.textContent = currentLang === 'pl' ? '2. Wybierz kolor (Cerakote)' : '2. Select color (Cerakote)';
+        }
+
+        // Aktywna flaga
         langPl.classList.toggle('active', currentLang === 'pl');
         langGb.classList.toggle('active', currentLang === 'en');
     }
@@ -134,7 +139,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const wrapper = document.createElement('div');
             wrapper.className = 'color-swatch-wrapper';
             wrapper.title = name;
-            wrapper.addEventListener('click', () => applyColor(hex));
+            wrapper.addEventListener('click', () => applyColorToPart(activePartId, hex));
             const swatch = document.createElement('div');
             swatch.className = 'color-swatch';
             swatch.style.backgroundColor = hex;
@@ -146,17 +151,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             paletteContainer.appendChild(wrapper);
         }
     }
-    
-    function applyColor(hexColor) {
-        if (!activePartId) { alert("Proszę najpierw wybrać część."); return; }
-        if (activePartId === 'all-parts') {
-            PARTS_TO_CONFIGURE.forEach(part => applyColorToSinglePart(part.id, hexColor));
-        } else {
-            applyColorToSinglePart(activePartId, hexColor);
-        }
-    }
 
-    function applyColorToSinglePart(partId, hexColor) {
+    function applyColorToPart(partId, hexColor) {
+        if (!partId) { alert("Proszę najpierw wybrać część."); return; }
         const colorElement1 = document.getElementById(`color-overlay-1-${partId}`);
         const colorElement2 = document.getElementById(`color-overlay-2-${partId}`);
         if (colorElement1 && colorElement2) {
@@ -172,7 +169,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const colorList = Object.values(CERAKOTE_COLORS);
         PARTS_TO_CONFIGURE.forEach(part => {
             const randomColor = colorList[Math.floor(Math.random() * colorList.length)];
-            applyColorToSinglePart(part.id, randomColor);
+            applyColorToPart(part.id, randomColor);
         });
     }
 
@@ -185,34 +182,60 @@ document.addEventListener('DOMContentLoaded', async () => {
         activePartId = null;
     }
     
-    // ZMIANA: Nowa, prosta funkcja do ustawiania domyślnego koloru
-    function setDefaultColor() {
-        const defaultColor = CERAKOTE_COLORS["H-146 Graphite Black"];
-        if (defaultColor) {
-            PARTS_TO_CONFIGURE.forEach(part => {
-                applyColorToSinglePart(part.id, defaultColor);
-            });
-        }
-    }
-    
     async function saveAsPng() {
-        const gunView = document.getElementById('gun-view-container');
-        if (!window.html2canvas) { alert("Błąd: Biblioteka do zapisu obrazu nie jest gotowa."); return; }
-        try {
-            const canvas = await html2canvas(gunView, {
-                backgroundColor: null,
-                logging: false,
-                useCORS: true,
-                scale: 2 
+        const svgElement = document.querySelector('.gun-svg');
+        if (!svgElement) return;
+
+        const canvas = document.createElement('canvas');
+        const scaleFactor = 2;
+        const svgSize = svgElement.getBoundingClientRect();
+        canvas.width = svgSize.width * scaleFactor;
+        canvas.height = svgSize.height * scaleFactor;
+        const ctx = canvas.getContext('2d');
+        
+        const textureImage = new Image();
+        textureImage.src = MAIN_TEXTURE_FILE_PATH;
+        
+        textureImage.onload = async () => {
+            ctx.drawImage(textureImage, 0, 0, canvas.width, canvas.height);
+            const overlayPromises = [];
+            const colorOverlays = svgElement.querySelectorAll('.color-overlay');
+
+            colorOverlays.forEach(overlay => {
+                if (overlay.style.fill && overlay.style.fill !== 'transparent') {
+                    const singleOverlaySvgString = `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="${svgElement.getAttribute('viewBox')}">
+                            <g style="mix-blend-mode: hard-light; opacity: 0.45;">
+                                ${overlay.outerHTML}
+                            </g>
+                        </svg>`;
+                    
+                    const svgBlob = new Blob([singleOverlaySvgString], { type: "image/svg+xml;charset=utf-8" });
+                    const url = URL.createObjectURL(svgBlob);
+                    const overlayImage = new Image();
+                    overlayImage.src = url;
+                    
+                    overlayPromises.push(new Promise(resolve => {
+                        overlayImage.onload = () => {
+                            ctx.drawImage(overlayImage, 0, 0, canvas.width, canvas.height);
+                            URL.revokeObjectURL(url);
+                            resolve();
+                        };
+                    }));
+                }
             });
+            
+            await Promise.all(overlayPromises);
+            
             const link = document.createElement('a');
             link.download = 'weapon-wizards-projekt.png';
-            link.href = canvas.toDataURL("image/png");
+            link.href = canvas.toDataURL('image/png');
             link.click();
-        } catch(e) {
-            console.error("Błąd podczas generowania obrazu PNG:", e);
-            alert("Wystąpił nieoczekiwany błąd podczas próby zapisu obrazu.");
-        }
+        };
+
+        textureImage.onerror = () => {
+            alert("Błąd: Nie można wczytać głównej tekstury do zapisu obrazu.");
+        };
     }
     
     initialize();
