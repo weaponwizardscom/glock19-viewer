@@ -40,7 +40,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             const originalPath = svgElement.querySelector(`#${part.id}`);
             if (!originalPath) return;
             
-            // Wracamy do tworzenia tylko JEDNEJ warstwy koloru
             const colorOverlay = originalPath.cloneNode(true);
             colorOverlay.id = `color-overlay-${part.id}`;
             colorOverlay.setAttribute('class', 'color-overlay');
@@ -98,3 +97,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
         if (selectedPartButton) {
             selectedPartButton.classList.remove('selected');
+            selectedPartButton = null;
+        }
+        activePartId = null;
+    }
+});
