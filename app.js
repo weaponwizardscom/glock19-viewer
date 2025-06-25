@@ -25,10 +25,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const saveButton = document.getElementById('save-button');
     const langPl = document.getElementById('lang-pl');
     const langGb = document.getElementById('lang-gb');
+    const allPartsButton = document.getElementById('all-parts-button');
     
     let activePartId = null;
     let selectedPartButton = null;
     let currentLang = 'pl';
+    let lastSelectedColor = null;
 
     async function initialize() {
         try {
@@ -83,6 +85,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             resetButton.addEventListener('click', resetAllColors);
             mixButton.addEventListener('click', applyRandomColors);
             saveButton.addEventListener('click', saveAsPng);
+            allPartsButton.addEventListener('click', applyColorToAllParts);
             langPl.addEventListener('click', () => switchLang('pl'));
             langGb.addEventListener('click', () => switchLang('en'));
 
@@ -113,6 +116,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
         const mixButton = document.getElementById('mix-button');
         if(mixButton) mixButton.textContent = 'MIX';
+        
+        allPartsButton.textContent = currentLang === 'pl' ? 'Wszystkie części' : 'All Parts';
+
         langPl.classList.toggle('active', currentLang === 'pl');
         langGb.classList.toggle('active', currentLang === 'en');
     }
@@ -123,7 +129,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             const wrapper = document.createElement('div');
             wrapper.className = 'color-swatch-wrapper';
             wrapper.title = name;
-            wrapper.addEventListener('click', () => applyColorToPart(activePartId, hex));
+            wrapper.addEventListener('click', () => {
+                lastSelectedColor = hex; // Zapisz ostatnio kliknięty kolor
+                applyColorToPart(activePartId, hex);
+            });
             const swatch = document.createElement('div');
             swatch.className = 'color-swatch';
             swatch.style.backgroundColor = hex;
@@ -137,7 +146,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function applyColorToPart(partId, hexColor) {
-        if (!partId) { alert("Proszę najpierw wybrać część."); return; }
+        if (!partId) { 
+            alert(currentLang === 'pl' ? "Proszę najpierw wybrać część." : "Please select a part first."); 
+            return; 
+        }
         const colorElement1 = document.getElementById(`color-overlay-1-${partId}`);
         const colorElement2 = document.getElementById(`color-overlay-2-${partId}`);
         if (colorElement1 && colorElement2) {
@@ -147,6 +159,17 @@ document.addEventListener('DOMContentLoaded', async () => {
                 shapes.forEach(shape => shape.style.fill = hexColor);
             });
         }
+    }
+
+    // ZMIANA: Nowa funkcja do kolorowania wszystkich części
+    function applyColorToAllParts() {
+        if (!lastSelectedColor) {
+            alert(currentLang === 'pl' ? "Proszę najpierw wybrać jakikolwiek kolor." : "Please select any color first.");
+            return;
+        }
+        PARTS_TO_CONFIGURE.forEach(part => {
+            applyColorToPart(part.id, lastSelectedColor);
+        });
     }
 
     function applyRandomColors() {
@@ -166,34 +189,29 @@ document.addEventListener('DOMContentLoaded', async () => {
         activePartId = null;
     }
     
-    // ZMIANA: Całkowicie nowa, niezawodna funkcja zapisu obrazu
     async function saveAsPng() {
-        const svgElement = document.querySelector('.gun-svg');
+        const gunView = document.getElementById('gun-view-container');
+        const svgElement = gunView.querySelector('.gun-svg');
         if (!svgElement) return;
 
-        // 1. Stwórz tymczasowe płótno (canvas)
         const canvas = document.createElement('canvas');
-        const scaleFactor = 2; // Zwiększona rozdzielczość dla jakości
+        const scaleFactor = 2;
         const svgSize = svgElement.getBoundingClientRect();
         canvas.width = svgSize.width * scaleFactor;
         canvas.height = svgSize.height * scaleFactor;
         const ctx = canvas.getContext('2d');
 
-        // 2. Stwórz obrazek z głównej tekstury
         const textureImage = new Image();
         textureImage.src = MAIN_TEXTURE_FILE_PATH;
         
         textureImage.onload = async () => {
-            // 3. Narysuj główną teksturę jako tło na płótnie
             ctx.drawImage(textureImage, 0, 0, canvas.width, canvas.height);
 
-            // 4. Przygotuj obietnice dla każdej warstwy koloru
             const overlayPromises = [];
             const colorOverlays = svgElement.querySelectorAll('.color-overlay');
 
             colorOverlays.forEach(overlay => {
                 if (overlay.style.fill && overlay.style.fill !== 'transparent') {
-                    // Stwórz tymczasowe SVG tylko z jedną, pokolorowaną warstwą
                     const singleOverlaySvgString = `
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="${svgElement.getAttribute('viewBox')}">
                             <g style="mix-blend-mode: hard-light; opacity: 0.45;">
@@ -206,7 +224,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const overlayImage = new Image();
                     overlayImage.src = url;
                     
-                    // Czekamy, aż ta mała warstwa się załaduje jako obrazek
                     overlayPromises.push(new Promise(resolve => {
                         overlayImage.onload = () => {
                             ctx.drawImage(overlayImage, 0, 0, canvas.width, canvas.height);
@@ -217,10 +234,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             });
             
-            // 5. Poczekaj, aż wszystkie warstwy kolorów zostaną narysowane
             await Promise.all(overlayPromises);
             
-            // 6. Pobierz finalny obraz
             const link = document.createElement('a');
             link.download = 'weapon-wizards-projekt.png';
             link.href = canvas.toDataURL('image/png');
