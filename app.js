@@ -15,85 +15,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         { id: 'pin',      pl: 'Pin', en: 'Trigger pin' },
         { id: 'stopka',   pl: 'Stopka magazynka', en: 'Magazine floorplate' }
     ];
-
-    // ZMIANA: Nowa, posortowana i rozszerzona paleta kolorów
-    const CERAKOTE_COLORS = {
-        // BIAŁE I JASNE
-        "H-140 Bright White": "#FFFFFF",
-        "H-242 Hidden White": "#E5E4E2",
-        "H-136 Snow White": "#F5F5F5",
-        "H-297 Stormtrooper White": "#F2F2F2",
-        "H-300 Armor Clear": "#F5F5F5", // Wizualnie jak biały/przezroczysty
-        "H-331 Parakeet Green": "#C2D94B", // Bardziej jasny zielony
-        "H-141 Prison Pink": "#E55C9C",
-
-        // SZARE
-        "H-306 Springfield Grey": "#A2A4A6",
-        "H-312 Frost": "#C9C8C6",
-        "H-317 Sunflower": "#F9A602", // To żółty
-        "H-362 Patriot Blue": "#33415C", // To niebieski
-        "H-214 S&W Grey": "#8D918D",
-        "H-265 Cold War Grey": "#999B9E",
-        "H-227 Tactical Grey": "#8D8A82",
-        "H-130 Combat Grey": "#6a6a6a",
-        "H-237 Tungsten": "#6E7176",
-        "H-210 Sig Dark Grey": "#5B5E5E",
-        "H-234 Sniper Grey": "#5B6063",
-        "H-342 Smoke": "#84888B",
-        "H-321 Blush": "#D8C0C4",
-
-        // CZARNE
-        "H-146 Graphite Black": "#3B3B3B",
-        "H-199 Desert Sand": "#C5BBAA", // To piaskowy
-        "H-190 Armor Black": "#212121",
-        "H-197 Wild Purple": "#5A3A54", // To fiolet
-        
-        // BRĄZY I BEŻE (FDE)
-        "H-142 Light Sand": "#D2C3A8",
-        "H-265 Flat Dark Earth": "#786A5A",
-        "H-269 Barrett Brown": "#67594D",
-        "H-148 Burnt Bronze": "#8C6A48",
-        "H-229 Sniper Green": "#565A4B", // To zielony
-        "H-339 Federal Brown": "#5E5044",
-        "H-341 Dark Green": "#4E544A", // To zielony
-        "H-8000 Ral 8000": "#937750",
-        "H-33446 FS Sabre Sand": "#B19672",
-
-        // ZIELONE
-        "H-240 Mil Spec O.D. Green": "#5F604F",
-        "H-247 Desert Sage": "#6A6B5C",
-        "H-170 Titanium": "#7A7A7A", // To szary
-        "H-344 Olive": "#6B6543",
-        "H-345 Dark Grey": "#65676A", // To szary
-
-        // NIEBIESKIE
-        "H-127 Kel-Tec Navy Blue": "#2B3C4B",
-        "H-171 NRA Blue": "#00387B",
-        "H-188 Magpul Stealth Grey": "#5C6670", // To szary
-        "H-256 Cobalt": "#395173",
-        "H-258 Socom Blue": "#3B4B5A",
-        "H-329 Blue Raspberry": "#0077C0",
-        "H-353 Island Green": "#00887A", // To turkusowy
-        
-        // CZERWONE i POMARAŃCZOWE
-        "H-128 Hunter Orange": "#F26522",
-        "H-151 Satin Aluminum": "#C0C0C0", // To srebrny
-        "H-167 USMC Red": "#9E2B2F",
-        "H-216 S&W Red": "#B70101",
-        "H-221 Crimson": "#891F2B",
-        "H-354 Lemon Zest": "#F7D51D", // To żółty
-        "H-357 Periwinkle": "#6B6EA6", // To fioletowy/niebieski
-        
-        // ŻÓŁTE i ZŁOTE
-        "H-122 Gold": "#B79436",
-        "H-332 Purplexed": "#6C4E7C", // To fioletowy
-
-        // INNE
-        "H-189 Noveske Bazooka Green": "#6C6B4E", // To zielony
-        "H-217 Bright Purple": "#8A2BE2",
-        "H-224 Sig Pink": "#E8A7B3",
-        "H-213 Battleship Grey": "#52595D"
-    };
+    const CERAKOTE_COLORS = { "H-190 Armor Black": "#212121", "H-146 Graphite Black": "#3B3B3B", "H-237 Tungsten": "#6E7176", "H-234 Sniper Grey": "#5B6063", "H-130 Combat Grey": "#6a6a6a", "H-214 S&W Grey": "#8D918D", "H-265 Cold War Grey": "#999B9E", "H-259 Barrett Bronze": "#655951", "H-267 Magpul FDE": "#A48F6A", "H-235 Coyote Tan": "#A48B68", "H-226 Patriot Brown": "#6A5445", "H-148 Burnt Bronze": "#8C6A48", "H-294 Midnight Bronze": "#51463C", "H-347 Copper": "#B87333", "H-236 O.D. Green": "#5A6349", "H-240 Mil-Spec Green": "#5F604F", "H-203 McMillan Tan": "#9F9473", "H-168 Zombie Green": "#84C341", "H-20150 Bazooka Green": "#596C43", "H-171 NRA Blue": "#00387B", "H-258 Socom Blue": "#3B4B5A", "H-185 Blue Titanium": "#647C93", "H-175 Robins Egg Blue": "#75C8C7", "H-328 Navy Blue": "#2E3A47", "H-216 S&W Red": "#B70101", "H-167 USMC Red": "#9E2B2F", "H-221 Crimson": "#891F2B", "H-142 Prison Pink": "#E55C9C", "H-30118 Crushed Orchid": "#8A4F80", "H-122 Gold": "#B79436", "H-151 Hunter Orange": "#F26522", "H-327 Guncandy Pineapple": "#E4BE0D", "H-256 Cobalt": "#395173", "H-166 Highland Green": "#434B3F", "H-140 Bright White": "#FAFAFA" };
 
     // --- SILNIK APLIKACJI ---
     const gunViewContainer = document.getElementById('gun-view-container');
@@ -104,6 +26,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const langPl = document.getElementById('lang-pl');
     const langGb = document.getElementById('lang-gb');
     
+    // ZMIANA: Dodane odwołania do nagłówków
+    const headerPartSelection = document.getElementById('header-part-selection');
+    const headerColorSelection = document.getElementById('header-color-selection');
+
     let activePartId = null;
     let selectedPartButton = null;
     let currentLang = 'pl';
@@ -132,36 +58,34 @@ document.addEventListener('DOMContentLoaded', async () => {
             colorLayerGroup.id = 'color-overlays';
             svgElement.appendChild(colorLayerGroup);
 
-            const allAppParts = [...PARTS_TO_CONFIGURE, 
-                { id: 'all-parts', pl: 'Wszystkie Części', en: 'All Parts' },
-                { id: 'mix', pl: 'MIX', en: 'MIX' }
-            ];
+            PARTS_TO_CONFIGURE.forEach(part => {
+                const originalElement = svgElement.querySelector(`#${part.id}`);
+                if (!originalElement) { console.warn(`Nie znaleziono części o ID: ${part.id}`); return; }
+                
+                const colorOverlay1 = originalElement.cloneNode(true);
+                colorOverlay1.id = `color-overlay-1-${part.id}`;
+                colorOverlay1.setAttribute('class', 'color-overlay');
+                colorLayerGroup.appendChild(colorOverlay1);
 
-            allAppParts.forEach(part => {
-                if (part.id !== 'all-parts' && part.id !== 'mix') {
-                    const originalElement = svgElement.querySelector(`#${part.id}`);
-                    if (!originalElement) { console.warn(`Nie znaleziono części o ID: ${part.id}`); return; }
-                    
-                    const colorOverlay1 = originalElement.cloneNode(true);
-                    colorOverlay1.id = `color-overlay-1-${part.id}`;
-                    colorOverlay1.setAttribute('class', 'color-overlay');
-                    colorLayerGroup.appendChild(colorOverlay1);
+                const colorOverlay2 = colorOverlay1.cloneNode(true);
+                colorOverlay2.id = `color-overlay-2-${part.id}`;
+                colorLayerGroup.appendChild(colorOverlay2);
 
-                    const colorOverlay2 = colorOverlay1.cloneNode(true);
-                    colorOverlay2.id = `color-overlay-2-${part.id}`;
-                    colorLayerGroup.appendChild(colorOverlay2);
-                }
                 const button = document.createElement('button');
                 button.dataset.partId = part.id;
-                button.id = `${part.id}-button`;
                 partSelectionContainer.appendChild(button);
             });
             
+            const mixButton = document.createElement('button');
+            mixButton.id = 'mix-button';
+            partSelectionContainer.appendChild(mixButton);
+
             resetAllColors();
-            updateUIText();
+            updateUIText(); // ZMIANA: Zmiana nazwy funkcji
             createColorPalette();
 
             resetButton.addEventListener('click', resetAllColors);
+            mixButton.addEventListener('click', applyRandomColors);
             saveButton.addEventListener('click', saveAsPng);
             langPl.addEventListener('click', () => switchLang('pl'));
             langGb.addEventListener('click', () => switchLang('en'));
@@ -174,25 +98,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     function switchLang(lang) {
         currentLang = lang;
-        updateUIText();
+        updateUIText(); // ZMIANA: Zmiana nazwy funkcji
     }
 
+    // ZMIANA: Rozszerzona funkcja do aktualizacji całego UI
     function updateUIText() {
-        partSelectionContainer.querySelectorAll('button').forEach(button => {
+        // Tłumaczenie przycisków
+        partSelectionContainer.querySelectorAll('button:not(#mix-button)').forEach(button => {
             const partId = button.dataset.partId;
-            const specialButtons = {
-                'mix': { pl: 'MIX', en: 'MIX' },
-                'all-parts': { pl: 'Wszystkie Części', en: 'All Parts' }
-            };
-            const partConfig = PARTS_TO_CONFIGURE.find(p => p.id === partId) || specialButtons[partId];
-            
+            const partConfig = PARTS_TO_CONFIGURE.find(p => p.id === partId);
             if (partConfig) {
                 button.textContent = partConfig[currentLang];
                 button.onclick = () => {
-                    if (partId === 'mix') {
-                        applyRandomColors();
-                        return;
-                    }
                     if (selectedPartButton) selectedPartButton.classList.remove('selected');
                     button.classList.add('selected');
                     selectedPartButton = button;
@@ -200,6 +117,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                 };
             }
         });
+        const mixButton = document.getElementById('mix-button');
+        if(mixButton) mixButton.textContent = 'MIX';
+
+        // Tłumaczenie nagłówków
+        if(headerPartSelection) {
+            headerPartSelection.textContent = currentLang === 'pl' ? '1. Wybierz część' : '1. Select part';
+        }
+        if(headerColorSelection) {
+            headerColorSelection.textContent = currentLang === 'pl' ? '2. Wybierz kolor (Cerakote)' : '2. Select color (Cerakote)';
+        }
+
+        // Aktywna flaga
         langPl.classList.toggle('active', currentLang === 'pl');
         langGb.classList.toggle('active', currentLang === 'en');
     }
@@ -210,7 +139,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const wrapper = document.createElement('div');
             wrapper.className = 'color-swatch-wrapper';
             wrapper.title = name;
-            wrapper.addEventListener('click', () => applyColor(hex));
+            wrapper.addEventListener('click', () => applyColorToPart(activePartId, hex));
             const swatch = document.createElement('div');
             swatch.className = 'color-swatch';
             swatch.style.backgroundColor = hex;
@@ -222,17 +151,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             paletteContainer.appendChild(wrapper);
         }
     }
-    
-    function applyColor(hexColor) {
-        if (!activePartId) { alert("Proszę najpierw wybrać część."); return; }
-        if (activePartId === 'all-parts') {
-            PARTS_TO_CONFIGURE.forEach(part => applyColorToSinglePart(part.id, hexColor));
-        } else {
-            applyColorToSinglePart(activePartId, hexColor);
-        }
-    }
 
-    function applyColorToSinglePart(partId, hexColor) {
+    function applyColorToPart(partId, hexColor) {
+        if (!partId) { alert("Proszę najpierw wybrać część."); return; }
         const colorElement1 = document.getElementById(`color-overlay-1-${partId}`);
         const colorElement2 = document.getElementById(`color-overlay-2-${partId}`);
         if (colorElement1 && colorElement2) {
@@ -248,7 +169,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const colorList = Object.values(CERAKOTE_COLORS);
         PARTS_TO_CONFIGURE.forEach(part => {
             const randomColor = colorList[Math.floor(Math.random() * colorList.length)];
-            applyColorToSinglePart(part.id, randomColor);
+            applyColorToPart(part.id, randomColor);
         });
     }
 
@@ -262,23 +183,59 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     
     async function saveAsPng() {
-        const gunView = document.getElementById('gun-view-container');
-        if (!window.html2canvas) { alert("Błąd: Biblioteka do zapisu obrazu nie jest gotowa."); return; }
-        try {
-            const canvas = await html2canvas(gunView, {
-                backgroundColor: null,
-                logging: false,
-                useCORS: true,
-                scale: 2 
+        const svgElement = document.querySelector('.gun-svg');
+        if (!svgElement) return;
+
+        const canvas = document.createElement('canvas');
+        const scaleFactor = 2;
+        const svgSize = svgElement.getBoundingClientRect();
+        canvas.width = svgSize.width * scaleFactor;
+        canvas.height = svgSize.height * scaleFactor;
+        const ctx = canvas.getContext('2d');
+        
+        const textureImage = new Image();
+        textureImage.src = MAIN_TEXTURE_FILE_PATH;
+        
+        textureImage.onload = async () => {
+            ctx.drawImage(textureImage, 0, 0, canvas.width, canvas.height);
+            const overlayPromises = [];
+            const colorOverlays = svgElement.querySelectorAll('.color-overlay');
+
+            colorOverlays.forEach(overlay => {
+                if (overlay.style.fill && overlay.style.fill !== 'transparent') {
+                    const singleOverlaySvgString = `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="${svgElement.getAttribute('viewBox')}">
+                            <g style="mix-blend-mode: hard-light; opacity: 0.45;">
+                                ${overlay.outerHTML}
+                            </g>
+                        </svg>`;
+                    
+                    const svgBlob = new Blob([singleOverlaySvgString], { type: "image/svg+xml;charset=utf-8" });
+                    const url = URL.createObjectURL(svgBlob);
+                    const overlayImage = new Image();
+                    overlayImage.src = url;
+                    
+                    overlayPromises.push(new Promise(resolve => {
+                        overlayImage.onload = () => {
+                            ctx.drawImage(overlayImage, 0, 0, canvas.width, canvas.height);
+                            URL.revokeObjectURL(url);
+                            resolve();
+                        };
+                    }));
+                }
             });
+            
+            await Promise.all(overlayPromises);
+            
             const link = document.createElement('a');
             link.download = 'weapon-wizards-projekt.png';
-            link.href = canvas.toDataURL("image/png");
+            link.href = canvas.toDataURL('image/png');
             link.click();
-        } catch(e) {
-            console.error("Błąd podczas generowania obrazu PNG:", e);
-            alert("Wystąpił nieoczekiwany błąd podczas próby zapisu obrazu.");
-        }
+        };
+
+        textureImage.onerror = () => {
+            alert("Błąd: Nie można wczytać głównej tekstury do zapisu obrazu.");
+        };
     }
     
     initialize();
