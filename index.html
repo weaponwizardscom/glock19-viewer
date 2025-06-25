@@ -6,9 +6,9 @@
     <title>Weapon-Wizards.com - Konfigurator</title>
     <style>
         :root {
-            --page-background: #ffffff;
+            --page-background: #121212;
             --container-background: #ffffff;
-            --gun-view-background: #ffffff;
+            --gun-view-background: #000000;
             --text-color: #1c1e21;
             --border-color: #dee2e6;
             --primary-color: #007bff;
@@ -53,6 +53,8 @@
         .controls {
             flex: 1 1 300px;
             min-width: 300px;
+            display: flex;
+            flex-direction: column;
         }
         .control-section { margin-bottom: 20px; }
         .control-section-header {
@@ -97,15 +99,16 @@
             color: white;
             border-color: var(--primary-color);
         }
-        /* ZMIANA: Przewijana paleta kolorów */
+        /* ZMIANA: Kontener palety z własnym przewijaniem */
         .color-palette-container {
-            max-height: 300px; /* Maksymalna wysokość kontenera */
-            overflow-y: auto; /* Włączenie paska przewijania, gdy jest potrzebny */
-            padding-right: 10px; /* Miejsce na pasek przewijania */
+            max-height: 400px; /* Ustaw maksymalną wysokość */
+            overflow-y: auto;  /* Pokaż pasek przewijania, gdy potrzeba */
+            padding-right: 10px; /* Zrób miejsce na pasek przewijania */
         }
+        /* ZMIANA: Stały układ 3-kolumnowy */
         .color-palette {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 25px 10px;
         }
         .color-swatch-wrapper {
@@ -134,8 +137,11 @@
             line-height: 1.2;
             width: 100%;
         }
+        .reset-button-container {
+            margin-top: auto; /* Wypycha przycisk na sam dół */
+            padding-top: 20px;
+        }
         .reset-button {
-            margin-top: 16px;
             width: 100%;
             padding: 12px;
             font-size: 16px;
@@ -169,7 +175,9 @@
                     <div class="color-palette" id="color-palette"></div>
                 </div>
             </div>
-            <div class="control-section"><button class="reset-button" id="reset-button">Resetuj Kolory</button></div>
+            <div class="reset-button-container">
+                <button class="reset-button" id="reset-button">Resetuj Kolory</button>
+            </div>
         </div>
     </div>
     <script src="app.js"></script>
