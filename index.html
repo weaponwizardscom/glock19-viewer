@@ -1,4 +1,4 @@
-<!-- ===== index.html ===== -->
+<!-- ====== index.html ====== -->
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -61,7 +61,8 @@
 
     /* ===== PODSUMOWANIE ===== */
     .summary-container{
-        flex:1 1 0;border:1px solid var(--border);border-radius:6px;
+        flex:1 1 0;                    /* rozciąga się do dołu kolumny */
+        border:1px solid var(--border);border-radius:6px;
         padding:12px;color:var(--txt);font-size:14px;line-height:1.5;
         margin-top:16px;background:rgba(255,255,255,.04);overflow-y:auto;
     }
@@ -104,7 +105,7 @@
             <div class="control-section-header">
                 <h3 id="header-color-selection">2. Wybierz kolor (Cerakote)</h3>
             </div>
-            <div class="color-palette-container" id="palette-scroll">
+            <div class="color-palette-container">
                 <div class="color-palette" id="color-palette"></div>
             </div>
         </div>
