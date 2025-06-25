@@ -68,16 +68,14 @@
         .color-palette {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-            gap: 20px 15px; /* Zwiększony odstęp dla nowych kształtów */
+            gap: 20px 15px;
         }
-        /* ZMIANA: Dodajemy wrapper, aby etykieta była powiązana z kafelkiem */
         .color-swatch-wrapper {
             display: flex;
             flex-direction: column;
             align-items: center;
-            height: 75px; /* Wysokość na kafelek i etykietę */
+            height: 75px;
         }
-        /* ZMIANA: Nowy kształt kafelków */
         .color-swatch {
             width: 60px;
             height: 50px;
@@ -90,7 +88,6 @@
             transform: scale(1.1);
             border: 2px solid var(--primary-color);
         }
-        /* ZMIANA: Style dla etykiet pod kafelkami */
         .color-swatch-label {
             margin-top: 6px;
             font-size: 9px;
@@ -111,12 +108,13 @@
         }
         .color-overlay {
             transition: fill 0.2s ease-in-out;
-            mix-blend-mode: color;
-            opacity: 0.85;
+            mix-blend-mode: hard-light;
+            opacity: 0.65;
         }
     </style>
 </head>
 <body>
+
     <div class="configurator-container">
         <div class="gun-view" id="gun-view-container">
             <p style="text-align:center; padding-top:20px; color: #6c757d;">Ładowanie konfiguratora...</p>
@@ -127,6 +125,7 @@
             <div class="control-section"><button class="reset-button" id="reset-button">Resetuj Kolory</button></div>
         </div>
     </div>
+
     <script src="app.js"></script>
 </body>
 </html>
