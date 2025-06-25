@@ -2,8 +2,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     // --- KONFIGURACJA APLIKACJI ---
     const SVG_FILE_PATH = 'g17.svg';
     const SWATCH_TEXTURE_FILE = 'cerakote.png';
-    const IMG_DIR_PATH = 'img/';
-    
     const PARTS_TO_CONFIGURE = [
         { id: 'szkielet', label: 'Szkielet' },
         { id: 'blokada1', label: 'Blokada' }
@@ -43,7 +41,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             const originalPath = svgElement.querySelector(`#${part.id}`);
             if (!originalPath) return;
             
-            // ZMIANA: Wracamy do tworzenia tylko JEDNEJ warstwy koloru
             const colorOverlay = originalPath.cloneNode(true);
             colorOverlay.id = `color-overlay-${part.id}`;
             colorOverlay.setAttribute('class', 'color-overlay');
@@ -73,8 +70,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const baseTexture = document.createElement('img');
             baseTexture.className = 'swatch-base-texture';
             baseTexture.src = SWATCH_TEXTURE_FILE;
-            
-            // ZMIANA: Tylko jedna nakładka koloru
+
             const swatchOverlay = document.createElement('div');
             swatchOverlay.className = 'swatch-color-overlay';
             swatchOverlay.style.backgroundColor = hex;
@@ -82,7 +78,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const label = document.createElement('div');
             label.className = 'color-swatch-label';
             label.textContent = name;
-            
+
             graphicContainer.appendChild(baseTexture);
             graphicContainer.appendChild(swatchOverlay);
             wrapper.appendChild(graphicContainer);
@@ -94,7 +90,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     } catch (error) {
         console.error("Błąd krytyczny aplikacji:", error);
-        gunViewContainer.innerHTML = `<p style="color:red; font-weight:bold;">Wystąpił błąd podczas ładowania konfiguratora. Sprawdź konsolę (F12).</p>`;
+        gunViewContainer.innerHTML = `<p style="color:red; font-weight:bold;">Wystąpił błąd: ${error.message}. Sprawdź, czy plik ${SVG_FILE_PATH} jest na serwerze i czy jego nazwa jest poprawna.</p>`;
     }
 
     function applyColor(hexColor) {

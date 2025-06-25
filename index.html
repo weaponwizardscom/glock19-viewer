@@ -44,11 +44,10 @@
             width: 100%;
             height: 100%;
         }
-        /* ZMIANA: Wracamy do jednej, udoskonalonej warstwy koloru */
         .color-overlay {
-            transition: fill 0.2s ease-in-out, opacity 0.2s ease-in-out;
-            mix-blend-mode: overlay; /* BARDZIEJ NATURALNY TRYB MIESZANIA */
-            opacity: 0.9; /* Wysokie krycie dla wyraźnego koloru */
+            transition: fill 0.2s ease-in-out;
+            mix-blend-mode: soft-light;
+            opacity: 0.9;
             pointer-events: none;
         }
         .controls {
@@ -107,7 +106,7 @@
             object-fit: contain;
         }
         .swatch-color-overlay {
-            mix-blend-mode: overlay; /* Ten sam tryb dla spójności */
+            mix-blend-mode: soft-light;
             opacity: 0.9;
         }
         .color-swatch-label {
