@@ -99,13 +99,11 @@
             color: white;
             border-color: var(--primary-color);
         }
-        /* ZMIANA: Kontener palety z własnym przewijaniem */
         .color-palette-container {
-            max-height: 400px; /* Ustaw maksymalną wysokość */
-            overflow-y: auto;  /* Pokaż pasek przewijania, gdy potrzeba */
-            padding-right: 10px; /* Zrób miejsce na pasek przewijania */
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
         }
-        /* ZMIANA: Stały układ 3-kolumnowy */
         .color-palette {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -138,7 +136,7 @@
             width: 100%;
         }
         .reset-button-container {
-            margin-top: auto; /* Wypycha przycisk na sam dół */
+            margin-top: auto;
             padding-top: 20px;
         }
         .reset-button {
@@ -171,7 +169,7 @@
             </div>
             <div class="control-section">
                 <h3>2. Wybierz kolor (Cerakote)</h3>
-                <div class="color-palette-container" id="color-palette-container">
+                <div class="color-palette-container">
                     <div class="color-palette" id="color-palette"></div>
                 </div>
             </div>

@@ -1,22 +1,25 @@
 document.addEventListener('DOMContentLoaded', async () => {
     // --- KONFIGURACJA APLIKACJI ---
     const SVG_FILE_PATH = 'g17.svg';
+    
+    // Pełna lista części zgodnie z Twoim SVG i listą
     const PARTS_TO_CONFIGURE = [
-        { id: 'zamek',    pl: 'Zamek', en: 'Slide', textureFile: 'zamek.png' },
-        { id: 'szkielet', pl: 'Szkielet', en: 'Frame', textureFile: 'szkielet.png' },
-        { id: 'spust',    pl: 'Język spustowy', en: 'Trigger', textureFile: 'spust.png' },
-        { id: 'lufa',     pl: 'Lufa', en: 'Barrel', textureFiles: ['lufa1', 'lufa2'] },
-        { id: 'zerdz',    pl: 'Żerdź', en: 'Recoil spring', textureFile: 'zerdz.png' },
-        { id: 'pazur',    pl: 'Pazur wyciągu', en: 'Extractor', textureFile: 'pazur.png' },
-        { id: 'zrzut',    pl: 'Zatrzask magazynka', en: 'Magazine catch', textureFile: 'zrzut.png' },
-        { id: 'blokadap', pl: 'Blokada zamka', en: 'Slide lock', textureFile: 'blokadap.png' },
-        { id: 'blokada2', pl: 'Dźwignia zrzutu zamka', en: 'Slide stop lever', textureFile: 'blokada2.png' },
-        { id: 'pin',      pl: 'Pin', en: 'Trigger pin', textureFile: 'pin.png' },
-        { id: 'stopka',   pl: 'Stopka magazynka', en: 'Magazine floorplate', textureFile: 'stopka.png' }
+        { id: 'zamek',    pl: 'Zamek', en: 'Slide' },
+        { id: 'szkielet', pl: 'Szkielet', en: 'Frame' },
+        { id: 'spust',    pl: 'Język spustowy z szyną', en: 'Trigger with trigger bar' },
+        { id: 'lufa',     pl: 'Lufa', en: 'Barrel' }, // Ta grupa zostanie stworzona dynamicznie
+        { id: 'zerdz',    pl: 'Żerdź', en: 'Recoil spring' },
+        { id: 'pazur',    pl: 'Pazur wyciągu', en: 'Extractor' },
+        { id: 'zrzut',    pl: 'Zatrzask magazynka', en: 'Magazine catch' },
+        { id: 'blokadap', pl: 'Blokada zamka', en: 'Slide lock' },
+        { id: 'blokada2', pl: 'Dźwignia zrzutu zamka', en: 'Slide stop lever' },
+        { id: 'pin',      pl: 'Pin', en: 'Trigger pin' },
+        { id: 'stopka',   pl: 'Stopka magazynka', en: 'Magazine floorplate' }
     ];
-    const CERAKOTE_COLORS = { "H-190 Armor Black": "#212121", "H-146 Graphite Black": "#3B3B3B", "H-237 Tungsten": "#6E7176", "H-234 Sniper Grey": "#5B6063", "H-130 Combat Grey": "#6a6a6a", "H-214 S&W Grey": "#8D918D", "H-265 Cold War Grey": "#999B9E", "H-259 Barrett Bronze": "#655951", "H-267 Magpul FDE": "#A48F6A", "H-235 Coyote Tan": "#A48B68", "H-226 Patriot Brown": "#6A5445", "H-148 Burnt Bronze": "#8C6A48", "H-294 Midnight Bronze": "#51463C", "H-347 Copper": "#B87333", "H-236 O.D. Green": "#5A6349", "H-240 Mil-Spec Green": "#5F604F", "H-203 McMillan Tan": "#9F9473", "H-168 Zombie Green": "#84C341", "H-20150 Bazooka Green": "#596C43", "H-171 NRA Blue": "#00387B", "H-258 Socom Blue": "#3B4B5A", "H-185 Blue Titanium": "#647C93", "H-175 Robins Egg Blue": "#75C8C7", "H-328 Navy Blue": "#2E3A47", "H-216 S&W Red": "#B70101", "H-167 USMC Red": "#9E2B2F", "H-221 Crimson": "#891F2B", "H-142 Prison Pink": "#E55C9C", "H-30118 Crushed Orchid": "#8A4F80", "H-122 Gold": "#B79436", "H-151 Hunter Orange": "#F26522", "H-327 Guncandy Pineapple": "#E4BE0D", "H-256 Cobalt": "#395173", "H-166 Highland Green": "#434B3F", "H-140 Bright White": "#FAFAFA" };
 
-    // --- Reszta kodu ---
+    const CERAKOTE_COLORS = { "H-140 Bright White": "#FAFAFA", "H-190 Armor Black": "#212121", "H-146 Graphite Black": "#3B3B3B", "H-237 Tungsten": "#6E7176", "H-234 Sniper Grey": "#5B6063", "H-130 Combat Grey": "#6a6a6a", "H-214 S&W Grey": "#8D918D", "H-265 Cold War Grey": "#999B9E", "H-259 Barrett Bronze": "#655951", "H-267 Magpul FDE": "#A48F6A", "H-235 Coyote Tan": "#A48B68", "H-226 Patriot Brown": "#6A5445", "H-148 Burnt Bronze": "#8C6A48", "H-294 Midnight Bronze": "#51463C", "H-347 Copper": "#B87333", "H-236 O.D. Green": "#5A6349", "H-240 Mil-Spec Green": "#5F604F", "H-203 McMillan Tan": "#9F9473", "H-168 Zombie Green": "#84C341", "H-20150 Bazooka Green": "#596C43", "H-171 NRA Blue": "#00387B", "H-258 Socom Blue": "#3B4B5A", "H-185 Blue Titanium": "#647C93", "H-175 Robins Egg Blue": "#75C8C7", "H-328 Navy Blue": "#2E3A47", "H-216 Smith & Wesson Red": "#B70101", "H-167 USMC Red": "#9E2B2F", "H-221 Crimson": "#891F2B", "H-142 Prison Pink": "#E55C9C", "H-30118 Crushed Orchid": "#8A4F80", "H-122 Gold": "#B79436", "H-151 Hunter Orange": "#F26522", "H-327 Guncandy Pineapple": "#E4BE0D", "H-256 Cobalt": "#395173", "H-166 Highland Green": "#434B3F" };
+    
+    // --- SILNIK APLIKACJI ---
     const gunViewContainer = document.getElementById('gun-view-container');
     const partSelectionContainer = document.getElementById('part-selection-container');
     const paletteContainer = document.getElementById('color-palette');
@@ -38,16 +41,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!svgElement) throw new Error("Wczytany plik nie zawiera tagu SVG.");
         svgElement.setAttribute('class', 'gun-svg');
 
-        const lufaConfig = PARTS_TO_CONFIGURE.find(p => p.id === 'lufa');
-        if (lufaConfig && lufaConfig.textureFiles) {
-            const lufaGroup = document.createElementNS("http://www.w3.org/2000/svg", 'g');
-            lufaGroup.id = 'lufa';
-            const pathsToGroup = lufaConfig.textureFiles.map(id => svgElement.querySelector(`#${id}`)).filter(Boolean);
-            if (pathsToGroup.length > 0) {
-                const parent = pathsToGroup[0].parentNode;
-                parent.insertBefore(lufaGroup, pathsToGroup[0]);
-                pathsToGroup.forEach(path => lufaGroup.appendChild(path));
-            }
+        // Dynamiczne grupowanie lufy
+        const lufaGroup = document.createElementNS("http://www.w3.org/2000/svg", 'g');
+        lufaGroup.id = 'lufa';
+        const lufaPaths = Array.from(svgElement.querySelectorAll('#lufa1, #lufa2'));
+        if (lufaPaths.length > 0) {
+            const parent = lufaPaths[0].parentNode;
+            parent.insertBefore(lufaGroup, lufaPaths[0]);
+            lufaPaths.forEach(p => lufaGroup.appendChild(p));
         }
         
         const colorLayerGroup = document.createElementNS("http://www.w3.org/2000/svg", 'g');
@@ -61,11 +62,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             const colorOverlay1 = originalElement.cloneNode(true);
             colorOverlay1.id = `color-overlay-1-${part.id}`;
             colorOverlay1.setAttribute('class', 'color-overlay');
-            colorOverlay1.setAttribute('fill', 'transparent');
             colorLayerGroup.appendChild(colorOverlay1);
 
-            const colorOverlay2 = colorOverlay1.cloneNode(true);
+            const colorOverlay2 = originalElement.cloneNode(true);
             colorOverlay2.id = `color-overlay-2-${part.id}`;
+            colorOverlay2.setAttribute('class', 'color-overlay');
             colorLayerGroup.appendChild(colorOverlay2);
 
             const button = document.createElement('button');
@@ -73,6 +74,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             partSelectionContainer.appendChild(button);
         });
         
+        resetAllColors(); // Ustawienie przezroczystości na starcie
         updateButtonLabels();
         createColorPalette();
 
@@ -87,8 +89,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     function switchLang(lang) {
         currentLang = lang;
-        langPl.classList.toggle('active', lang === 'en');
-        langGb.classList.toggle('active', lang === 'pl'); // Odwrócona logika, poprawione
+        langPl.classList.toggle('active', lang === 'pl');
+        langGb.classList.toggle('active', lang === 'en');
         updateButtonLabels();
     }
 
@@ -106,9 +108,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 };
             }
         });
-        // Poprawne ustawienie aktywnej flagi przy starcie
-        langPl.classList.toggle('active', currentLang === 'pl');
-        langGb.classList.toggle('active', currentLang === 'en');
+        langPl.classList.add('active');
+        langGb.classList.remove('active');
     }
 
     function createColorPalette() {
@@ -133,16 +134,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     function applyColor(hexColor) {
         if (!activePartId) { alert("Proszę najpierw wybrać część."); return; }
         
-        // ZMIANA: Inteligentne kolorowanie grup i pojedynczych ścieżek
         const colorElement1 = document.getElementById(`color-overlay-1-${activePartId}`);
         const colorElement2 = document.getElementById(`color-overlay-2-${activePartId}`);
         if (colorElement1 && colorElement2) {
             const elementsToColor = [colorElement1, colorElement2];
             elementsToColor.forEach(el => {
+                // POPRAWKA: Ustawiamy styl 'fill' bezpośrednio, aby nadpisać wewnętrzne style SVG
                 if (el.tagName.toLowerCase() === 'g') {
-                    el.querySelectorAll('path, polygon, ellipse, circle, rect').forEach(shape => shape.setAttribute('fill', hexColor));
+                    el.querySelectorAll('path, polygon, ellipse, circle, rect').forEach(shape => shape.style.fill = hexColor);
                 } else {
-                    el.setAttribute('fill', hexColor);
+                    el.style.fill = hexColor;
                 }
             });
         }
@@ -151,9 +152,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     function resetAllColors() {
         document.querySelectorAll('.color-overlay').forEach(overlay => {
             if (overlay.tagName.toLowerCase() === 'g') {
-                overlay.querySelectorAll('path, polygon, ellipse, circle, rect').forEach(shape => shape.setAttribute('fill', 'transparent'));
+                overlay.querySelectorAll('path, polygon, ellipse, circle, rect').forEach(shape => shape.style.fill = 'transparent');
             } else {
-                overlay.setAttribute('fill', 'transparent');
+                overlay.style.fill = 'transparent';
             }
         });
         if (selectedPartButton) { selectedPartButton.classList.remove('selected'); selectedPartButton = null; }
