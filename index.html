@@ -87,7 +87,7 @@
             grid-template-columns: 1fr 1fr;
             gap: 8px;
         }
-        .part-selection button, #all-parts-button {
+        .part-selection button {
             padding: 10px 12px;
             font-size: 11px;
             text-align: left;
@@ -105,19 +105,17 @@
             color: white;
             border-color: var(--primary-color);
         }
+        #mix-button, #all-parts-button {
+            grid-column: 1 / -1; /* Rozciągnij na obie kolumny */
+            text-align: center;
+            font-weight: bold;
+        }
         #mix-button {
             background: linear-gradient(45deg, #f3ec78, #af4261, #43cea2, #185a9d);
             color: white;
-            font-weight: bold;
         }
-        /* ZMIANA: Styl dla nowego przycisku */
         #all-parts-button {
-            grid-column: 1 / -1; /* Rozciągnij na obie kolumny */
-            text-align: center;
-            margin-top: 8px;
-            background-color: #6c757d;
-            color: white;
-            font-weight: bold;
+            margin-top: 8px; /* Dodatkowy margines na górze */
         }
         .color-palette-container {
             max-height: 400px;
@@ -196,7 +194,6 @@
                 </div>
                 <div class="part-selection" id="part-selection-container">
                     </div>
-                <button id="all-parts-button">Wszystkie części</button>
             </div>
             <div class="control-section">
                 <h3>2. Wybierz kolor (Cerakote)</h3>
