@@ -1,23 +1,16 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    // --- KONFIGURACJA APLIKACJI ---
     const SVG_FILE_PATH = 'g17.svg';
     const MAIN_TEXTURE_FILE_PATH = 'img/glock17.png';
     const PARTS_TO_CONFIGURE = [
-        { id: 'zamek',    pl: 'Zamek', en: 'Slide' },
-        { id: 'szkielet', pl: 'Szkielet', en: 'Frame' },
-        { id: 'spust',    pl: 'Język spustowy z szyną', en: 'Trigger with trigger bar' },
-        { id: 'lufa',     pl: 'Lufa', en: 'Barrel' },
-        { id: 'zerdz',    pl: 'Żerdź', en: 'Recoil spring' },
-        { id: 'pazur',    pl: 'Pazur wyciągu', en: 'Extractor' },
-        { id: 'zrzut',    pl: 'Zatrzask magazynka', en: 'Magazine catch' },
-        { id: 'blokadap', pl: 'Blokada zamka', en: 'Slide lock' },
-        { id: 'blokada2', pl: 'Dźwignia zrzutu zamka', en: 'Slide stop lever' },
-        { id: 'pin',      pl: 'Pin', en: 'Trigger pin' },
+        { id: 'zamek',    pl: 'Zamek', en: 'Slide' }, { id: 'szkielet', pl: 'Szkielet', en: 'Frame' },
+        { id: 'spust',    pl: 'Język spustowy z szyną', en: 'Trigger with trigger bar' }, { id: 'lufa',     pl: 'Lufa', en: 'Barrel' },
+        { id: 'zerdz',    pl: 'Żerdź', en: 'Recoil spring' }, { id: 'pazur',    pl: 'Pazur wyciągu', en: 'Extractor' },
+        { id: 'zrzut',    pl: 'Zatrzask magazynka', en: 'Magazine catch' }, { id: 'blokadap', pl: 'Blokada zamka', en: 'Slide lock' },
+        { id: 'blokada2', pl: 'Dźwignia zrzutu zamka', en: 'Slide stop lever' }, { id: 'pin',      pl: 'Pin', en: 'Trigger pin' },
         { id: 'stopka',   pl: 'Stopka magazynka', en: 'Magazine floorplate' }
     ];
     const CERAKOTE_COLORS = { "H-190 Armor Black": "#212121", "H-146 Graphite Black": "#3B3B3B", "H-237 Tungsten": "#6E7176", "H-234 Sniper Grey": "#5B6063", "H-130 Combat Grey": "#6a6a6a", "H-214 S&W Grey": "#8D918D", "H-265 Cold War Grey": "#999B9E", "H-259 Barrett Bronze": "#655951", "H-267 Magpul FDE": "#A48F6A", "H-235 Coyote Tan": "#A48B68", "H-226 Patriot Brown": "#6A5445", "H-148 Burnt Bronze": "#8C6A48", "H-294 Midnight Bronze": "#51463C", "H-347 Copper": "#B87333", "H-236 O.D. Green": "#5A6349", "H-240 Mil-Spec Green": "#5F604F", "H-203 McMillan Tan": "#9F9473", "H-168 Zombie Green": "#84C341", "H-20150 Bazooka Green": "#596C43", "H-171 NRA Blue": "#00387B", "H-258 Socom Blue": "#3B4B5A", "H-185 Blue Titanium": "#647C93", "H-175 Robins Egg Blue": "#75C8C7", "H-328 Navy Blue": "#2E3A47", "H-216 S&W Red": "#B70101", "H-167 USMC Red": "#9E2B2F", "H-221 Crimson": "#891F2B", "H-142 Prison Pink": "#E55C9C", "H-30118 Crushed Orchid": "#8A4F80", "H-122 Gold": "#B79436", "H-151 Hunter Orange": "#F26522", "H-327 Guncandy Pineapple": "#E4BE0D", "H-256 Cobalt": "#395173", "H-166 Highland Green": "#434B3F", "H-140 Bright White": "#FAFAFA" };
     
-    // --- SILNIK APLIKACJI ---
     const gunViewContainer = document.getElementById('gun-view-container');
     const partSelectionContainer = document.getElementById('part-selection-container');
     const paletteContainer = document.getElementById('color-palette');
@@ -29,9 +22,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     let activePartId = null;
     let selectedPartButton = null;
     let currentLang = 'pl';
-    let textureAsDataUrl = ''; // Zmienna na wbudowaną teksturę
+    let textureAsDataUrl = '';
 
-    // ZMIANA: Funkcja do konwersji obrazka na Data URL (Base64)
     const toDataURL = async url => {
         const response = await fetch(url);
         if (!response.ok) throw new Error(`Nie znaleziono pliku tekstury: ${url}`);
@@ -46,12 +38,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function initialize() {
         try {
-            // ZMIANA: Wczytujemy teksturę na starcie, aby była gotowa do zapisu
             textureAsDataUrl = await toDataURL(MAIN_TEXTURE_FILE_PATH);
-
             const response = await fetch(SVG_FILE_PATH);
             if (!response.ok) throw new Error(`Nie udało się wczytać pliku ${SVG_FILE_PATH}`);
-            
             const svgText = await response.text();
             gunViewContainer.innerHTML = svgText;
             const svgElement = gunViewContainer.querySelector('svg');
@@ -74,16 +63,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             PARTS_TO_CONFIGURE.forEach(part => {
                 const originalElement = svgElement.querySelector(`#${part.id}`);
                 if (!originalElement) { console.warn(`Nie znaleziono części o ID: ${part.id}`); return; }
-                
                 const colorOverlay1 = originalElement.cloneNode(true);
                 colorOverlay1.id = `color-overlay-1-${part.id}`;
                 colorOverlay1.setAttribute('class', 'color-overlay');
                 colorLayerGroup.appendChild(colorOverlay1);
-
                 const colorOverlay2 = colorOverlay1.cloneNode(true);
                 colorOverlay2.id = `color-overlay-2-${part.id}`;
                 colorLayerGroup.appendChild(colorOverlay2);
-
                 const button = document.createElement('button');
                 button.dataset.partId = part.id;
                 partSelectionContainer.appendChild(button);
@@ -102,7 +88,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             saveButton.addEventListener('click', saveAsPng);
             langPl.addEventListener('click', () => switchLang('pl'));
             langGb.addEventListener('click', () => switchLang('en'));
-
         } catch (error) {
             console.error("Błąd krytyczny aplikacji:", error);
             gunViewContainer.innerHTML = `<p style="color:red; font-weight:bold;">Wystąpił błąd: ${error.message}. Sprawdź konsolę.</p>`;
@@ -183,50 +168,47 @@ document.addEventListener('DOMContentLoaded', async () => {
         activePartId = null;
     }
     
-    // ZMIANA: Całkowicie nowa funkcja zapisu obrazu
-    async function saveAsPng() {
-        const gunView = document.getElementById('gun-view-container');
-        const svgElement = gunView.querySelector('.gun-svg');
+    // ZMIANA: Nowa, niezawodna funkcja zapisu obrazu
+    function saveAsPng() {
+        const svgElement = document.querySelector('.gun-svg');
         if (!svgElement) return;
-        
-        // Stwórz tymczasową kopię SVG, aby bezpiecznie ją zmodyfikować
+
+        const serializer = new XMLSerializer();
         const svgClone = svgElement.cloneNode(true);
         const imageElement = svgClone.querySelector('image');
 
-        // Podmień link do pliku na wbudowaną wersję Base64
         if (imageElement && textureAsDataUrl) {
             imageElement.setAttributeNS('http://www.w3.org/1999/xlink', 'href', textureAsDataUrl);
         } else {
-            console.error("Nie można zapisać obrazu - tekstura (Data URL) nie jest gotowa.");
-            alert("Błąd podczas przygotowywania obrazu do zapisu.");
+            console.error("Błąd zapisu: Tekstura nie została wczytana.");
+            alert("Błąd: Nie można zapisać obrazu, ponieważ główna tekstura nie jest w pełni wczytana.");
             return;
         }
 
-        // Użyj biblioteki html2canvas na zmodyfikowanym klonie
-        // Musimy go na chwilę dodać do strony, żeby biblioteka go 'zobaczyła'
-        svgClone.style.position = 'absolute';
-        svgClone.style.left = '-9999px'; // Schowaj go poza ekranem
-        document.body.appendChild(svgClone);
+        const svgString = serializer.serializeToString(svgClone);
+        const svgBlob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
+        const url = URL.createObjectURL(svgBlob);
 
-        try {
-            const canvas = await html2canvas(svgClone, {
-                backgroundColor: null, // Użyj tła z kontenera nadrzędnego
-                logging: false,
-                scale: 2 // Zapisz w 2x większej rozdzielczości dla lepszej jakości
-            });
-            
+        const img = new Image();
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const scale = 2; // Zapis w 2x większej rozdzielczości
+            canvas.width = svgElement.clientWidth * scale;
+            canvas.height = svgElement.clientHeight * scale;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            URL.revokeObjectURL(url);
+
             const link = document.createElement('a');
             link.download = 'weapon-wizards-projekt.png';
-            link.href = canvas.toDataURL("image/png");
+            link.href = canvas.toDataURL('image/png');
             link.click();
-
-        } catch(e) {
-            console.error("Błąd podczas generowania obrazu PNG:", e);
-            alert("Wystąpił błąd podczas zapisu obrazu.");
-        } finally {
-            // Zawsze usuwaj tymczasowy klon ze strony
-            document.body.removeChild(svgClone);
-        }
+        };
+        img.onerror = () => {
+            URL.revokeObjectURL(url);
+            alert("Nie udało się wyrenderować grafiki do zapisu.");
+        };
+        img.src = url;
     }
     
     initialize();
