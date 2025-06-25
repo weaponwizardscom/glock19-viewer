@@ -132,4 +132,207 @@ document.addEventListener('DOMContentLoaded', () => {
         const resp = await fetch(SVG_FILE_PATH);
         if (!resp.ok) throw new Error('Nie można wczytać ' + SVG_FILE_PATH);
         const svgText = await resp.text();
-        gunViewContainer.innerHTML = svg
+        gunViewContainer.innerHTML = svgText;
+
+        const svg = gunViewContainer.querySelector('svg');
+        svg.classList.add('gun-svg');
+
+        /* grupujemy lufę (id lufa1, lufa2) w jeden <g id="lufa"> */
+        const lufaGroup = document.createElementNS('http://www.w3.org/2000/svg','g');
+        lufaGroup.id = 'lufa';
+        [...svg.querySelectorAll('#lufa1, #lufa2')].forEach(p => lufaGroup.appendChild(p));
+        svg.insertBefore(lufaGroup, svg.firstChild);
+
+        /* warstwa overlayów kolorystycznych */
+        const colorLayerGroup = document.createElementNS('http://www.w3.org/2000/svg','g');
+        colorLayerGroup.id = 'color-overlays';
+        svg.appendChild(colorLayerGroup);
+
+        PARTS_TO_CONFIGURE.forEach(part=>{
+            const source = svg.querySelector('#'+part.id);
+            if(!source){console.warn('Brak w SVG: '+part.id);return;}
+
+            ['1','2'].forEach(layer=>{
+                const ov = source.cloneNode(true);
+                ov.id = `color-overlay-${layer}-${part.id}`;
+                ov.classList.add('color-overlay');
+                colorLayerGroup.appendChild(ov);
+            });
+        });
+    }
+
+    /* ---------- Budujemy przyciski części ---------- */
+    function buildUI() {
+        PARTS_TO_CONFIGURE.forEach(part=>{
+            const btn = document.createElement('button');
+            btn.dataset.partId = part.id;
+            btn.onclick = ()=>selectPart(btn, part.id);
+            partSelectionContainer.appendChild(btn);
+        });
+
+        /* przycisk MIX */
+        const mixBtn=document.createElement('button');
+        mixBtn.id='mix-button';mixBtn.textContent='MIX';
+        mixBtn.onclick = applyRandomColors;
+        partSelectionContainer.appendChild(mixBtn);
+
+        /* reszta przycisków */
+        resetButton.onclick = resetAllColors;
+        saveButton  .onclick = saveAsPng;
+        langPl     .onclick = ()=>switchLang('pl');
+        langGb     .onclick = ()=>switchLang('en');
+    }
+
+    /* ============================================================= */
+    /* =====================  FUNKCJE UI  =========================== */
+    /* ============================================================= */
+    function selectPart(btn, partId){
+        if(selectedPartButton) selectedPartButton.classList.remove('selected');
+        btn.classList.add('selected');
+        selectedPartButton = btn;
+        activePartId = partId;
+    }
+
+    function switchLang(lang){
+        currentLang = lang;
+        updateUIText();
+        updateSummary(); // odśwież nazwy części w podsumowaniu
+    }
+
+    function updateUIText(){
+        /* etykiety przycisków części */
+        partSelectionContainer.querySelectorAll('button').forEach(b=>{
+            const part = PARTS_TO_CONFIGURE.find(p=>p.id===b.dataset.partId);
+            if(part) b.textContent = part[currentLang];
+        });
+
+        headerPartSelection.textContent = currentLang==='pl' ? '1. Wybierz część':'1. Select part';
+        headerColorSelection.textContent= currentLang==='pl' ? '2. Wybierz kolor (Cerakote)':'2. Select color (Cerakote)';
+        langPl.classList.toggle('active',currentLang==='pl');
+        langGb.classList.toggle('active',currentLang==='en');
+    }
+
+    /* ---------- PALETA ---------- */
+    function createColorPalette(){
+        paletteContainer.innerHTML='';
+        for(const [name,hex] of Object.entries(CERAKOTE_COLORS)){
+            const wrap = document.createElement('div');
+            wrap.className='color-swatch-wrapper';
+            wrap.title=name;
+            wrap.onclick = ()=>applyColorToPart(activePartId, hex, name);
+
+            const swatch=document.createElement('div');
+            swatch.className='color-swatch';
+            swatch.style.backgroundColor=hex;
+
+            const label=document.createElement('div');
+            label.className='color-swatch-label';
+            label.textContent=name;
+
+            wrap.append(swatch,label);
+            paletteContainer.appendChild(wrap);
+        }
+    }
+
+    /* ---------- NAKŁADANIE KOLORU ---------- */
+    function applyColorToPart(partId, hex, colorName){
+        if(!partId){
+            if(selectedPartButton) alert(currentLang==='pl'?'Najpierw wybierz część!':'Select a part first!');
+            return;
+        }
+        ['1','2'].forEach(layer=>{
+            const ov=document.getElementById(`color-overlay-${layer}-${partId}`);
+            if(!ov) return;
+            const shapes = ov.tagName==='g'
+                ? ov.querySelectorAll('path,polygon,ellipse,circle,rect')
+                : [ov];
+            shapes.forEach(s=>s.style.fill=hex);
+        });
+        selectedColors[partId] = colorName; // zapisz wybór
+        updateSummary();
+    }
+
+    function setDefaultColor(){
+        const defName = 'H-146 Graphite Black';
+        const defHex  = CERAKOTE_COLORS[defName];
+        PARTS_TO_CONFIGURE.forEach(p=>{
+            selectedColors[p.id]=defName;
+            applyColorToPart(p.id, defHex, defName);
+        });
+    }
+
+    function applyRandomColors(){
+        const names = Object.keys(CERAKOTE_COLORS);
+        PARTS_TO_CONFIGURE.forEach(p=>{
+            const rndName = names[Math.floor(Math.random()*names.length)];
+            const rndHex  = CERAKOTE_COLORS[rndName];
+            applyColorToPart(p.id, rndHex, rndName);
+        });
+    }
+
+    function resetAllColors(){
+        document.querySelectorAll('.color-overlay').forEach(ov=>{
+            const shapes = ov.tagName==='g'
+                ? ov.querySelectorAll('path,polygon,ellipse,circle,rect')
+                : [ov];
+            shapes.forEach(s=>s.style.fill='transparent');
+        });
+        for(const k in selectedColors) delete selectedColors[k];
+        if(selectedPartButton) selectedPartButton.classList.remove('selected');
+        selectedPartButton=null;activePartId=null;
+        updateSummary();
+    }
+
+    /* ---------- PODSUMOWANIE ---------- */
+    function updateSummary(){
+        summaryContainer.innerHTML='';
+        PARTS_TO_CONFIGURE.forEach(part=>{
+            const col = selectedColors[part.id];
+            if(!col) return;
+            const line=document.createElement('div');
+            line.textContent = `• ${part[currentLang]} – ${col}`;
+            summaryContainer.appendChild(line);
+        });
+    }
+
+    /* ---------- ZAPIS PNG ---------- */
+    async function saveAsPng(){
+        const svg = document.querySelector('.gun-svg');
+        if(!svg) return;
+
+        const scale = 2;
+        const box   = svg.getBBox();
+        const canvas = Object.assign(document.createElement('canvas'),{
+            width : box.width  * scale,
+            height: box.height * scale
+        });
+        const ctx = canvas.getContext('2d');
+
+        const base = new Image();
+        base.src = MAIN_TEXTURE_FILE_PATH;
+
+        base.onload = async ()=>{
+            ctx.drawImage(base,0,0,canvas.width,canvas.height);
+
+            const promises=[...svg.querySelectorAll('.color-overlay')]
+                .filter(ov=>ov.style.fill && ov.style.fill!=='transparent')
+                .map(ov=>{
+                    const tmpSvg = `<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"${svg.getAttribute('viewBox')}\"><g style=\"mix-blend-mode:hard-light;opacity:.45;\">${ov.outerHTML}</g></svg>`;
+                    const url = URL.createObjectURL(new Blob([tmpSvg],{type:'image/svg+xml'}));
+                    return new Promise(res=>{
+                        const img=new Image();
+                        img.onload=()=>{ctx.drawImage(img,0,0,canvas.width,canvas.height);URL.revokeObjectURL(url);res();};
+                        img.src=url;
+                    });
+                });
+
+            await Promise.all(promises);
+
+            const a=document.createElement('a');
+            a.href=canvas.toDataURL('image/png');
+            a.download='weapon-wizards-projekt.png';
+            a.click();
+        };
+       	base.onerror=()=>alert('Błąd ładowania tekstury.');
+    }
+});
