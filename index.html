@@ -5,24 +5,18 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Weapon-Wizards – Konfigurator</title>
 
-<!-- Eurostile (lokalna) -->
 <style>
 @font-face{
-  font-family:'Eurostile';
-  font-weight:900;
-  font-style:normal;
+  font-family:'Eurostile';font-weight:900;font-style:normal;
   src:local('Eurostile Extended Black'),local('Eurostile');
 }
 
-/* ---------- KOLORY ---------- */
+/* ---------- ZMIENNE ---------- */
 :root{
-  --page:#000;
-  --box:#000;
-  --txt:#fff;
-  --border:#dee2e6;
-  --pri:#007bff;
+  --page:#000;--box:#000;--txt:#fff;--border:#dee2e6;--pri:#007bff;
 }
 
+/* ---------- RESET ---------- */
 *{box-sizing:border-box;margin:0}
 body{
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
@@ -31,11 +25,9 @@ body{
   padding:20px;
 }
 
-/* ---------- LAYOUT ---------- */
+/* ---------- PODSTAWOWY LAYOUT ---------- */
 .configurator{
-  background:var(--box);
-  border-radius:8px;
-  box-shadow:0 8px 24px #0008;
+  background:var(--box);border-radius:8px;box-shadow:0 8px 24px #0008;
   display:flex;flex-wrap:wrap;gap:24px;
   max-width:1200px;width:100%;
   padding:24px;
@@ -44,92 +36,87 @@ body{
 .gun-wrap{flex:2 1 600px;display:flex;flex-direction:column;gap:10px;}
 
 .gun-view{
-  position:relative;
-  width:100%;
-  max-width:800px;
-  aspect-ratio:4/3;
-  border-radius:6px;
+  position:relative;width:100%;max-width:800px;aspect-ratio:4/3;border-radius:6px;
   background:#111 center/cover no-repeat;
 }
-.gun-svg{width:100%;height:100%;}
+.gun-svg{width:100%;height:100%}
 .color-overlay{mix-blend-mode:hard-light;opacity:.45;pointer-events:none}
 
 .controls{flex:1 1 300px;min-width:300px;display:flex;flex-direction:column;}
-
-.section{margin-bottom:20px;}
+.section{margin-bottom:20px}
 .sec-hdr{display:flex;justify-content:space-between;align-items:center;
-  border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px;}
+  border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px}
 .sec-hdr h3{color:var(--txt);font-size:18px}
 
 /* ---------- JĘZYKI ---------- */
-.lang img{width:24px;cursor:pointer;margin-left:8px;border:2px solid transparent;border-radius:3px;}
-.lang img.active{border-color:var(--pri);}
+.lang img{width:24px;cursor:pointer;margin-left:8px;border:2px solid transparent;border-radius:3px}
+.lang img.active{border-color:var(--pri)}
 
 /* ---------- CZĘŚCI ---------- */
-.parts{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.parts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .parts button{
   padding:10px 6px;font-size:12px;font-weight:600;text-align:center;
-  background:#f5f6f7;border:1px solid var(--border);border-radius:6px;cursor:pointer;
+  background:#f5f6f7;border:1px solid var(--border);border-radius:6px;cursor:pointer
 }
-.parts button.selected{background:var(--pri);color:#fff;}
-.parts button.disabled{background:#444;color:#999;cursor:not-allowed;}
+.parts button.selected{background:var(--pri);color:#fff}
+.parts button.disabled{background:#444;color:#999;cursor:not-allowed}
 .mix{
   background:linear-gradient(45deg,#ffd700,#ff7a00,#ff007a,#00aaff,#00ff6a);
-  color:#000;font-weight:700;
+  color:#000;font-weight:700
 }
 
 /* ---------- PALETA ---------- */
-.palette-wrap{max-height:400px;overflow-y:auto;padding-right:8px;}
-.palette{display:grid;grid-template-columns:repeat(3,1fr);gap:25px 10px;}
-.sw{display:flex;flex-direction:column;align-items:center;cursor:pointer;}
+.palette-wrap{max-height:400px;overflow-y:auto;padding-right:8px}
+.palette{display:grid;grid-template-columns:repeat(3,1fr);gap:25px 10px}
+.sw{display:flex;flex-direction:column;align-items:center;cursor:pointer}
 .dot{
   width:45px;height:45px;border-radius:50%;border:2px solid var(--border);
-  transition:transform .2s,box-shadow .2s;
+  transition:transform .2s,box-shadow .2s
 }
-.sw:hover .dot{transform:scale(1.1);box-shadow:0 0 8px var(--pri);}
-.lbl{margin-top:6px;color:#fff;font-size:11px;font-weight:600;text-align:center;line-height:1.25;}
+.sw:hover .dot{transform:scale(1.1);box-shadow:0 0 8px var(--pri)}
+.lbl{margin-top:6px;color:#fff;font-size:11px;font-weight:600;text-align:center;line-height:1.25}
 
 /* ---------- PRZYCISKI ---------- */
-.btn{width:100%;padding:12px;font-size:16px;border:none;color:#fff;border-radius:6px;cursor:pointer;}
-.gray{background:#6c757d;}
-.blue{background:var(--pri);}
-.red{background:#dc3545;}
+.btn{width:100%;padding:12px;font-size:16px;border:none;color:#fff;border-radius:6px;cursor:pointer}
+.gray{background:#6c757d}.blue{background:var(--pri)}.red{background:#dc3545}
 
 /* ---------- PODSUMOWANIE + CENA ---------- */
 .summary{
   border:1px solid var(--border);border-radius:6px;
-  padding:12px;background:#111;margin-top:16px;color:var(--txt);
+  padding:12px;background:#111;margin-top:16px;color:var(--txt)
 }
-#summary-list{column-count:3;column-gap:20px;}
-#summary-list div{break-inside:avoid;margin-bottom:4px;font-size:15px;}
+#summary-list{column-count:3;column-gap:20px}
+#summary-list div{break-inside:avoid;margin-bottom:4px;font-size:15px}
 
 #price{
   font-family:'Eurostile',sans-serif;
   font-size:22px;font-weight:900;
-  text-align:right;color:#fff;
+  text-align:right;color:#fff
 }
 
 /* ---------- MODAL ---------- */
-.modal{position:fixed;inset:0;background:#000a;display:flex;align-items:center;justify-content:center;z-index:1000;}
-.modal.hidden{display:none;}
-.box{background:#1b1b1b;padding:24px;border-radius:8px;width:90%;max-width:420px;}
-.box h2{color:#fff;margin-bottom:16px;font-size:20px;}
+.modal{position:fixed;inset:0;background:#000a;display:flex;align-items:center;justify-content:center;z-index:1000}
+.modal.hidden{display:none}
+.box{background:#1b1b1b;padding:24px;border-radius:8px;width:90%;max-width:420px}
+.box h2{color:#fff;margin-bottom:16px;font-size:20px}
 .box input{
   width:100%;padding:10px;border-radius:6px;border:1px solid #555;margin-bottom:10px;
-  background:#000;color:#fff;font-size:14px;
+  background:#000;color:#fff;font-size:14px
 }
-.note{color:#ff4444;font-size:12px;margin-top:6px;text-align:center;}
+.note{color:#ff4444;font-size:12px;margin-top:6px;text-align:center}
 
-/* ---------- DESKTOP → MOBILE breakpointy ---------- */
+/* ---------- DESKTOP → MOBILE breakpoint 800 ---------- */
 @media(max-width:800px){
-  .configurator{flex-direction:column;}
+  .configurator{flex-direction:column}
 }
 
 /* ======================================================
-   MOBILNE  –  nowa kolejność sekcji + 2-kolumnowe podsum.
+   MOBILNE – pełna szerokość, nowa kolejność sekcji
    ======================================================*/
 @media(max-width:768px){
-  /* siatka z żądanymi obszarami */
+
+  /* pełna szerokość, zero paddingów */
+  body{padding:0}
   .configurator{
     display:grid;
     grid-template-columns:1fr;
@@ -139,38 +126,44 @@ body{
       "palette"
       "summary"
       "reset"
-      "bottom";
+      "price"
+      "send";
+    gap:10px;
+    padding:0;border-radius:0
   }
-  .gun-wrap{grid-area:gun;}
-  .controls{display:contents;}               /* rozbijamy dzieci */
 
-  .controls .section:nth-of-type(1){grid-area:parts;}
-  .controls .section:nth-of-type(2){grid-area:palette;}
-  #reset-btn{grid-area:reset;}
-
-  .summary{grid-area:summary;}
-  #summary-list{column-count:2;}             /* 2 kolumny na telefonach */
-
-  .bottom{grid-area:bottom;}
-  #price{text-align:center;margin-bottom:8px;}
-
-  /* przyklejony obraz broni */
+  /* ---------------- zdjęcie + tło ---------------- */
   .gun-view{
-    position:fixed;
-    top:0;left:0;right:0;
-    width:100vw;
-    max-width:none;
-    aspect-ratio:4/3;
-    z-index:1000;
+    grid-area:gun;
+    position:fixed;top:0;left:0;right:0;
+    width:100vw;max-width:none;
+    aspect-ratio:4/3;z-index:1000
   }
+  body{padding-top:calc(100vw*0.75 + 10px)}  /* odsuj treść */
+
+  /* ---------------- sekcje / przyciski ---------------- */
+  .controls{display:contents}       /* rozpłaszcz dzieci */
+
+  .controls .section:nth-of-type(1){grid-area:parts}
+  .controls .section:nth-of-type(2){grid-area:palette}
+  #reset-btn{grid-area:reset}
+
+  .summary   {grid-area:summary}
+  #summary-list{column-count:2}     /* 2 kolumny na tel. */
+
+  #price     {grid-area:price;text-align:center}
+  .bottom    {grid-area:send}
+
 }
+
+/* ====================================================== */
 </style>
 </head>
 
 <body>
 <div class="configurator">
 
-  <!-- ====== PODGLĄD ====== -->
+  <!-- ====== PODGLĄD (zamrożony) ====== -->
   <div class="gun-wrap">
     <div id="gun-view" class="gun-view">
       <p style="text-align:center;padding-top:20px;color:#6c757d">Ładowanie…</p>
@@ -181,14 +174,14 @@ body{
 
     <div class="summary"><div id="summary-list"></div></div>
 
-    <!-- KL. bottom => potrzebna do mobilnej siatki -->
+    <!-- cena + Wyślij -->
     <div class="bottom" style="margin-top:16px">
       <div id="price">Szacowany koszt:&nbsp;&nbsp;0&nbsp;zł</div>
       <button id="send-btn" class="btn red" style="margin-top:8px">Wyślij do Wizards!</button>
     </div>
   </div>
 
-  <!-- ====== PANEL ====== -->
+  <!-- ====== PANEL (części, paleta, reset) ====== -->
   <div class="controls">
     <div class="section">
       <div class="sec-hdr">
