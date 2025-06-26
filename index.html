@@ -1,103 +1,37 @@
+<!--  index.html  -->
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Weapon-Wizards – Konfigurator</title>
+  <meta charset="UTF-8" />
+  <title>Glock-viewer</title>
 
-<style>
-:root{
-    --page-bg:#000;
-    --container-bg:#000;
-    --txt:#fff; --border:#dee2e6; --primary:#007bff;
+  <!-- responsywność -->
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-    /* <- JEDYNY SUWAK, KTÓRYM STERUJESZ */
-    --gun-scale:0.8;            /* 0.75 … 1.1 */
-
-    /* NIE ruszaj poniższych ► */
-    --ratio:0.5269;             /* 843 / 1600 */
-    --bg-scale:calc(var(--gun-scale) * var(--ratio));
-}
-
-/* ===== LAYOUT ===== */
-body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-     background:var(--page-bg);display:flex;justify-content:center;padding:20px;}
-.configurator-container{background:var(--container-bg);border-radius:8px;box-shadow:0 8px 24px #0008;
-    display:flex;flex-wrap:wrap;gap:24px;max-width:1200px;width:100%;padding:24px;}
-.gun-view-wrapper{flex:2 1 600px;display:flex;flex-direction:column;gap:10px;}
-
-/* ===== PODGLĄD ===== */
-.gun-view{
-    position:relative;width:100%;max-width:800px;
-    aspect-ratio:1289.79/1040.4;                    /* źródłowe proporcje */
-    background:#000 center/auto no-repeat;          /* url() wstawia JS */
-    background-size:calc(var(--bg-scale)*100%) auto;
-    border-radius:6px;
-}
-.gun-view::before{content:"";position:absolute;inset:0;background:#0004;border-radius:6px;}
-.gun-svg{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(var(--gun-scale));
-         transform-origin:center;width:100%;height:100%;}
-.color-overlay{pointer-events:none;mix-blend-mode:hard-light;opacity:.45;}
-
-/* ===== PRZYCISKI ===== */
-.action-button{width:100%;padding:12px;font-size:16px;border:none;color:#fff;border-radius:6px;cursor:pointer;text-align:center;}
-#bg-button   {background:#6c757d;}
-#save-button {background:var(--primary);}
-.reset-button{background:#dc3545;}
-
-/* ===== PANEL ===== */
-.controls{flex:1 1 300px;min-width:300px;display:flex;flex-direction:column;}
-.control-section{margin-bottom:20px;}
-.control-section-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px;}
-.control-section-header h3{margin:0;color:var(--txt);}
-.lang-switcher img{width:24px;margin-left:8px;cursor:pointer;border:2px solid transparent;border-radius:3px;}
-.lang-switcher img.active{border-color:var(--primary);}
-
-.part-selection{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.part-selection button{padding:10px 12px;font:600 11px/1 sans-serif;text-align:center;color:#000;background:#f5f6f7;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:.2s;}
-.part-selection button.selected{background:var(--primary);color:#fff;border-color:var(--primary);}
-#mix-button{background:linear-gradient(45deg,#f3ec78,#af4261,#43cea2,#185a9d);color:#fff;font-weight:bold;}
-
-.color-palette-container{max-height:400px;overflow-y:auto;padding-right:10px;}
-.color-palette{display:grid;grid-template-columns:repeat(3,1fr);gap:25px 10px;}
-.color-swatch-wrapper{display:flex;flex-direction:column;align-items:center;cursor:pointer;}
-.color-swatch{width:45px;height:45px;border-radius:50%;border:2px solid var(--border);transition:.2s;}
-.color-swatch-wrapper:hover .color-swatch{transform:scale(1.1);box-shadow:0 0 8px var(--primary);}
-.color-swatch-label{margin-top:8px;font-size:10px;color:#6c757d;text-align:center;}
-
-.summary-container{flex:1 1 0;border:1px solid var(--border);border-radius:6px;background:#fff1;padding:12px;margin-top:16px;color:var(--txt);font-size:14px;overflow:hidden;}
-#summary-list{column-count:3;column-gap:24px;} #summary-list div{margin-bottom:4px;break-inside:avoid;}
-</style>
+  <style>
+    /* reset + proste u-style’owanie */
+    *{margin:0;padding:0;box-sizing:border-box}
+    html,body{height:100%;background:#111;color:#fff;font-family:system-ui,Arial,sans-serif}
+    canvas{display:block;width:100%;height:100%}
+    #ui{
+      position:fixed;left:1rem;top:1rem;display:flex;gap:.5rem;z-index:10;
+    }
+    button{
+      background:#222;border:1px solid #444;color:#fff;padding:.4rem .8rem;
+      font-size:14px;cursor:pointer;border-radius:4px;
+    }
+    button:disabled{opacity:.5;cursor:default}
+  </style>
 </head>
 <body>
-<div class="configurator-container">
-    <div class="gun-view-wrapper">
-        <div class="gun-view" id="gun-view"><p style="text-align:center;padding-top:20px;color:#6c757d;">Ładowanie…</p></div>
-        <button id="bg-button"   class="action-button">Zmień Tło</button>
-        <button id="save-button" class="action-button">Zapisz Obraz</button>
-        <div class="summary-container"><div id="summary-list"></div></div>
-    </div>
+  <canvas id="stage"></canvas>
 
-    <div class="controls">
-        <div class="control-section">
-            <div class="control-section-header">
-                <h3 id="header-part-selection">1. Wybierz część</h3>
-                <div class="lang-switcher">
-                    <img id="lang-pl" src="https://flagicons.lipis.dev/flags/4x3/pl.svg" alt="PL">
-                    <img id="lang-gb" src="https://flagicons.lipis.dev/flags/4x3/gb.svg" alt="EN">
-                </div>
-            </div>
-            <div class="part-selection" id="part-selection-container"></div>
-        </div>
+  <!-- prosty przełącznik tła -->
+  <div id="ui">
+    <button id="prev">◀︎</button>
+    <button id="next">▶︎</button>
+  </div>
 
-        <div class="control-section">
-            <div class="control-section-header"><h3 id="header-color-selection">2. Wybierz kolor (Cerakote)</h3></div>
-            <div class="color-palette-container"><div class="color-palette" id="color-palette"></div></div>
-        </div>
-
-        <div class="reset-button-container"><button id="reset-button" class="action-button reset-button">Resetuj Kolory</button></div>
-    </div>
-</div>
-<script type="module" src="app.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
