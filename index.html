@@ -14,29 +14,41 @@
   src:local('Eurostile Extended Black'),local('Eurostile');
 }
 
-/* ========== WSPÓLNY STYL (desktop + mobile) ============================== */
+/* ======== WSPÓLNE ====================================================== */
 :root{--page:#000;--box:#000;--txt:#fff;--border:#dee2e6;--pri:#007bff;}
 *{box-sizing:border-box;margin:0;padding:0}
 body{
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  background:var(--page);
-  display:flex;justify-content:center;padding:20px;
+  background:var(--page);display:flex;justify-content:center;padding:20px;
 }
 .configurator{
-  background:var(--box);
-  border-radius:8px;
-  box-shadow:0 8px 24px #0008;
-  display:flex;flex-wrap:wrap;gap:24px;          /* ten gap zmniejszamy w mobile */
-  max-width:1200px;width:100%;padding:24px;
+  background:var(--box);border-radius:8px;box-shadow:0 8px 24px #0008;
+  display:flex;flex-wrap:wrap;gap:24px;max-width:1200px;width:100%;padding:24px;
 }
-.gun-wrap{flex:2 1 600px;display:flex;flex-direction:column;gap:10px}
-.gun-view{
-  position:relative;width:100%;max-width:800px;aspect-ratio:4/3;
-  border-radius:6px;background:#111 center/cover no-repeat;
-}
-.gun-svg{width:100%;height:100%}
-.color-overlay{mix-blend-mode:hard-light;opacity:.45;pointer-events:none}
 
+/* ---------- LEWA KOLUMNA (gun-wrap) ---------- */
+.gun-wrap{flex:2 1 600px;display:flex;flex-direction:column;gap:10px}
+.gun-view{position:relative;aspect-ratio:4/3;width:100%;max-width:800px;
+  border-radius:6px;background:#111 center/cover no-repeat}
+.gun-svg{width:100%;height:100%}
+.color-overlay{pointer-events:none;mix-blend-mode:hard-light;opacity:.45}
+
+.btn{width:100%;padding:12px;font-size:16px;border:none;color:#fff;border-radius:6px;cursor:pointer}
+.gray{background:#6c757d}.blue{background:var(--pri)}.red{background:#dc3545}
+
+.summary{
+  border:1px solid var(--border);border-radius:6px;background:#111;margin-top:16px;
+  padding:12px;color:var(--txt)
+}
+#summary-list{column-count:3;column-gap:20px}
+#summary-list div{break-inside:avoid;margin-bottom:4px;font-size:15px}
+
+#price{
+  font-family:'Eurostile',sans-serif;font-weight:900;font-size:22px;
+  margin-top:12px;color:#fff;text-align:right   /* na mobile zmienimy na center */
+}
+
+/* ---------- PRAWA KOLUMNA (controls) ---------- */
 .controls{flex:1 1 300px;min-width:300px;display:flex;flex-direction:column}
 .section{margin-bottom:20px}
 .sec-hdr{display:flex;justify-content:space-between;align-items:center;
@@ -52,6 +64,7 @@ body{
   background:#f5f6f7;border:1px solid var(--border);border-radius:6px;cursor:pointer}
 .parts button.selected{background:var(--pri);color:#fff}
 .parts button.disabled{background:#444;color:#888;cursor:not-allowed}
+
 .mix{
   background:linear-gradient(45deg,#ffd700,#ff7a00,#ff007a,#00aaff,#00ff6a);
   color:#000;font-weight:700
@@ -61,60 +74,34 @@ body{
 .palette{display:grid;grid-template-columns:repeat(3,1fr);gap:25px 10px}
 .sw{display:flex;flex-direction:column;align-items:center;cursor:pointer}
 .dot{width:45px;height:45px;border-radius:50%;border:2px solid var(--border);
-     transition:transform .2s,box-shadow .2s}
+     transition:.2s}
 .sw:hover .dot{transform:scale(1.1);box-shadow:0 0 8px var(--pri)}
-.lbl{margin-top:6px;font-size:11px;line-height:1.2;font-weight:600;color:#fff;text-align:center}
+.lbl{margin-top:6px;font-size:11px;font-weight:600;color:#fff;text-align:center;line-height:1.25}
 
-.btn{width:100%;padding:12px;font-size:16px;border:none;color:#fff;border-radius:6px;cursor:pointer}
-.gray{background:#6c757d}.blue{background:var(--pri)}.red{background:#dc3545}
-
-.summary{
-  border:1px solid var(--border);border-radius:6px;background:#111;
-  padding:12px;margin-top:16px;color:var(--txt)
-}
-#summary-list{column-count:3;column-gap:20px}
-#summary-list div{break-inside:avoid;margin-bottom:4px;font-size:15px}
-
-#price{
-  font-family:'Eurostile',sans-serif;font-weight:900;font-size:22px;
-  margin-top:12px;color:#fff;text-align:right       /* wyśrodkowanie tylko w mobile */
-}
-
-/* ========= MODAL ======================================================== */
+/* ---------- MODAL ---------- */
 .modal{position:fixed;inset:0;background:#000a;display:flex;align-items:center;justify-content:center;z-index:1000}
 .modal.hidden{display:none}
 .box{background:#1b1b1b;padding:24px;border-radius:8px;width:90%;max-width:420px}
 .box h2{color:#fff;font-size:20px;margin-bottom:16px}
-.box input{width:100%;padding:10px;margin-bottom:10px;border-radius:6px;border:1px solid #555;background:#000;color:#fff;font-size:14px}
+.box input{width:100%;padding:10px;margin-bottom:10px;border-radius:6px;border:1px solid #555;
+  background:#000;color:#fff;font-size:14px}
 .note{font-size:12px;color:#ff4444;margin-top:6px;text-align:center}
 
-/* ========== DESKTOP (≥769 px)  – bez zmian =============================== */
-@media(min-width:769px){
-  /* desktop ma pozostać taki, jak był */
-}
-
-/* ========== MOBILE (≤768 px)  ========================================== */
+/* ======== MOBILE ≤768 px (tylko modyfikacje, desktop nie ruszamy) ====== */
 @media(max-width:768px){
   /* przyklejenie zdjęcia */
-  .gun-view{
-    position:fixed;top:0;left:0;right:0;width:100vw;max-width:none;
-    aspect-ratio:4/3;z-index:1000;
-  }
-  /* odsuwamy resztę pod zdjęcie */
-  body{padding-top:calc(100vw*3/4 + 20px);}
+  .gun-view{position:fixed;top:0;left:0;right:0;width:100vw;max-width:none;z-index:1000}
+  body{padding-top:calc(100vw*3/4 + 20px)}           /* odsunięcie treści pod obrazek */
+  .configurator{gap:12px}                            /* mniejsza szczelina */
 
-  /* zmniejszamy przerwę między blokami */
-  .configurator{gap:12px}
-
-  /* KOLEJNOŚĆ ----------------------------------------------------------- */
-  /* 1  – gun-wrap (już fixed na górze) */
-  .controls   {order:2}   /* Wybierz część + paleta + reset (reset jest ostatni w .controls) */
+  /* kolejność sekcji (zmieniamy wyłącznie mobile) */
+  .controls   {order:2}  /* Wybór części + paleta + reset */
   .summary    {order:3}
-  /* Reset już jest w .controls – zostaje po części & palecie */
+  #reset-btn  {order:4}
   #price      {order:5;text-align:center}
   #send-btn   {order:6}
 
-  /* tabela – 2 kolumny */
+  /* w tabeli dwie kolumny */
   #summary-list{column-count:2}
 }
 </style>
@@ -123,16 +110,24 @@ body{
 <body>
 <div class="configurator">
 
-  <!-- ============ PODGLĄD (gun-wrap) ==================================== -->
+  <!-- LEWA KOLUMNA ====================================================== -->
   <div class="gun-wrap">
-    <div id="gun-view" class="gun-view"><p style="text-align:center;padding-top:20px;color:#6c757d">Ładowanie…</p></div>
+    <div id="gun-view" class="gun-view">
+      <p style="text-align:center;padding-top:20px;color:#6c757d">Ładowanie…</p>
+    </div>
 
     <button id="bg-btn"   class="btn gray">Zmień Tło</button>
     <button id="save-btn" class="btn blue">Zapisz Obraz</button>
+
+    <!-- podsumowanie + cena + przycisk wysyłki -->
+    <div class="summary"><div id="summary-list"></div></div>
+    <div id="price">Szacowany koszt:&nbsp;&nbsp;0&nbsp;zł</div>
+    <button id="send-btn" class="btn red" style="margin-top:8px">Wyślij do Wizards!</button>
   </div>
 
-  <!-- ============ PANEL (części + kolory + reset) ======================= -->
+  <!-- PRAWA KOLUMNA ===================================================== -->
   <div class="controls">
+
     <!-- Wybór części -->
     <div class="section">
       <div class="sec-hdr">
@@ -154,15 +149,9 @@ body{
     <!-- Reset -->
     <button id="reset-btn" class="btn red" style="margin-top:auto">Resetuj Kolory</button>
   </div>
-
-  <!-- ============ Podsumowanie & Cena & Wysyłka ========================= -->
-  <div class="summary"><div id="summary-list"></div></div>
-
-  <div id="price">Szacowany koszt:&nbsp;&nbsp;0&nbsp;zł</div>
-  <button id="send-btn" class="btn red" style="margin-top:8px">Wyślij do Wizards!</button>
 </div>
 
-<!-- ============ MODAL =================================================== -->
+<!-- MODAL =============================================================== -->
 <div id="modal" class="modal hidden">
   <div class="box">
     <h2 id="modal-title">Wyślij projekt</h2>
