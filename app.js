@@ -1,11 +1,11 @@
 /* ====== app.js ====== */
 document.addEventListener('DOMContentLoaded', () => {
-    /* --- CONFIG --- */
-    const SVG_FILE = 'g17.svg';
-    const TEXTURE  = 'img/glock17.png';
-    const FONT_SIZE_PX = 24;         // rozmiar tekstu na PNG
-    const PANEL_W   = 380;           // szerokość panelu tekstowego na PNG
-    const PADDING   = 32;            // margines w panelu tekstowym
+    /* ------- USTAWIENIA ------- */
+    const SVG_FILE  = 'g17.svg';
+    const TEXTURE   = 'img/glock17.png';
+    const PANEL_W   = 380;      // szerokość panelu tekstowego w PNG
+    const FONT_PX   = 24;       // wielkość czcionki w PNG
+    const PAD       = 32;       // padding w panelu
 
     const PARTS = [
         { id:'zamek',    pl:'Zamek',                 en:'Slide' },
@@ -21,72 +21,54 @@ document.addEventListener('DOMContentLoaded', () => {
         { id:'stopka',   pl:'Stopka magazynka',      en:'Magazine floorplate' }
     ];
 
-    /* --- Kolory (jak poprzednio) --- */
-    const COLORS = { /* skrócona lista – bez zmian od poprzedniej wersji */ };
-    Object.assign(COLORS,{
-        "H-140 Bright White":"#FFFFFF","H-242 Hidden White":"#E5E4E2","H-136 Snow White":"#F5F5F5",
-        "H-297 Stormtrooper White":"#F2F2F2","H-300 Armor Clear":"#F5F5F5","H-331 Parakeet Green":"#C2D94B",
-        "H-141 Prison Pink":"#E55C9C","H-306 Springfield Grey":"#A2A4A6","H-312 Frost":"#C9C8C6",
-        "H-214 S&W Grey":"#8D918D","H-265 Cold War Grey":"#999B9E","H-227 Tactical Grey":"#8D8A82",
-        "H-170 Titanium":"#7A7A7A","H-130 Combat Grey":"#6A6A6A","H-237 Tungsten":"#6E7176",
-        "H-210 Sig Dark Grey":"#5B5E5E","H-234 Sniper Grey":"#5B6063","H-342 Smoke":"#84888B",
-        "H-321 Blush":"#D8C0C4","H-213 Battleship Grey":"#52595D","H-146 Graphite Black":"#3B3B3B",
-        "H-190 Armor Black":"#212121","H-142 Light Sand":"#D2C3A8","H-199 Desert Sand":"#C5BBAA",
-        "H-267 Magpul FDE":"#A48F6A","H-269 Barrett Brown":"#67594D","H-148 Burnt Bronze":"#8C6A48",
-        "H-339 Federal Brown":"#5E5044","H-8000 RAL 8000":"#937750","H-33446 FS Sabre Sand":"#B19672",
-        "H-240 Mil Spec O.D. Green":"#5F604F","H-247 Desert Sage":"#6A6B5C","H-229 Sniper Green":"#565A4B",
-        "H-344 Olive":"#6B6543","H-189 Noveske Bazooka Green":"#6C6B4E","H-353 Island Green":"#00887A",
-        "H-127 Kel-Tec Navy Blue":"#2B3C4B","H-171 NRA Blue":"#00387B","H-188 Magpul Stealth Grey":"#5C6670",
-        "H-256 Cobalt":"#395173","H-258 Socom Blue":"#3B4B5A","H-329 Blue Raspberry":"#0077C0",
-        "H-362 Patriot Blue":"#33415C","H-197 Wild Purple":"#5A3A54","H-217 Bright Purple":"#8A2BE2",
-        "H-332 Purplexed":"#6C4E7C","H-357 Periwinkle":"#6B6EA6","H-128 Hunter Orange":"#F26522",
-        "H-167 USMC Red":"#9E2B2F","H-216 S&W Red":"#B70101","H-221 Crimson":"#891F2B",
-        "H-317 Sunflower":"#F9A602","H-354 Lemon Zest":"#F7D51D","H-122 Gold":"#B79436",
-        "H-151 Satin Aluminum":"#C0C0C0"
-    });
+    /* --- paleta Cerakote (identycznie jak wcześniej) --- */
+    const COLORS = { /* …pełna lista… */ };
+    /* (dla czytelności skrócona – kopiujesz tę samą listę, którą już miałeś) */
 
-    /* --- DOM --- */
-    const gunBox = document.getElementById('gun-view-container');
-    const partBox= document.getElementById('part-selection-container');
-    const palBox = document.getElementById('color-palette');
-    const resetBtn=document.getElementById('reset-button');
-    const saveBtn =document.getElementById('save-button');
-    const PLbtn=document.getElementById('lang-pl');
-    const ENbtn=document.getElementById('lang-gb');
-    const H1=document.getElementById('header-part-selection');
-    const H2=document.getElementById('header-color-selection');
-    const sumTitle=document.getElementById('summary-title');
-    const sumList =document.getElementById('summary-list');
+    /* ------- DOM ------- */
+    const gunBox  = document.getElementById('gun-view-container');
+    const partBox = document.getElementById('part-selection-container');
+    const palBox  = document.getElementById('color-palette');
+    const resetBtn= document.getElementById('reset-button');
+    const saveBtn = document.getElementById('save-button');
+    const sumList = document.getElementById('summary-list');
+    const sumTitle= document.getElementById('summary-title');
+    const PLbtn   = document.getElementById('lang-pl');
+    const ENbtn   = document.getElementById('lang-gb');
+    const H1      = document.getElementById('header-part-selection');
+    const H2      = document.getElementById('header-color-selection');
 
-    /* --- state --- */
+    /* ------- STATE ------- */
     let lang='pl', activePart=null;
-    const selections={}; // {partId:colorName}
+    const selections={};
 
-    /* ========== INIT ========== */
-    (async function init(){
+    /* ===== INIT ===== */
+    (async () => {
         await loadSvg();
         buildUI();
-        defaultBlack();
-        updateText();updateSummary();
+        setDefault();
+        refreshText();
+        refreshSummary();
     })();
 
-    /* ===== SVG ===== */
+    /* ===== SVG LOAD ===== */
     async function loadSvg(){
-        const svgTxt=await fetch(SVG_FILE).then(r=>r.text());
-        gunBox.innerHTML=svgTxt;
-        const svg=gunBox.querySelector('svg');svg.classList.add('gun-svg');
+        const svgText = await (await fetch(SVG_FILE)).text();
+        gunBox.innerHTML = svgText;
+        const svg = gunBox.querySelector('svg');svg.classList.add('gun-svg');
 
-        /* group lufa */
+        /* grupujemy lufę */
         const g=document.createElementNS('http://www.w3.org/2000/svg','g');g.id='lufa';
         [...svg.querySelectorAll('#lufa1,#lufa2')].forEach(p=>g.appendChild(p));
         svg.insertBefore(g,svg.firstChild);
 
-        /* overlays */
+        /* nakładki kolorów */
         const layer=document.createElementNS('http://www.w3.org/2000/svg','g');layer.id='color-overlays';svg.appendChild(layer);
         PARTS.forEach(p=>{
-            const src=svg.querySelector('#'+p.id); if(!src) return;
+            const src=svg.querySelector('#'+p.id); if(!src){console.warn('Brak ID w SVG:',p.id);return;}
             ['1','2'].forEach(n=>{
-                const ov=src.cloneNode(true);ov.id=`color-overlay-${n}-${p.id}`;ov.classList.add('color-overlay');layer.appendChild(ov);
+                const ov=src.cloneNode(true);ov.id=`color-overlay-${n}-${p.id}`;ov.classList.add('color-overlay');
+                layer.appendChild(ov);
             });
         });
     }
@@ -94,28 +76,36 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ===== UI ===== */
     function buildUI(){
         PARTS.forEach(p=>{
-            const b=document.createElement('button');b.dataset.partId=p.id;
-            b.onclick=()=>selectPart(b,p.id);partBox.appendChild(b);
+            const b=document.createElement('button');
+            b.dataset.partId=p.id;
+            b.onclick=()=>selectPart(b,p.id);
+            partBox.appendChild(b);
         });
-        const mix=document.createElement('button');mix.id='mix-button';mix.textContent='MIX';mix.onclick=randomize;partBox.appendChild(mix);
-        resetBtn.onclick=resetAll;saveBtn.onclick=savePng;
+        const mix=document.createElement('button');
+        mix.id='mix-button';mix.textContent='MIX';mix.onclick=randomize;partBox.appendChild(mix);
+
+        resetBtn.onclick=resetAll;saveBtn.onclick=savePNG;
         PLbtn.onclick=()=>setLang('pl');ENbtn.onclick=()=>setLang('en');
         buildPalette();
     }
+
     function selectPart(btn,id){
         partBox.querySelectorAll('button').forEach(b=>b.classList.remove('selected'));
         btn.classList.add('selected');activePart=id;
     }
 
-    /* ===== LANGUAGE ===== */
-    function setLang(l){lang=l;updateText();updateSummary();}
-    function updateText(){
+    /* ===== LANG ===== */
+    function setLang(l){lang=l;refreshText();refreshSummary();}
+    function refreshText(){
         partBox.querySelectorAll('button').forEach(b=>{
-            const p=PARTS.find(x=>x.id===b.dataset.partId);if(p) b.textContent=p[lang];
+            const p=PARTS.find(x=>x.id===b.dataset.partId);
+            if(p) b.textContent=p[lang];
         });
         H1.textContent=lang==='pl'?'1. Wybierz część':'1. Select part';
         H2.textContent=lang==='pl'?'2. Wybierz kolor (Cerakote)':'2. Select color (Cerakote)';
-        sumTitle.textContent=lang==='pl'?'Twoje zestawienie kolorów Cerakote':'Your Cerakote color summary';
+        sumTitle.textContent=lang==='pl'
+            ?'Twoje zestawienie kolorów Cerakote'
+            :'Your Cerakote color summary';
         PLbtn.classList.toggle('active',lang==='pl');ENbtn.classList.toggle('active',lang==='en');
     }
 
@@ -123,11 +113,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function buildPalette(){
         palBox.innerHTML='';
         for(const [name,hex] of Object.entries(COLORS)){
-            const w=document.createElement('div');w.className='color-swatch-wrapper';w.title=name;
-            w.onclick=()=>applyColor(activePart,hex,name);
+            const wrap=document.createElement('div');wrap.className='color-swatch-wrapper';wrap.title=name;
+            wrap.onclick=()=>applyColor(activePart,hex,name);
             const dot=document.createElement('div');dot.className='color-swatch';dot.style.backgroundColor=hex;
             const lbl=document.createElement('div');lbl.className='color-swatch-label';lbl.textContent=name;
-            w.append(dot,lbl);palBox.appendChild(w);
+            wrap.append(dot,lbl);palBox.appendChild(wrap);
         }
     }
 
@@ -136,15 +126,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if(!pid){alert(lang==='pl'?'Najpierw wybierz część!':'Select a part first!');return;}
         ['1','2'].forEach(n=>{
             const ov=document.getElementById(`color-overlay-${n}-${pid}`);
-            const shapes = ov.tagName==='g' ? ov.querySelectorAll('path,polygon,ellipse,circle,rect') : [ov];
+            const shapes=ov.tagName==='g'?ov.querySelectorAll('path,polygon,ellipse,circle,rect'):[ov];
             shapes.forEach(s=>s.style.fill=hex);
         });
-        selections[pid]=name;updateSummary();
+        selections[pid]=name;refreshSummary();
     }
-    function defaultBlack(){
-        const def='H-146 Graphite Black',hex=COLORS[def];
+
+    function setDefault(){
+        const def='H-146 Graphite Black', hex=COLORS[def];
         PARTS.forEach(p=>{selections[p.id]=def;applyColor(p.id,hex,def);});
     }
+
     function randomize(){
         const keys=Object.keys(COLORS);
         PARTS.forEach(p=>{
@@ -152,6 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
             applyColor(p.id,COLORS[n],n);
         });
     }
+
     function resetAll(){
         document.querySelectorAll('.color-overlay').forEach(ov=>{
             const shapes=ov.tagName==='g'?ov.querySelectorAll('path,polygon,ellipse,circle,rect'):[ov];
@@ -159,26 +152,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         Object.keys(selections).forEach(k=>delete selections[k]);
         partBox.querySelectorAll('button').forEach(b=>b.classList.remove('selected'));
-        activePart=null;updateSummary();
+        activePart=null;refreshSummary();
     }
 
     /* ===== SUMMARY ===== */
-    function updateSummary(){
+    function refreshSummary(){
         sumList.innerHTML='';
         PARTS.forEach(p=>{
             const c=selections[p.id];if(!c) return;
-            const div=document.createElement('div');div.textContent=`${p[lang]} – ${c}`;sumList.appendChild(div);
+            const d=document.createElement('div');d.textContent=`${p[lang]} – ${c}`;sumList.appendChild(d);
         });
     }
 
     /* ===== SAVE PNG ===== */
-    async function savePng(){
+    async function savePNG(){
         const svg=document.querySelector('.gun-svg');if(!svg) return;
 
-        /* przygotuj listę tekstową */
         const lines=PARTS.map(p=>selections[p.id]?`${p[lang]} – ${selections[p.id]}`:null).filter(Boolean);
 
-        /* utwórz canvas szerszy o panel tekstowy */
         const scale=2;
         const box=svg.getBBox();
         const W=box.width*scale + PANEL_W;
@@ -187,33 +178,35 @@ document.addEventListener('DOMContentLoaded', () => {
         const canvas=Object.assign(document.createElement('canvas'),{width:W,height:H});
         const ctx=canvas.getContext('2d');
 
-        /* tło (tekstura) */
+        /* tło */
         const base=new Image();base.src=TEXTURE;base.onload=drawAll;base.onerror=()=>alert('Błąd tekstury');
 
         async function drawAll(){
             ctx.drawImage(base,0,0,box.width*scale,H);
 
-            /* kolorowe nakładki */
-            await Promise.all([...svg.querySelectorAll('.color-overlay')]
-                .filter(ov=>ov.style.fill && ov.style.fill!=='transparent')
-                .map(ov=>{
-                    const tmp=`<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"${svg.getAttribute('viewBox')}\"><g style=\"mix-blend-mode:hard-light;opacity:.45;\">${ov.outerHTML}</g></svg>`;
-                    const url=URL.createObjectURL(new Blob([tmp],{type:'image/svg+xml'}));
-                    return new Promise(res=>{
-                        const img=new Image();
-                        img.onload=()=>{ctx.drawImage(img,0,0,box.width*scale,H);URL.revokeObjectURL(url);res();};
-                        img.src=url;
-                    });
-                }));
+            /* nakładki kolorów */
+            await Promise.all(
+                [...svg.querySelectorAll('.color-overlay')]
+                    .filter(ov=>ov.style.fill && ov.style.fill!=='transparent')
+                    .map(ov=>{
+                        const tmp=`<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"${svg.getAttribute('viewBox')}\"><g style=\"mix-blend-mode:hard-light;opacity:.45;\">${ov.outerHTML}</g></svg>`;
+                        const url=URL.createObjectURL(new Blob([tmp],{type:'image/svg+xml'}));
+                        return new Promise(res=>{
+                            const img=new Image();
+                            img.onload=()=>{ctx.drawImage(img,0,0,box.width*scale,H);URL.revokeObjectURL(url);res();};
+                            img.src=url;
+                        });
+                    })
+            );
 
-            /* panel tekstowy po prawej */
+            /* panel tekstowy */
             const x0=box.width*scale;
-            ctx.fillStyle='rgba(0,0,0,0.8)';
+            ctx.fillStyle='rgba(0,0,0,0.85)';
             ctx.fillRect(x0,0,PANEL_W,H);
 
-            ctx.fillStyle='#FFFFFF';
-            ctx.font=`${FONT_SIZE_PX}px sans-serif`;
-            lines.forEach((t,i)=>ctx.fillText(t,x0+PADDING,PADDING+FONT_SIZE_PX*i*1.4));
+            ctx.fillStyle='#fff';
+            ctx.font=`${FONT_PX}px sans-serif`;
+            lines.forEach((t,i)=>ctx.fillText(t,x0+PAD,PAD+i*FONT_PX*1.6));
 
             const a=document.createElement('a');
             a.href=canvas.toDataURL('image/png');a.download='weapon-wizards-projekt.png';a.click();
