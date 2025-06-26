@@ -1,4 +1,4 @@
-<!-- ====== index.html ====== -->
+<!-- ===== index.html ===== -->
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -6,48 +6,37 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Weapon-Wizards – Konfigurator</title>
 
-<!-- ===== czcionka Eurostile (lokalna) ===== -->
+<!-- Eurostile (lokalna) -->
 <style>
 @font-face{
   font-family:'Eurostile';font-weight:900;font-style:normal;
   src:local('Eurostile Extended Black'),local('Eurostile');
 }
 
-/* ===== ZMIENNE KOLORÓW ===== */
 :root{--page:#000;--box:#000;--txt:#fff;--border:#dee2e6;--pri:#007bff;}
-
 *{box-sizing:border-box;margin:0}
 
 body{
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  background:var(--page);
-  display:flex;justify-content:center;padding:20px;
+  background:var(--page);display:flex;justify-content:center;padding:20px;
 }
 
-/* =========================================
-   GŁÓWNY KONTENER  ->  GRID
-   =========================================*/
+/* === GŁÓWNY KONTENER – FLEX (desktop) ===================== */
 .configurator{
-  background:var(--box);
-  border-radius:8px;
-  box-shadow:0 8px 24px #0008;
-  display:grid;
-  grid-template-columns:2fr 1fr;     /* lewa / prawa kolumna – DESKTOP */
-  grid-template-rows:auto auto;      /* wiersz 1 i 2              */
-  gap:24px;
+  background:var(--box);border-radius:8px;box-shadow:0 8px 24px #0008;
+  display:flex;flex-wrap:wrap;gap:24px;
   max-width:1200px;width:100%;padding:24px;
 }
 
-/* ===== lewa kolumna (obraz broni + przyciski)  ===== */
-.gun-wrap{grid-column:1;grid-row:1;display:flex;flex-direction:column;gap:10px;}
-.gun-view{
-  position:relative;width:100%;max-width:800px;aspect-ratio:4/3;
+/* --- lewa kolumna ---------------------------------------- */
+.gun-wrap{flex:2 1 600px;display:flex;flex-direction:column;gap:10px}
+.gun-view{position:relative;width:100%;max-width:800px;aspect-ratio:4/3;
   background:#111 center/cover no-repeat;border-radius:6px}
 .gun-svg{width:100%;height:100%}
 .color-overlay{mix-blend-mode:hard-light;opacity:.45;pointer-events:none}
 
-/* ===== prawa kolumna (sterowanie) ===== */
-.controls{grid-column:2;grid-row:1;display:flex;flex-direction:column;min-width:300px;}
+/* --- prawa kolumna --------------------------------------- */
+.controls{flex:1 1 300px;min-width:300px;display:flex;flex-direction:column}
 .section{margin-bottom:20px}
 .sec-hdr{display:flex;justify-content:space-between;align-items:center;
   border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px}
@@ -72,50 +61,46 @@ body{
 .sw:hover .dot{transform:scale(1.1);box-shadow:0 0 8px var(--pri)}
 .lbl{margin-top:6px;color:#fff;font-size:11px;font-weight:600;text-align:center;line-height:1.25}
 
+/* --- przyciski wspólne ----------------------------------- */
 .btn{width:100%;padding:12px;font-size:16px;border:none;color:#fff;border-radius:6px;cursor:pointer}
 .gray{background:#6c757d}.blue{background:var(--pri)}.red{background:#dc3545}
 
-/* ===== blok podsumowania + cena + przycisk wysyłki ===== */
-.summary-block{grid-column:1/ span 2;grid-row:2;display:flex;flex-direction:column;gap:16px}
-
-.summary{
-  border:1px solid var(--border);border-radius:6px;padding:12px;background:#111;color:var(--txt);
-}
-#summary-list{column-count:3;column-gap:20px}   /* desktop – 3 kolumny */
+/* --- podsumowanie + cena + wysyłka ------------------------ */
+.summary{border:1px solid var(--border);border-radius:6px;padding:12px;background:#111;color:var(--txt)}
+#summary-list{column-count:3;column-gap:20px}          /* desktop = 3 kolumny */
 #summary-list div{break-inside:avoid;margin-bottom:4px;font-size:15px}
 
 #price{
-  font-family:'Eurostile',sans-serif;font-size:22px;font-weight:900;text-align:right;color:#fff
+  font-family:'Eurostile',sans-serif;font-size:22px;font-weight:900;text-align:right;color:#fff;margin-top:16px
 }
 
-/* ==========   WIDOK MOBILNY  ≤ 768 px ================= */
-@media(max-width:768px){
-  /* grid robi się jednokolumnowy */
-  .configurator{
-    grid-template-columns:1fr;
-    grid-template-rows:auto;
-  }
-  .gun-wrap      {grid-column:1;grid-row:1}
-  .controls      {grid-column:1;grid-row:2}
-  .summary-block {grid-column:1;grid-row:3}
+/* === WIDOK MOBILNY ======================================= */
+@media (max-width:768px){
+  /* kolejność bloków */
+  .gun-wrap      {order:1;width:100%}
+  .controls      {order:2;width:100%}
+  .summary       {order:3;width:100%}
+  #reset-btn     {order:4;width:100%;margin-top:16px}
+  #price         {order:5;width:100%;text-align:center;margin-top:16px}
+  #send-btn      {order:6;width:100%;margin-top:8px}
 
-  /* obraz + tło na pełną szerokość i przyklejony do góry */
+  /* obraz broni przyklejony */
   .gun-view{
     position:fixed;top:0;left:0;right:0;
     width:100vw;max-width:none;aspect-ratio:4/3;z-index:1000
   }
-  /* przesuwamy resztę treści pod obraz (odstęp = wysokość obrazka) */
-  .controls{margin-top:calc(100vw*0.75 + 20px)}   /* 4/3 = 0.75 */
-  .summary-block{margin-top:20px}
+  /* odsunięcie reszty treści pod obrazek (wysokość = 4/3) */
+  .controls{margin-top:calc(100vw*0.75 + 20px)}
+  .summary      {margin-top:20px}
 
-  /* podsumowanie = 2 kolumny */
+  /* podsumowanie → 2 kolumny */
   #summary-list{column-count:2}
 
-  /* cena na środek */
-  #price{text-align:center}
+  /* usuwamy wolną przerwę pod „Zapisz Obraz” */
+  .gun-wrap button.blue{margin-bottom:0}
 }
 
-/* ===== modal ===== */
+/* === modal =============================================== */
 .modal{position:fixed;inset:0;background:#000a;display:flex;align-items:center;justify-content:center;z-index:2000}
 .modal.hidden{display:none}
 .box{background:#1b1b1b;padding:24px;border-radius:8px;width:90%;max-width:420px}
@@ -130,7 +115,7 @@ body{
 
 <div class="configurator">
 
-  <!-- === 1. podgląd broni + przyciski  ====================== -->
+  <!-- lewa kolumna -->
   <div class="gun-wrap">
     <div id="gun-view" class="gun-view"><p style="text-align:center;padding-top:20px;color:#6c757d">Ładowanie…</p></div>
 
@@ -138,7 +123,7 @@ body{
     <button id="save-btn" class="btn blue">Zapisz Obraz</button>
   </div>
 
-  <!-- === 2. panel sterowania  ============================== -->
+  <!-- prawa kolumna -->
   <div class="controls">
     <div class="section">
       <div class="sec-hdr">
@@ -159,17 +144,13 @@ body{
     <button id="reset-btn" class="btn red" style="margin-top:auto">Resetuj Kolory</button>
   </div>
 
-  <!-- === 3. podsumowanie + cena + wysyłka  ================== -->
-  <div class="summary-block">
-    <div class="summary"><div id="summary-list"></div></div>
-
-    <div id="price">Szacowany koszt:&nbsp;&nbsp;0&nbsp;zł</div>
-
-    <button id="send-btn" class="btn red">Wyślij do Wizards!</button>
-  </div>
+  <!-- podsumowanie + cena + wysyłka -->
+  <div class="summary"><div id="summary-list"></div></div>
+  <div id="price">Szacowany koszt:&nbsp;&nbsp;0&nbsp;zł</div>
+  <button id="send-btn" class="btn red">Wyślij do Wizards!</button>
 </div>
 
-<!-- === MODAL (wysyłka) ===================================== -->
+<!-- modal wysyłki -->
 <div id="modal" class="modal hidden">
   <div class="box">
     <h2 id="modal-title">Wyślij projekt</h2>
