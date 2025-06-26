@@ -1,4 +1,3 @@
-<!-- ===== index.html ===== -->
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -9,122 +8,127 @@
 <!-- Eurostile (lokalna) -->
 <style>
 @font-face{
-  font-family:'Eurostile';font-weight:900;font-style:normal;
+  font-family:'Eurostile';
+  font-weight:900;
+  font-style:normal;
   src:local('Eurostile Extended Black'),local('Eurostile');
 }
 
+/* ======== WSPÓLNE ====================================================== */
 :root{--page:#000;--box:#000;--txt:#fff;--border:#dee2e6;--pri:#007bff;}
-*{box-sizing:border-box;margin:0}
-
+*{box-sizing:border-box;margin:0;padding:0}
 body{
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   background:var(--page);display:flex;justify-content:center;padding:20px;
 }
-
-/* === GŁÓWNY KONTENER – FLEX (desktop) ===================== */
 .configurator{
   background:var(--box);border-radius:8px;box-shadow:0 8px 24px #0008;
-  display:flex;flex-wrap:wrap;gap:24px;
-  max-width:1200px;width:100%;padding:24px;
+  display:flex;flex-wrap:wrap;gap:24px;max-width:1200px;width:100%;padding:24px;
 }
 
-/* --- lewa kolumna ---------------------------------------- */
+/* ---------- LEWA KOLUMNA (gun-wrap) ---------- */
 .gun-wrap{flex:2 1 600px;display:flex;flex-direction:column;gap:10px}
-.gun-view{position:relative;width:100%;max-width:800px;aspect-ratio:4/3;
-  background:#111 center/cover no-repeat;border-radius:6px}
+.gun-view{position:relative;aspect-ratio:4/3;width:100%;max-width:800px;
+  border-radius:6px;background:#111 center/cover no-repeat}
 .gun-svg{width:100%;height:100%}
-.color-overlay{mix-blend-mode:hard-light;opacity:.45;pointer-events:none}
+.color-overlay{pointer-events:none;mix-blend-mode:hard-light;opacity:.45}
 
-/* --- prawa kolumna --------------------------------------- */
+.btn{width:100%;padding:12px;font-size:16px;border:none;color:#fff;border-radius:6px;cursor:pointer}
+.gray{background:#6c757d}.blue{background:var(--pri)}.red{background:#dc3545}
+
+.summary{
+  border:1px solid var(--border);border-radius:6px;background:#111;margin-top:16px;
+  padding:12px;color:var(--txt)
+}
+#summary-list{column-count:3;column-gap:20px}
+#summary-list div{break-inside:avoid;margin-bottom:4px;font-size:15px}
+
+#price{
+  font-family:'Eurostile',sans-serif;font-weight:900;font-size:22px;
+  margin-top:12px;color:#fff;text-align:right   /* na mobile zmienimy na center */
+}
+
+/* ---------- PRAWA KOLUMNA (controls) ---------- */
 .controls{flex:1 1 300px;min-width:300px;display:flex;flex-direction:column}
 .section{margin-bottom:20px}
 .sec-hdr{display:flex;justify-content:space-between;align-items:center;
   border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px}
-.sec-hdr h3{color:var(--txt);font-size:18px}
+.sec-hdr h3{font-size:18px;color:var(--txt)}
 
-.lang img{width:24px;cursor:pointer;margin-left:8px;border:2px solid transparent;border-radius:3px}
+.lang img{width:24px;margin-left:8px;cursor:pointer;border:2px solid transparent;border-radius:3px}
 .lang img.active{border-color:var(--pri)}
 
 .parts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.parts button{padding:10px 6px;font-size:12px;font-weight:600;text-align:center;
+.parts button{
+  padding:10px 6px;font-size:12px;font-weight:600;text-align:center;
   background:#f5f6f7;border:1px solid var(--border);border-radius:6px;cursor:pointer}
 .parts button.selected{background:var(--pri);color:#fff}
-.parts button.disabled{background:#444;color:#999;cursor:not-allowed}
-.mix{background:linear-gradient(45deg,#ffd700,#ff7a00,#ff007a,#00aaff,#00ff6a);
-     color:#000;font-weight:700}
+.parts button.disabled{background:#444;color:#888;cursor:not-allowed}
+
+.mix{
+  background:linear-gradient(45deg,#ffd700,#ff7a00,#ff007a,#00aaff,#00ff6a);
+  color:#000;font-weight:700
+}
 
 .palette-wrap{max-height:400px;overflow-y:auto;padding-right:8px}
 .palette{display:grid;grid-template-columns:repeat(3,1fr);gap:25px 10px}
 .sw{display:flex;flex-direction:column;align-items:center;cursor:pointer}
 .dot{width:45px;height:45px;border-radius:50%;border:2px solid var(--border);
-  transition:transform .2s,box-shadow .2s}
+     transition:.2s}
 .sw:hover .dot{transform:scale(1.1);box-shadow:0 0 8px var(--pri)}
-.lbl{margin-top:6px;color:#fff;font-size:11px;font-weight:600;text-align:center;line-height:1.25}
+.lbl{margin-top:6px;font-size:11px;font-weight:600;color:#fff;text-align:center;line-height:1.25}
 
-/* --- przyciski wspólne ----------------------------------- */
-.btn{width:100%;padding:12px;font-size:16px;border:none;color:#fff;border-radius:6px;cursor:pointer}
-.gray{background:#6c757d}.blue{background:var(--pri)}.red{background:#dc3545}
-
-/* --- podsumowanie + cena + wysyłka ------------------------ */
-.summary{border:1px solid var(--border);border-radius:6px;padding:12px;background:#111;color:var(--txt)}
-#summary-list{column-count:3;column-gap:20px}          /* desktop = 3 kolumny */
-#summary-list div{break-inside:avoid;margin-bottom:4px;font-size:15px}
-
-#price{
-  font-family:'Eurostile',sans-serif;font-size:22px;font-weight:900;text-align:right;color:#fff;margin-top:16px
-}
-
-/* === WIDOK MOBILNY ======================================= */
-@media (max-width:768px){
-  /* kolejność bloków */
-  .gun-wrap      {order:1;width:100%}
-  .controls      {order:2;width:100%}
-  .summary       {order:3;width:100%}
-  #reset-btn     {order:4;width:100%;margin-top:16px}
-  #price         {order:5;width:100%;text-align:center;margin-top:16px}
-  #send-btn      {order:6;width:100%;margin-top:8px}
-
-  /* obraz broni przyklejony */
-  .gun-view{
-    position:fixed;top:0;left:0;right:0;
-    width:100vw;max-width:none;aspect-ratio:4/3;z-index:1000
-  }
-  /* odsunięcie reszty treści pod obrazek (wysokość = 4/3) */
-  .controls{margin-top:calc(100vw*0.75 + 20px)}
-  .summary      {margin-top:20px}
-
-  /* podsumowanie → 2 kolumny */
-  #summary-list{column-count:2}
-
-  /* usuwamy wolną przerwę pod „Zapisz Obraz” */
-  .gun-wrap button.blue{margin-bottom:0}
-}
-
-/* === modal =============================================== */
-.modal{position:fixed;inset:0;background:#000a;display:flex;align-items:center;justify-content:center;z-index:2000}
+/* ---------- MODAL ---------- */
+.modal{position:fixed;inset:0;background:#000a;display:flex;align-items:center;justify-content:center;z-index:1000}
 .modal.hidden{display:none}
 .box{background:#1b1b1b;padding:24px;border-radius:8px;width:90%;max-width:420px}
-.box h2{color:#fff;margin-bottom:16px;font-size:20px}
-.box input{width:100%;padding:10px;border-radius:6px;border:1px solid #555;margin-bottom:10px;
+.box h2{color:#fff;font-size:20px;margin-bottom:16px}
+.box input{width:100%;padding:10px;margin-bottom:10px;border-radius:6px;border:1px solid #555;
   background:#000;color:#fff;font-size:14px}
-.note{color:#ff4444;font-size:12px;margin-top:6px;text-align:center}
+.note{font-size:12px;color:#ff4444;margin-top:6px;text-align:center}
+
+/* ======== MOBILE ≤768 px (tylko modyfikacje, desktop nie ruszamy) ====== */
+@media(max-width:768px){
+  /* przyklejenie zdjęcia */
+  .gun-view{position:fixed;top:0;left:0;right:0;width:100vw;max-width:none;z-index:1000}
+  body{padding-top:calc(100vw*3/4 + 20px)}           /* odsunięcie treści pod obrazek */
+  .configurator{gap:12px}                            /* mniejsza szczelina */
+
+  /* kolejność sekcji (zmieniamy wyłącznie mobile) */
+  .controls   {order:2}  /* Wybór części + paleta + reset */
+  .summary    {order:3}
+  #reset-btn  {order:4}
+  #price      {order:5;text-align:center}
+  #send-btn   {order:6}
+
+  /* w tabeli dwie kolumny */
+  #summary-list{column-count:2}
+}
 </style>
 </head>
 
 <body>
-
 <div class="configurator">
 
-  <!-- lewa kolumna -->
+  <!-- LEWA KOLUMNA ====================================================== -->
   <div class="gun-wrap">
-    <div id="gun-view" class="gun-view"><p style="text-align:center;padding-top:20px;color:#6c757d">Ładowanie…</p></div>
+    <div id="gun-view" class="gun-view">
+      <p style="text-align:center;padding-top:20px;color:#6c757d">Ładowanie…</p>
+    </div>
 
     <button id="bg-btn"   class="btn gray">Zmień Tło</button>
     <button id="save-btn" class="btn blue">Zapisz Obraz</button>
+
+    <!-- podsumowanie + cena + przycisk wysyłki -->
+    <div class="summary"><div id="summary-list"></div></div>
+    <div id="price">Szacowany koszt:&nbsp;&nbsp;0&nbsp;zł</div>
+    <button id="send-btn" class="btn red" style="margin-top:8px">Wyślij do Wizards!</button>
   </div>
 
-  <!-- prawa kolumna -->
+  <!-- PRAWA KOLUMNA ===================================================== -->
   <div class="controls">
+
+    <!-- Wybór części -->
     <div class="section">
       <div class="sec-hdr">
         <h3 id="h-parts">1. Wybierz część</h3>
@@ -136,21 +140,18 @@ body{
       <div id="parts" class="parts"></div>
     </div>
 
+    <!-- Paleta -->
     <div class="section">
       <div class="sec-hdr"><h3 id="h-col">2. Wybierz kolor (Cerakote)</h3></div>
       <div class="palette-wrap"><div id="palette" class="palette"></div></div>
     </div>
 
+    <!-- Reset -->
     <button id="reset-btn" class="btn red" style="margin-top:auto">Resetuj Kolory</button>
   </div>
-
-  <!-- podsumowanie + cena + wysyłka -->
-  <div class="summary"><div id="summary-list"></div></div>
-  <div id="price">Szacowany koszt:&nbsp;&nbsp;0&nbsp;zł</div>
-  <button id="send-btn" class="btn red">Wyślij do Wizards!</button>
 </div>
 
-<!-- modal wysyłki -->
+<!-- MODAL =============================================================== -->
 <div id="modal" class="modal hidden">
   <div class="box">
     <h2 id="modal-title">Wyślij projekt</h2>
