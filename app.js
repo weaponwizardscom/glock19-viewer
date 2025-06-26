@@ -1,24 +1,25 @@
 document.addEventListener("DOMContentLoaded",()=>{
 
-    /* ========== KONFIG ========== */
+    /* --------- USTAWIENIA --------- */
     const SVG_FILE="g17.svg";
     const TEXTURE ="img/glock17.png";
     const BG      =["img/t1.png","img/t2.png","img/t3.png","img/t4.png","img/t5.png","img/t6.png","img/t7.png"];
     
+    /* ceny */
     const PRICE={zamek:400,szkielet:400,spust:100,lufa:200,zerdz:50,pazur:50,
-                 zrzut:50,blokadap:50,blokada2:50,pin:50,stopka:100}; // plytka bez ceny
-    const MIX2=800, MIXN=1000;
+                 zrzut:50,blokadap:50,blokada2:50,pin:50,stopka:100};
+    const MIX2=800,MIXN=1000;
     
-    /* ========== DOM ========= */
+    /* --------- DOM --------- */
     const $=id=>document.getElementById(id);
-    const gunBox=$("gun-view"),partsBox=$("parts"),palette=$("palette"),
-          priceBox=$("price");
+    const gunBox=$("gun-view"),partsBox=$("parts"),palette=$("palette"),priceBox=$("price");
     const bgBtn=$("bg-btn"),saveBtn=$("save-btn"),resetBtn=$("reset-btn");
     const sendBtn=$("send-btn"),modal=$("modal"),mSend=$("m-send"),mCancel=$("m-cancel"),
           mName=$("m-name"),mMail=$("m-mail"),mPhone=$("m-phone");
     const langPl=$("pl"),langEn=$("en"),hParts=$("h-parts"),hCol=$("h-col");
+    const mTitle=$("m-title"),mNote=$("m-note"),bgImg=gunBox;
     
-    /* ========== DANE ========= */
+    /* --------- DANE --------- */
     const PARTS=[
      {id:"zamek",pl:"Zamek",en:"Slide"},
      {id:"szkielet",pl:"Szkielet",en:"Frame"},
@@ -31,10 +32,10 @@ document.addEventListener("DOMContentLoaded",()=>{
      {id:"blokada2",pl:"Zrzut zamka",en:"Slide stop lever"},
      {id:"pin",pl:"Pin",en:"Trigger pin"},
      {id:"stopka",pl:"Stopka",en:"Floorplate"},
-     {id:"plytka",pl:"Płytka",en:"Back plate",disabled:true} // nowy, nieaktywny
+     {id:"plytka",pl:"Płytka",en:"Back plate",disabled:true}
     ];
     
-    const COLORS={/* – pełna lista, identyczna jak w indexie – */}
+    const COLORS={/* pełna lista jak wcześniej */};
     Object.assign(COLORS,{
      "H-140 Bright White":"#FFFFFF","H-242 Hidden White":"#E5E4E2","H-136 Snow White":"#F5F5F5",
      "H-297 Stormtrooper White":"#F2F2F2","H-300 Armor Clear":"#F5F5F5","H-331 Parakeet Green":"#C2D94B",
@@ -57,11 +58,24 @@ document.addEventListener("DOMContentLoaded",()=>{
      "H-151 Satin Aluminum":"#C0C0C0"
     });
     
-    /* ========== STAN ========= */
+    /* tłumaczenia statyczne */
+    const dict={
+     pl:{bg:"Zmień Tło",save:"Zapisz Obraz",reset:"Resetuj Kolory",cost:"Szacowany koszt: ",
+         send:"Wyślij do Wizards!",modal:"Wyślij projekt",note:"Po wysłaniu dołącz pobrany plik PNG.",
+         fields:{name:"Imię",mail:"E-mail",tel:"Telefon"},parts:"1. Wybierz część",col:"2. Wybierz kolor (Cerakote)"},
+     en:{bg:"Change Background",save:"Save Image",reset:"Reset Colours",cost:"Estimated cost: ",
+         send:"Send to Wizards!",modal:"Send project",note:"Attach the downloaded PNG after sending.",
+         fields:{name:"Name",mail:"E-mail",tel:"Phone"},parts:"1. Select part",col:"2. Select colour (Cerakote)"}
+    };
+    
+    /* --------- STAN --------- */
     let lang="pl", selections={},activePart=null,bgIdx=0;
     
-    /* ========== START ========= */
-    (async()=>{await loadSvg();buildUI();defaultBlack();changeBg();})();
+    /* --------- START --------- */
+    (async()=>{preloadBGs();await loadSvg();buildUI();defaultBlack();changeBg();setLang("pl");})();
+    
+    /* Pre-loading teł */
+    function preloadBGs(){BG.forEach(src=>{const i=new Image();i.src=src;});}
     
     /* SVG */
     async function loadSvg(){
@@ -69,35 +83,39 @@ document.addEventListener("DOMContentLoaded",()=>{
       const svg=gunBox.querySelector("svg");
       const layer=document.createElementNS("http://www.w3.org/2000/svg","g");layer.id="color-overlays";svg.appendChild(layer);
       PARTS.forEach(p=>{
-        const base=svg.querySelector("#"+p.id); if(!base||p.disabled)return;
+        const base=svg.querySelector("#"+p.id);if(!base||p.disabled)return;
         ["1","2"].forEach(n=>{const ov=base.cloneNode(true);ov.id=`color-overlay-${n}-${p.id}`;ov.classList.add("color-overlay");layer.appendChild(ov);});
       });
     }
     
     /* UI */
     function buildUI(){
-      /* czesci */
+      partsBox.innerHTML="";
       PARTS.forEach(p=>{
-        const b=document.createElement("button");
-        b.textContent=p[lang];b.dataset.id=p.id;
-        if(p.disabled){b.classList.add("disabled");b.disabled=true;}
-        else{b.onclick=()=>selectPart(b,p.id);}
+        const b=document.createElement("button");b.dataset.id=p.id;
+        b.textContent=p[lang];if(p.disabled){b.className="disabled";b.disabled=true;}
+        else b.onclick=()=>selectPart(b,p.id);
         partsBox.appendChild(b);
       });
-      /* mixy */
-      const mix2=document.createElement("button");mix2.className="mix";mix2.textContent="MIX (≤2)";mix2.onclick=()=>mix(2);partsBox.appendChild(mix2);
-      const mixN=document.createElement("button");mixN.className="mix";mixN.textContent="MIX (3+)";mixN.onclick=()=>mix();partsBox.appendChild(mixN);
+      /* Mix buttons */
+      const mix2=document.createElement("button");mix2.className="mix";mix2.textContent="MIX (≤2)";
+      mix2.style.width="48%";mix2.onclick=()=>mix(2);
+      const mixN=document.createElement("button");mixN.className="mix";mixN.textContent="MIX (3+)";
+      mixN.style.width="48%";mixN.onclick=()=>mix();
+      const wrap=document.createElement("div");wrap.style.display="flex";wrap.style.gap="4%";
+      wrap.append(mix2,mixN);partsBox.appendChild(wrap);
     
-      /* paleta */
+      /* palette */
+      palette.innerHTML="";
       Object.entries(COLORS).forEach(([full,hex])=>{
-        const [code,...rest]=full.split(" "); const name=rest.join(" ");
+        const [code,...rest]=full.split(" ");const name=rest.join(" ");
         const sw=document.createElement("div");sw.className="sw";sw.title=full;
         sw.onclick=()=>applyColor(activePart,hex,code);
         sw.innerHTML=`<div class="dot" style="background:${hex}"></div><div class="lbl">${code}<br>${name}</div>`;
         palette.appendChild(sw);
       });
     
-      /* buttons */
+      /* buttons + lang */
       bgBtn.onclick=changeBg;saveBtn.onclick=savePng;resetBtn.onclick=resetAll;
       sendBtn.onclick=()=>modal.classList.remove("hidden");
       mCancel.onclick=()=>modal.classList.add("hidden");mSend.onclick=sendMail;
@@ -105,13 +123,17 @@ document.addEventListener("DOMContentLoaded",()=>{
     }
     
     /* Język */
-    function setLang(l){lang=l;
+    function setLang(l){
+      lang=l;
+      bgBtn.textContent=dict[l].bg;saveBtn.textContent=dict[l].save;resetBtn.textContent=dict[l].reset;
+      sendBtn.textContent=dict[l].send;hParts.textContent=dict[l].parts;hCol.textContent=dict[l].col;
+      mTitle.textContent=dict[l].modal;mNote.textContent=dict[l].note;
+      mName.placeholder=dict[l].fields.name;mMail.placeholder=dict[l].fields.mail;mPhone.placeholder=dict[l].fields.tel;
+      langPl.classList.toggle("active",l==="pl");langEn.classList.toggle("active",l==="en");
+      /* update parts labels */
       partsBox.querySelectorAll("button").forEach(b=>{
-        const p=PARTS.find(x=>x.id===b.dataset.id);if(p)b.textContent=p[lang];
+        const p=PARTS.find(x=>x.id===b.dataset.id);if(p)b.textContent=p[l];
       });
-      hParts.textContent=lang==="pl"?"1. Wybierz część":"1. Select part";
-      hCol.textContent  =lang==="pl"?"2. Wybierz kolor (Cerakote)":"2. Select colour (Cerakote)";
-      langPl.classList.toggle("active",lang==="pl");langEn.classList.toggle("active",lang==="en");
       updateSummary();
     }
     
@@ -144,54 +166,54 @@ document.addEventListener("DOMContentLoaded",()=>{
     }
     
     /* Reset */
-    function resetAll(){document.querySelectorAll(".color-overlay").forEach(o=>{
-      (o.tagName==="g"?o.querySelectorAll("*"):[o]).forEach(s=>s.style.fill="transparent");
-    });selections={};activePart=null;updateSummary();updatePrice();}
+    function resetAll(){
+      document.querySelectorAll(".color-overlay").forEach(o=>(o.tagName==="g"?o.querySelectorAll("*"):[o]).forEach(s=>s.style.fill="transparent"));
+      selections={};activePart=null;updateSummary();updatePrice();
+    }
     
-    /* Domyślny czarny */
+    /* Domyślny czar */
     function defaultBlack(){PARTS.filter(p=>!p.disabled).forEach(p=>applyColor(p.id,COLORS["H-146 Graphite Black"],"H-146"));}
     
     /* Tło */
     function changeBg(){bgIdx=(bgIdx+1)%BG.length;gunBox.style.backgroundImage=`url('${BG[bgIdx]}')`;}
     
-    /* Podsumowanie + cena */
+    /* Podsumowanie + koszt */
     function updateSummary(){
       const list=$("summary-list");list.innerHTML="";
-      PARTS.forEach(p=>{if(selections[p.id]){const d=document.createElement("div");d.textContent=`${p[lang]} – ${selections[p.id]}`;list.appendChild(d);}});
+      PARTS.forEach(p=>{if(selections[p.id]){
+        const d=document.createElement("div");d.textContent=`${p[lang]} – ${selections[p.id]}`;list.appendChild(d);
+      }});
     }
     function updatePrice(){
       const cols=new Set(Object.values(selections)).size;
       let total=Object.keys(selections).reduce((s,id)=>s+(PRICE[id]||0),0);
       total=cols<=2?Math.min(total,MIX2):Math.min(total,MIXN);
-      priceBox.textContent=`Szacowany koszt: ${total} zł`;return total;
+      priceBox.textContent=`${dict[lang].cost}${total} zł`;return total;
     }
     
     /* PNG helpers */
     const loadImg=src=>new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.src=src;});
     async function savePng(){
-      const cvs=document.createElement("canvas");cvs.width=1600;cvs.height=1200;const ctx=cvs.getContext("2d");
+      const cav=document.createElement("canvas");cav.width=1600;cav.height=1200;const ctx=cav.getContext("2d");
       ctx.drawImage(await loadImg(BG[bgIdx]),0,0,1600,1200);
       ctx.drawImage(await loadImg(TEXTURE),0,0,1600,1200);
       const svg=gunBox.querySelector("svg");
-      await Promise.all([...svg.querySelectorAll(".color-overlay")].filter(o=>o.style.fill!=="transparent").map(async ov=>{
+      const tasks=[...svg.querySelectorAll(".color-overlay")].filter(o=>o.style.fill!=="transparent").map(async ov=>{
         const xml=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${svg.getAttribute("viewBox")}"><g style="mix-blend-mode:hard-light;opacity:.45">${ov.outerHTML}</g></svg>`;
-        const url=URL.createObjectURL(new Blob([xml],{type:"image/svg+xml"}));
-        ctx.drawImage(await loadImg(url),0,0,1600,1200);URL.revokeObjectURL(url);
-      }));
-      const a=document.createElement("a");a.href=cvs.toDataURL("image/png");a.download="weapon-wizards.png";a.click();
-      return a.href;
+        const url=URL.createObjectURL(new Blob([xml],{type:"image/svg+xml"}));ctx.drawImage(await loadImg(url),0,0,1600,1200);URL.revokeObjectURL(url);
+      });await Promise.all(tasks);
+      const a=document.createElement("a");a.href=cav.toDataURL("image/png");a.download="weapon-wizards.png";a.click();
     }
     
     /* MAILTO */
-    async function sendMail(){
+    function sendMail(){
       const name=mName.value.trim(),mail=mMail.value.trim(),tel=mPhone.value.trim();
-      if(!name||!mail){alert("Podaj imię i e-mail");return;}
-      await savePng();
+      if(!name||!mail){alert(lang==="pl"?"Podaj imię i e-mail":"Enter name & e-mail");return;}
       const cost=updatePrice();
-      const body=[`Imię: ${name}`,`Telefon: ${tel}`,`E-mail: ${mail}`,
-                  `Koszt: ${cost} zł`,"","Kolory:",...PARTS.map(p=>`${p.pl} – ${selections[p.id]||"–"}`),
-                  "","Dołącz pobrany plik PNG."].join("%0D%0A");
-      location.href=`mailto:contact@weapon-wizards.com?subject=Projekt%20Weapon%20Wizards&cc=${encodeURIComponent(mail)}&body=${body}`;
+      const body=[`Name: ${name}`,`Phone: ${tel}`,`E-mail: ${mail}`,`${dict[lang].cost}${cost} zł`,"","Colours:",
+                  ...PARTS.map(p=>`${p[lang]} – ${selections[p.id]||"–"}`),
+                  "","(attach the PNG)"].join("%0D%0A");
+      location.href=`mailto:contact@weapon-wizards.com?subject=Weapon%20Wizards%20project&cc=${encodeURIComponent(mail)}&body=${body}`;
       modal.classList.add("hidden");
     }
     
