@@ -1,0 +1,57 @@
+[
+  {
+    "id": "zamek",
+    "pl": "Zamek",
+    "en": "Slide"
+  },
+  {
+    "id": "szkielet",
+    "pl": "Szkielet",
+    "en": "Frame"
+  },
+  {
+    "id": "spust",
+    "pl": "Język spustowy z szyną",
+    "en": "Trigger with trigger bar"
+  },
+  {
+    "id": "lufa",
+    "pl": "Lufa",
+    "en": "Barrel"
+  },
+  {
+    "id": "zerdz",
+    "pl": "Żerdź",
+    "en": "Recoil spring"
+  },
+  {
+    "id": "pazur",
+    "pl": "Pazur wyciągu",
+    "en": "Extractor"
+  },
+  {
+    "id": "zrzut",
+    "pl": "Zatrzask magazynka",
+    "en": "Magazine catch"
+  },
+  {
+    "id": "blokadap",
+    "pl": "Blokada zamka",
+    "en": "Slide lock"
+  },
+  {
+    "id": "blokada2",
+    "pl": "Dźwignia zrzutu zamka",
+    "en": "Slide stop lever"
+  },
+  {
+    "id": "pin",
+    "pl": "Pin",
+    "en": "Trigger pin"
+  },
+  {
+    "id": "stopka",
+    "pl": "Stopka magazynka",
+    "en": "Magazine floorplate"
+  }
+]
