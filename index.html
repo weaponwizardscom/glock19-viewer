@@ -14,15 +14,21 @@
 
 :root{--page:#000;--box:#000;--txt:#fff;--border:#dee2e6;--pri:#007bff;}
 *{box-sizing:border-box;margin:0}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-     background:var(--page);display:flex;justify-content:center;padding:20px;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--page);display:flex;justify-content:center;padding:20px;
+}
 
-.configurator{background:var(--box);border-radius:8px;box-shadow:0 8px 24px #0008;
-  display:flex;flex-wrap:wrap;gap:24px;max-width:1200px;width:100%;padding:24px;}
+.configurator{
+  background:var(--box);border-radius:8px;box-shadow:0 8px 24px #0008;
+  display:flex;flex-wrap:wrap;gap:24px;max-width:1200px;width:100%;padding:24px;
+}
 
 .gun-wrap{flex:2 1 600px;display:flex;flex-direction:column;gap:10px;}
-.gun-view{position:relative;width:100%;max-width:800px;aspect-ratio:4/3;border-radius:6px;
-  background:#111 center/cover no-repeat;}
+.gun-view{
+  position:relative;width:100%;max-width:800px;aspect-ratio:4/3;border-radius:6px;
+  background:#111 center/cover no-repeat;
+}
 .gun-svg{width:100%;height:100%}
 .color-overlay{mix-blend-mode:hard-light;opacity:.45;pointer-events:none}
 
@@ -36,11 +42,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 .lang img.active{border-color:var(--pri)}
 
 .parts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.parts button{padding:10px 6px;font-size:12px;font-weight:600;text-align:center;
-  background:#f5f6f7;border:1px solid var(--border);border-radius:6px;cursor:pointer}
+.parts button{
+  padding:10px 6px;font-size:12px;font-weight:600;text-align:center;
+  background:#f5f6f7;border:1px solid var(--border);border-radius:6px;cursor:pointer;
+}
 .parts button.selected{background:var(--pri);color:#fff}
 .parts button.disabled{background:#444;color:#999;cursor:not-allowed}
-.mix{background:linear-gradient(45deg,#ffd700,#ff7a00,#ff007a,#00aaff,#00ff6a);color:#000;font-weight:700}
+.mix{
+  background:linear-gradient(45deg,#ffd700,#ff7a00,#ff007a,#00aaff,#00ff6a);
+  color:#000;font-weight:700
+}
 
 .palette-wrap{max-height:400px;overflow-y:auto;padding-right:8px}
 .palette{display:grid;grid-template-columns:repeat(3,1fr);gap:25px 10px}
@@ -53,32 +64,44 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 .btn{width:100%;padding:12px;font-size:16px;border:none;color:#fff;border-radius:6px;cursor:pointer}
 .gray{background:#6c757d}.blue{background:var(--pri)}.red{background:#dc3545}
 
-.summary{border:1px solid var(--border);border-radius:6px;padding:12px;background:#111;margin-top:16px;color:var(--txt)}
-#summary-list{column-count:3;column-gap:20px}#summary-list div{break-inside:avoid;margin-bottom:4px;font-size:15px}
+.summary{
+  border:1px solid var(--border);border-radius:6px;padding:12px;background:#111;margin-top:16px;color:var(--txt)
+}
+#summary-list{column-count:3;column-gap:20px}
+#summary-list div{break-inside:avoid;margin-bottom:4px;font-size:15px}
 
-#price{font-family:'Eurostile',sans-serif;font-size:22px;font-weight:900;text-align:right;color:#fff}
+#price{
+  font-family:'Eurostile',sans-serif;font-size:22px;font-weight:900;text-align:right;color:#fff
+}
 
+/* ---------- MODAL ---------- */
 .modal{position:fixed;inset:0;background:#000a;display:flex;align-items:center;justify-content:center;z-index:1000}
 .modal.hidden{display:none}
 .box{background:#1b1b1b;padding:24px;border-radius:8px;width:90%;max-width:420px}
 .box h2{color:#fff;margin-bottom:16px;font-size:20px}
-.box input{width:100%;padding:10px;border-radius:6px;border:1px solid #555;margin-bottom:10px;
-  background:#000;color:#fff;font-size:14px}
+.box input{
+  width:100%;padding:10px;border-radius:6px;border:1px solid #555;margin-bottom:10px;
+  background:#000;color:#fff;font-size:14px
+}
 .note{color:#ff4444;font-size:12px;margin-top:6px;text-align:center}
 
 @media(max-width:800px){.configurator{flex-direction:column}}
 
-/* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
-/*  NOWE – blokuje przewijanie zdjęcia w widoku mobilnym */
-@media only screen and (max-width:768px){
+/* ======================================================
+   MOBILNE – obraz broni przyklejony na stałe do góry
+   ======================================================*/
+@media (max-width:768px){
   .gun-view{
-    position:sticky;   /* „przyklej” do górnej krawędzi */
-    top:0;
+    position:fixed;          /* zawsze widoczne */
+    top:0;left:0;right:0;
+    width:100vw;             /* pełna szerokość ekranu */
+    max-width:none;          /* zerujemy ograniczenie */
+    aspect-ratio:4/3;
     z-index:1000;
-    background-color:#000; /* w razie przewinięcia pod spodem */
   }
+  /* odsuwamy resztę treści w dół o wysokość obrazu (100vw * 3/4) + mały margines */
+  body{padding-top:calc(75vw + 20px);}
 }
-/* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< */
 </style>
 </head>
 
@@ -91,8 +114,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
       <p style="text-align:center;padding-top:20px;color:#6c757d">Ładowanie…</p>
     </div>
 
-    <button id="bg-btn"   class="btn gray" >Zmień Tło</button>
-    <button id="save-btn" class="btn blue" >Zapisz Obraz</button>
+    <button id="bg-btn"   class="btn gray">Zmień Tło</button>
+    <button id="save-btn" class="btn blue">Zapisz Obraz</button>
 
     <div class="summary"><div id="summary-list"></div></div>
 
