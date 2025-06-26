@@ -12,6 +12,7 @@
         font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
         background:var(--page-bg);display:flex;justify-content:center;padding:20px;
     }
+
     /* === LAYOUT === */
     .configurator-container{background:var(--container-bg);border-radius:8px;
         box-shadow:0 8px 24px rgba(0,0,0,.5);display:flex;flex-wrap:wrap;
@@ -56,7 +57,10 @@
     .summary-container{
         flex:1 1 0;border:1px solid var(--border);border-radius:6px;
         background:rgba(255,255,255,.04);padding:12px;margin-top:16px;
-        color:var(--txt);font-size:14px;line-height:1.5;overflow-y:auto;}
+        color:var(--txt);font-size:14px;line-height:1.5;
+        /* <-- zmiana: brak suwaka → wszystkie wiersze widoczne */
+        overflow-y:visible;
+    }
     #summary-title{margin:0 0 8px;font-size:16px;font-weight:600;}
     #summary-list div{margin-bottom:4px;}
 </style>
@@ -65,7 +69,7 @@
 <body>
 <div class="configurator-container">
 
-    <!-- PODGLĄD BRONI -->
+    <!-- PODGLĄD -->
     <div class="gun-view-wrapper">
         <div class="gun-view" id="gun-view-container">
             <p style="text-align:center;padding-top:20px;color:#6c757d;">Ładowanie konfiguratora...</p>
@@ -79,7 +83,7 @@
         </div>
     </div>
 
-    <!-- PANEL STERUJĄCY -->
+    <!-- PANEL -->
     <div class="controls">
         <div class="control-section">
             <div class="control-section-header">
@@ -89,7 +93,6 @@
                     <img id="lang-gb" src="https://flagicons.lipis.dev/flags/4x3/gb.svg" alt="EN">
                 </div>
             </div>
-            <!-- >>> ten element MUSI istnieć – używa go app.js <<< -->
             <div class="part-selection" id="part-selection-container"></div>
         </div>
 
@@ -98,7 +101,6 @@
                 <h3 id="header-color-selection">2. Wybierz kolor (Cerakote)</h3>
             </div>
             <div class="color-palette-container">
-                <!-- >>> i ten też <<< -->
                 <div class="color-palette" id="color-palette"></div>
             </div>
         </div>
@@ -110,7 +112,6 @@
 
 </div>
 
-<!-- ważne: type="module" -->
 <script type="module" src="app.js"></script>
 </body>
 </html>
