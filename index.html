@@ -90,7 +90,7 @@ body{
 /* ======================================================
    MOBILNE – obraz broni przyklejony na stałe do góry
    ======================================================*/
-@media (max-width:768px){
+   @media (max-width:768px){
   .gun-view{
     position:fixed;          /* zawsze widoczne */
     top:0;left:0;right:0;
@@ -98,10 +98,13 @@ body{
     max-width:none;          /* zerujemy ograniczenie */
     aspect-ratio:4/3;
     z-index:1000;
-    #summary-list{
+  }
+
+  /* <-- osobny, niezagnieżdżony blok */
+  #summary-list{
     column-count:2;
   }
-  }
+}
   
   /* odsuwamy resztę treści w dół o wysokość obrazu (100vw * 3/4) + mały margines */
   body{padding-top:calc(75vw + 20px);}
