@@ -32,14 +32,25 @@
     .lang-switcher img{width:24px;cursor:pointer;margin-left:8px;border:2px solid transparent;border-radius:3px;}
     .lang-switcher img.active{border-color:var(--primary);}
 
+    /* === PRZYCISKI CZĘŚCI === */
     .part-selection{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
     .part-selection button{
-        padding:10px 12px;font-size:11px;text-align:left;color:#000;
-        background:#f5f6f7;border:1px solid var(--border);border-radius:6px;cursor:pointer;
-        transition:.2s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+        padding:10px 12px;
+        font-size:11px;
+        font-weight:600;        /* pogrubione */
+        text-align:center;      /* wyśrodkowane */
+        color:#000;
+        background:#f5f6f7;
+        border:1px solid var(--border);
+        border-radius:6px;
+        cursor:pointer;
+        transition:.2s;
+        white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    }
     .part-selection button.selected{background:var(--primary);color:#fff;border-color:var(--primary);}
     #mix-button{background:linear-gradient(45deg,#f3ec78,#af4261,#43cea2,#185a9d);color:#fff;font-weight:bold;}
 
+    /* === PALETA KOLORÓW === */
     .color-palette-container{max-height:400px;overflow-y:auto;padding-right:10px;}
     .color-palette{display:grid;grid-template-columns:repeat(3,1fr);gap:25px 10px;}
     .color-swatch-wrapper{display:flex;flex-direction:column;align-items:center;cursor:pointer;}
@@ -48,6 +59,7 @@
     .color-swatch-wrapper:hover .color-swatch{transform:scale(1.1);box-shadow:0 0 8px var(--primary);}
     .color-swatch-label{margin-top:8px;font-size:10px;color:#6c757d;text-align:center;}
 
+    /* === PRZYCISKI GŁÓWNE === */
     .action-button{width:100%;padding:12px;font-size:16px;border:none;color:#fff;border-radius:6px;cursor:pointer;text-align:center;}
     #save-button{background:var(--primary);}
     .reset-button-container{margin-top:auto;padding-top:20px;}
@@ -58,15 +70,10 @@
         flex:1 1 0;border:1px solid var(--border);border-radius:6px;
         background:rgba(255,255,255,.04);padding:12px;margin-top:16px;
         color:var(--txt);font-size:14px;line-height:1.5;
-        overflow-y:hidden;          /* brak suwaka */
+        overflow-y:hidden;                   /* brak suwaka */
     }
-    #summary-title{margin:0 0 8px;font-size:16px;font-weight:600;}
-
-    /* >>> NOWOŚĆ: 3 kolumny <<< */
-    #summary-list{
-        column-count:3;
-        column-gap:24px;
-    }
+    /* trzy kolumny */
+    #summary-list{column-count:3;column-gap:24px;}
     #summary-list div{margin-bottom:4px;break-inside:avoid;}
 </style>
 </head>
@@ -82,6 +89,7 @@
 
         <button id="save-button" class="action-button">Zapisz Obraz</button>
 
+        <!-- podsumowanie bez nagłówka -->
         <div id="summary-container" class="summary-container">
             <div id="summary-list"></div>
         </div>
@@ -89,6 +97,7 @@
 
     <!-- PANEL -->
     <div class="controls">
+
         <div class="control-section">
             <div class="control-section-header">
                 <h3 id="header-part-selection">1. Wybierz część</h3>
