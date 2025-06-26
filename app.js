@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     /* --- stałe --- */
     const FONT_PX=24, PANEL_W=380, PAD=32;
-    const PISTOL_SRC_W=843, BG_SRC_W=1600, RATIO=PISTOL_SRC_W/BG_SRC_W;   // 1
+    const PISTOL_SRC_W=843, BG_SRC_W=1600, RATIO=PISTOL_SRC_W/BG_SRC_W;   // 0.8
 
     /* --- CSS zmienne --- */
     const CSS=getComputedStyle(document.documentElement);
