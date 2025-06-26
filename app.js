@@ -32,13 +32,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     /* --- state --- */
     let lang='pl', activePart=null;
-    const selections={};  // {partId: "H-146 Graphite Black"}
+    const selections={};
 
-    /* --- init --- */
     await loadSvg();
     buildUI();
     defaultBlack();
-    changeBackground();   // pierwsze losowe tło
+    changeBackground();
     updateText();
     updateSummary();
 
@@ -167,7 +166,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    /* >>> brakująca funkcja randomize <<< */
+    /* ===== RANDOMIZE ===== */
     function randomize(){
         const keys=Object.keys(COLORS);
         PARTS.forEach(p=>{
@@ -193,7 +192,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     /* ===== SUMMARY ===== */
-    const codeOnly = full => full.split(' ')[0];
+    function codeOnly(full){ return full.split(' ')[0]; }
     function updateSummary(){
         sumList.innerHTML='';
         PARTS.forEach(p=>{
