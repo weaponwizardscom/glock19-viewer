@@ -1,21 +1,20 @@
 document.addEventListener("DOMContentLoaded",()=>{
 
-    /* ===== PODSTAWY ===== */
+    /* ===== KONFIG ===== */
     const SVG_FILE="g17.svg";
     const TEXTURE ="img/glock17.png";
     const BG      =["img/t1.png","img/t2.png","img/t3.png","img/t4.png","img/t5.png","img/t6.png","img/t7.png"];
     
     const PRICE={zamek:400,szkielet:400,spust:100,lufa:200,zerdz:50,pazur:50,zrzut:50,
                  blokadap:50,blokada2:50,pin:50,stopka:100};
-    const MIX2=800, MIXN=1000;
+    const MIX2  =800, MIXN=1000;
     
-    /* ===== ELEMENTY DOM ===== */
+    /* ===== DOM ===== */
     const $=id=>document.getElementById(id);
     const gunBox=$("gun-view"), partsBox=$("parts"), palette=$("palette"), priceBox=$("price");
-    const bgBtn=$("bg-btn"), saveBtn=$("save-btn"), resetBtn=$("reset-btn");
-    const sendBtn=$("send-btn"), modal=$("modal"), mSend=$("m-send"), mCancel=$("m-cancel"),
-          mName=$("m-name"), mMail=$("m-mail"), mPhone=$("m-phone");
-    
+    const bgBtn=$("bg-btn"),   saveBtn=$("save-btn"),   resetBtn=$("reset-btn");
+    const sendBtn=$("send-btn"),modal=$("modal"),mSend=$("m-send"),mCancel=$("m-cancel"),
+          mName=$("m-name"),mMail=$("m-mail"),mPhone=$("m-phone");
     const langPl=$("pl"), langEn=$("en"), hParts=$("h-parts"), hCol=$("h-col");
     
     /* ===== DANE ===== */
@@ -33,18 +32,26 @@ document.addEventListener("DOMContentLoaded",()=>{
      {id:"stopka",pl:"Stopka",en:"Floorplate"}
     ];
     
-    const COLORS={
-     "H-140":"#FFFFFF","H-242":"#E5E4E2","H-136":"#F5F5F5","H-297":"#F2F2F2","H-300":"#F5F5F5",
-     "H-331":"#C2D94B","H-141":"#E55C9C","H-306":"#A2A4A6","H-312":"#C9C8C6","H-214":"#8D918D",
-     "H-265":"#999B9E","H-227":"#8D8A82","H-170":"#7A7A7A","H-130":"#6A6A6A","H-237":"#6E7176",
-     "H-210":"#5B5E5E","H-234":"#5B6063","H-342":"#84888B","H-321":"#D8C0C4","H-213":"#52595D",
-     "H-146":"#3B3B3B","H-190":"#212121","H-142":"#D2C3A8","H-199":"#C5BBAA","H-267":"#A48F6A",
-     "H-269":"#67594D","H-148":"#8C6A48","H-339":"#5E5044","H-8000":"#937750","H-33446":"#B19672",
-     "H-240":"#5F604F","H-247":"#6A6B5C","H-229":"#565A4B","H-344":"#6B6543","H-189":"#6C6B4E",
-     "H-353":"#00887A","H-127":"#2B3C4B","H-171":"#00387B","H-188":"#5C6670","H-256":"#395173",
-     "H-258":"#3B4B5A","H-329":"#0077C0","H-362":"#33415C","H-197":"#5A3A54","H-217":"#8A2BE2",
-     "H-332":"#6C4E7C","H-357":"#6B6EA6","H-128":"#F26522","H-167":"#9E2B2F","H-216":"#B70101",
-     "H-221":"#891F2B","H-317":"#F9A602","H-354":"#F7D51D","H-122":"#B79436","H-151":"#C0C0C0"
+    const COLORS={ // pełne nazwy
+     "H-140 Bright White":"#FFFFFF","H-242 Hidden White":"#E5E4E2","H-136 Snow White":"#F5F5F5",
+     "H-297 Stormtrooper White":"#F2F2F2","H-300 Armor Clear":"#F5F5F5","H-331 Parakeet Green":"#C2D94B",
+     "H-141 Prison Pink":"#E55C9C","H-306 Springfield Grey":"#A2A4A6","H-312 Frost":"#C9C8C6",
+     "H-214 S&W Grey":"#8D918D","H-265 Cold War Grey":"#999B9E","H-227 Tactical Grey":"#8D8A82",
+     "H-170 Titanium":"#7A7A7A","H-130 Combat Grey":"#6A6A6A","H-237 Tungsten":"#6E7176",
+     "H-210 Sig Dark Grey":"#5B5E5E","H-234 Sniper Grey":"#5B6063","H-342 Smoke":"#84888B",
+     "H-321 Blush":"#D8C0C4","H-213 Battleship Grey":"#52595D","H-146 Graphite Black":"#3B3B3B",
+     "H-190 Armor Black":"#212121","H-142 Light Sand":"#D2C3A8","H-199 Desert Sand":"#C5BBAA",
+     "H-267 Magpul FDE":"#A48F6A","H-269 Barrett Brown":"#67594D","H-148 Burnt Bronze":"#8C6A48",
+     "H-339 Federal Brown":"#5E5044","H-8000 RAL 8000":"#937750","H-33446 FS Sabre Sand":"#B19672",
+     "H-240 Mil Spec O.D. Green":"#5F604F","H-247 Desert Sage":"#6A6B5C","H-229 Sniper Green":"#565A4B",
+     "H-344 Olive":"#6B6543","H-189 Noveske Bazooka Green":"#6C6B4E","H-353 Island Green":"#00887A",
+     "H-127 Kel-Tec Navy Blue":"#2B3C4B","H-171 NRA Blue":"#00387B","H-188 Stealth Grey":"#5C6670",
+     "H-256 Cobalt":"#395173","H-258 Socom Blue":"#3B4B5A","H-329 Blue Raspberry":"#0077C0",
+     "H-362 Patriot Blue":"#33415C","H-197 Wild Purple":"#5A3A54","H-217 Bright Purple":"#8A2BE2",
+     "H-332 Purplexed":"#6C4E7C","H-357 Periwinkle":"#6B6EA6","H-128 Hunter Orange":"#F26522",
+     "H-167 USMC Red":"#9E2B2F","H-216 S&W Red":"#B70101","H-221 Crimson":"#891F2B",
+     "H-317 Sunflower":"#F9A602","H-354 Lemon Zest":"#F7D51D","H-122 Gold":"#B79436",
+     "H-151 Satin Aluminum":"#C0C0C0"
     };
     
     /* ===== STAN ===== */
@@ -66,37 +73,36 @@ document.addEventListener("DOMContentLoaded",()=>{
     
     /* ===== UI ===== */
     function buildUI(){
-      // przyciski części + MIX
+      /* części + mixy */
       PARTS.forEach(p=>{
         const b=document.createElement("button");b.textContent=p[lang];b.dataset.id=p.id;
         b.onclick=()=>selectPart(b,p.id);partsBox.appendChild(b);
       });
-      const mix2=document.createElement("button");mix2.className="mix";mix2.textContent="MIX (≤2)";mix2.onclick=()=>mix(2);partsBox.appendChild(mix2);
-      const mixN=document.createElement("button");mixN.className="mix";mixN.textContent="MIX (3+)"; mixN.onclick=()=>mix();partsBox.appendChild(mixN);
+      const mix2=document.createElement("button");mix2.className="mix";mix2.style.gridColumn="1 / span 1";
+      mix2.textContent="MIX (≤2)";mix2.onclick=()=>mix(2);partsBox.appendChild(mix2);
+      const mixN=document.createElement("button");mixN.className="mix";mixN.textContent="MIX (3+)";
+      mixN.onclick=()=>mix();partsBox.appendChild(mixN);
     
-      // paleta
-      Object.entries(COLORS).forEach(([code,hex])=>{
-        const sw=document.createElement("div");sw.className="sw";sw.title=code;
+      /* paleta */
+      Object.entries(COLORS).forEach(([full,hex])=>{
+        const [code,...rest]=full.split(" "); const name=rest.join(" ");
+        const sw=document.createElement("div");sw.className="sw";sw.title=full;
         sw.onclick=()=>applyColor(activePart,hex,code);
-        sw.innerHTML=`<div class="dot" style="background:${hex}"></div><div class="lbl">${code}</div>`;
+        sw.innerHTML=`<div class="dot" style="background:${hex}"></div><div class="lbl">${code}<br>${name}</div>`;
         palette.appendChild(sw);
       });
     
-      // przyciski
+      /* przyciski */
       bgBtn.onclick =changeBg; saveBtn.onclick=savePng; resetBtn.onclick=resetAll;
-    
       sendBtn.onclick =()=>modal.classList.remove("hidden");
-      mCancel.onclick=()=>modal.classList.add("hidden");
-      mSend.onclick =sendMail;
-    
-      langPl.onclick=()=>setLang("pl");
-      langEn.onclick=()=>setLang("en");
+      mCancel.onclick=()=>modal.classList.add("hidden"); mSend.onclick =sendMail;
+      langPl.onclick=()=>setLang("pl"); langEn.onclick=()=>setLang("en");
     }
     
-    /* ===== LANGUAGE ===== */
+    /* ===== JĘZYK ===== */
     function setLang(l){lang=l;
       partsBox.querySelectorAll("button").forEach(b=>{
-        const p=PARTS.find(x=>x.id===b.dataset.id); if(p) b.textContent=p[lang]||b.textContent;
+        const p=PARTS.find(x=>x.id===b.dataset.id); if(p) b.textContent=p[lang];
       });
       hParts.textContent=lang==="pl"?"1. Wybierz część":"1. Select part";
       hCol.textContent  =lang==="pl"?"2. Wybierz kolor (Cerakote)":"2. Select colour (Cerakote)";
@@ -104,13 +110,13 @@ document.addEventListener("DOMContentLoaded",()=>{
       updateSummary();
     }
     
-    /* ===== WYBÓR CZĘŚCI ===== */
+    /* ===== CZĘŚĆ ===== */
     function selectPart(btn,id){
       partsBox.querySelectorAll("button").forEach(b=>b.classList.remove("selected"));
       btn.classList.add("selected");activePart=id;
     }
     
-    /* ===== KOLORY ===== */
+    /* ===== KOLOR ===== */
     function applyColor(pid,hex,code){
       if(!pid){alert(lang==="pl"?"Najpierw wybierz część":"Select a part first");return;}
       ["1","2"].forEach(n=>{
@@ -120,18 +126,20 @@ document.addEventListener("DOMContentLoaded",()=>{
       selections[pid]=code;updateSummary();updatePrice();
     }
     
-    /* losowe */
+    /* MIX */
     function mix(maxCols){
       const keys=Object.keys(COLORS), used=new Set();
       PARTS.forEach(p=>{
-        let col;
-        do{col=keys[Math.floor(Math.random()*keys.length)];}
-        while(maxCols && used.size>=maxCols && !used.has(col));
-        used.add(col);applyColor(p.id,COLORS[col],col);
+        let pick;
+        do{pick=keys[Math.floor(Math.random()*keys.length)];}
+        while(maxCols && used.size>=maxCols && !used.has(pick.split(" ")[0]));
+        used.add(pick.split(" ")[0]);
+        const [code,hex]=[pick.split(" ")[0],COLORS[pick]];
+        applyColor(p.id,hex,code);
       });
     }
     
-    /* reset */
+    /* RESET */
     function resetAll(){
       document.querySelectorAll(".color-overlay").forEach(o=>{
         (o.tagName==="g"?o.querySelectorAll("*"):[o]).forEach(s=>s.style.fill="transparent");
@@ -139,13 +147,13 @@ document.addEventListener("DOMContentLoaded",()=>{
       selections={};activePart=null;updateSummary();updatePrice();
     }
     
-    /* domyślny czarny */
-    function defaultBlack(){PARTS.forEach(p=>applyColor(p.id,COLORS["H-146"],"H-146"));}
+    /* DOMYŚLNY CZARNY */
+    function defaultBlack(){PARTS.forEach(p=>applyColor(p.id,COLORS["H-146 Graphite Black"],"H-146"));}
     
-    /* ===== BG ===== */
+    /* TŁO */
     function changeBg(){bgIdx=(bgIdx+1)%BG.length; gunBox.style.backgroundImage=`url('${BG[bgIdx]}')`;}
     
-    /* ===== PODSUMOWANIE / CENA ===== */
+    /* PODSUMOWANIE & CENA */
     function updateSummary(){
       $("summary-list").innerHTML="";
       PARTS.forEach(p=>{
@@ -156,40 +164,37 @@ document.addEventListener("DOMContentLoaded",()=>{
       });
     }
     function updatePrice(){
-      const uniqueColours=new Set(Object.values(selections)).size;
+      const cols=new Set(Object.values(selections)).size;
       let total=Object.keys(selections).reduce((s,id)=>s+(PRICE[id]||0),0);
-      total=uniqueColours<=2?Math.min(total,MIX2):Math.min(total,MIXN);
+      total=cols<=2?Math.min(total,MIX2):Math.min(total,MIXN);
       priceBox.textContent=`Szacowany koszt: ${total} zł`; return total;
     }
     
-    /* ===== PNG ===== */
-    function loadImg(src){return new Promise(res=>{const i=new Image();i.onload=()=>res(i);i.src=src;});}
+    /* PNG */
+    function loadImg(src){return new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.src=src;});}
     async function savePng(){
       const cvs=document.createElement("canvas"); cvs.width=1600; cvs.height=1200;
       const ctx=cvs.getContext("2d");
       ctx.drawImage(await loadImg(BG[bgIdx]),0,0,1600,1200);
       ctx.drawImage(await loadImg(TEXTURE),0,0,1600,1200);
-    
       const svg=gunBox.querySelector("svg");
       await Promise.all([...svg.querySelectorAll(".color-overlay")].filter(o=>o.style.fill!=="transparent").map(async ov=>{
         const xml=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${svg.getAttribute("viewBox")}"><g style="mix-blend-mode:hard-light;opacity:.45">${ov.outerHTML}</g></svg>`;
-        const url=URL.createObjectURL(new Blob([xml],{type:"image/svg+xml"}));
-        ctx.drawImage(await loadImg(url),0,0,1600,1200); URL.revokeObjectURL(url);
+        const url=URL.createObjectURL(new Blob([xml],{type:"image/svg+xml"})); ctx.drawImage(await loadImg(url),0,0,1600,1200); URL.revokeObjectURL(url);
       }));
-      const link=document.createElement("a");link.href=cvs.toDataURL("image/png");link.download="weapon-wizards.png";link.click();
-      return link.href;
+      const a=document.createElement("a");a.href=cvs.toDataURL("image/png");a.download="weapon-wizards.png";a.click();
+      return a.href;
     }
     
-    /* ===== MAILTO ===== */
+    /* MAILTO */
     async function sendMail(){
       const name=mName.value.trim(), mail=mMail.value.trim(), tel=mPhone.value.trim();
       if(!name||!mail){alert("Podaj imię i e-mail");return;}
-      await savePng();              // tworzy plik i zapisuje lokalnie
+      await savePng();
       const cost=updatePrice();
-      const bodyLines=[`Imię: ${name}`,`Telefon: ${tel}`,`E-mail: ${mail}`,
-                       `Koszt: ${cost} zł`,"","Kolory:",...PARTS.map(p=>`${p.pl} – ${selections[p.id]||"–"}`),
-                       "","Dołącz proszę pobrany plik PNG."];
-      const body=encodeURIComponent(bodyLines.join("\r\n"));
+      const body=[`Imię: ${name}`,`Telefon: ${tel}`,`E-mail: ${mail}`,
+                  `Koszt: ${cost} zł`,"","Kolory:",...PARTS.map(p=>`${p.pl} – ${selections[p.id]||"–"}`),
+                  "","Dołącz pobrany plik PNG."].join("%0D%0A");
       location.href=`mailto:contact@weapon-wizards.com?subject=Projekt%20Weapon%20Wizards&cc=${encodeURIComponent(mail)}&body=${body}`;
       modal.classList.add("hidden");
     }
