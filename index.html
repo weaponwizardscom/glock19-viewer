@@ -5,9 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Weapon-Wizards – Konfigurator</title>
 
+<!-- styl WW z Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Bungee+Shade&display=swap" rel="stylesheet">
+
 <style>
-:root{--page:#000;--box:#000;
-      --txt:#fff;--border:#dee2e6;--pri:#007bff;}
+:root{--page:#000;--box:#000;--txt:#fff;--border:#dee2e6;--pri:#007bff;}
 *{box-sizing:border-box;margin:0}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
      background:var(--page);display:flex;justify-content:center;padding:20px;}
@@ -21,12 +23,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 .gun-svg{width:100%;height:100%}
 .color-overlay{mix-blend-mode:hard-light;opacity:.45;pointer-events:none}
 
-/* ---- SIDE PANEL ---- */
+/* ---- PANEL ---- */
 .controls{flex:1 1 300px;min-width:300px;display:flex;flex-direction:column;}
 .section{margin-bottom:20px}
 .sec-hdr{display:flex;justify-content:space-between;align-items:center;
   border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px}
-.sec-hdr h3{color:var(--txt);font-size:18px}
+.sec-hdr h3{color:var(--txt);font-size:18px;font-weight:700}
 
 .lang img{width:24px;cursor:pointer;margin-left:8px;border:2px solid transparent;border-radius:3px}
 .lang img.active{border-color:var(--pri)}
@@ -37,7 +39,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 .parts button.selected{background:var(--pri);color:#fff}
 .parts button.disabled{background:#444;color:#999;cursor:not-allowed}
 
-.mix{background:linear-gradient(45deg,#ffd700,#ff7a00,#ff007a,#00aaff,#00ff6a);
+.mix{background:linear-gradient(45deg,#ffd700,#ff7a00,#ff007a,#00aaff,#00ff6a)!important;
      color:#000;font-weight:700}
 
 /* ---- PALETTE ---- */
@@ -57,6 +59,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 .summary{border:1px solid var(--border);border-radius:6px;padding:12px;background:#111;margin-top:16px;color:var(--txt)}
 #summary-list{column-count:3;column-gap:20px}#summary-list div{break-inside:avoid;margin-bottom:4px;font-size:15px}
 
+/* ---- PRICE ---- */
+#price{font-family:'Bungee Shade',cursive;font-size:24px;color:#ffd700;text-align:right}
+
 /* ---- MODAL ---- */
 .modal{position:fixed;inset:0;background:#000a;display:flex;align-items:center;justify-content:center;z-index:1000}
 .modal.hidden{display:none}
@@ -64,6 +69,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 .box h2{color:#fff;margin-bottom:16px;font-size:20px}
 .box input{width:100%;padding:10px;border-radius:6px;border:1px solid #555;margin-bottom:10px;
   background:#000;color:#fff;font-size:14px}
+.note{color:#ff5555;font-weight:700;font-size:12px;margin-top:8px;text-align:center}
 
 @media(max-width:800px){.configurator{flex-direction:column}}
 </style>
@@ -81,7 +87,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
     <div class="summary"><div id="summary-list"></div></div>
 
     <div style="margin-top:16px">
-      <div id="price" style="color:#fff;font-size:20px;font-weight:700">Szacowany koszt: 0 zł</div>
+      <div id="price">Szacowany koszt: 0 zł</div>
       <button id="send-btn" class="btn red" style="margin-top:8px">Wyślij do Wizards!</button>
     </div>
   </div>
@@ -105,19 +111,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 
     <button id="reset-btn" class="btn red" style="margin-top:auto">Resetuj Kolory</button>
   </div>
-
 </div>
 
 <!-- MODAL -->
 <div id="modal" class="modal hidden">
   <div class="box">
-    <h2>Wyślij projekt</h2>
+    <h2 id="m-title">Wyślij projekt</h2>
     <input id="m-name"  placeholder="Imię">
     <input id="m-mail"  placeholder="E-mail">
     <input id="m-phone" placeholder="Telefon">
     <button id="m-send"   class="btn blue" style="margin-top:6px">Wyślij</button>
     <button id="m-cancel" class="btn gray" style="margin-top:6px">Anuluj</button>
-    <p style="color:#bbb;font-size:12px;margin-top:6px">Po wysłaniu dołącz pobrany plik PNG.</p>
+    <div class="note" id="m-note">Po wysłaniu dołącz pobrany plik PNG.</div>
   </div>
 </div>
 
