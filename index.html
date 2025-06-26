@@ -1,35 +1,48 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Weapon-Wizards – Konfigurator</title>
+
+<!--  EmailJS SDK  -->
+<script src="https://cdn.emailjs.com/sdk/3.11.0/email.min.js"></script>
+<script>
+  /* <<< WPISZ SWÓJ PUBLIC KEY Z emailjs.com >>> */
+  emailjs.init("YOUR_PUBLIC_KEY");
+</script>
 
 <style>
 :root{
-    --gun-scale: 1;          /* skala pistoletu */
+    --gun-scale: 1;
 
     --page-bg:#000; --container-bg:#000;
     --txt:#fff; --border:#dee2e6; --primary:#007bff;
 }
 
-/* ===== LAYOUT ===== */
+/* ===== LAYOUT ==================================================== */
 body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
      background:var(--page-bg);display:flex;justify-content:center;padding:20px;}
 .configurator-container{background:var(--container-bg);border-radius:8px;box-shadow:0 8px 24px #0008;
     display:flex;flex-wrap:wrap;gap:24px;max-width:1200px;width:100%;padding:24px;}
 .gun-view-wrapper{flex:2 1 600px;display:flex;flex-direction:column;gap:10px;}
 
-/* ===== PODGLĄD ===== */
-.gun-view{position:relative;width:100%;max-width:800px;aspect-ratio:4/3;background:#000 center/100% 100% no-repeat;border-radius:6px;overflow:hidden;}
+/* ===== PODGLĄD =================================================== */
+.gun-view{position:relative;width:100%;max-width:800px;aspect-ratio:4/3;
+    background:#000 center/100% 100% no-repeat;border-radius:6px;overflow:hidden;}
 .gun-svg{width:100%;height:100%;transform:scale(var(--gun-scale));transform-origin:center;}
 .color-overlay{pointer-events:none;mix-blend-mode:hard-light;opacity:.45;}
 
-/* ===== BUTTONS ===== */
+/* ===== BUTTONS =================================================== */
 .action-button{width:100%;padding:12px;font-size:16px;border:none;color:#fff;border-radius:6px;cursor:pointer;text-align:center;}
-#bg-button{background:#6c757d;} #save-button{background:var(--primary);} .reset-button{background:#dc3545;}
+#mix2-button{background:#20c997;}              /* zielony */
+#mix-button {background:#17a2b8;}              /* turkus */
+#bg-button  {background:#6c757d;}
+#save-button{background:var(--primary);}
+.reset-button{background:#dc3545;}
+#send-button{background:#ffc107;color:#000;margin-top:10px;}
 
-/* ===== PANEL ===== */
+/* ===== PANEL ===================================================== */
 .controls{flex:1 1 300px;min-width:300px;display:flex;flex-direction:column;}
 .control-section{margin-bottom:20px;}
 .control-section-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px;}
@@ -40,32 +53,45 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Hel
 .part-selection{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .part-selection button{padding:10px 12px;font:600 11px/1 sans-serif;text-align:center;color:#000;background:#f5f6f7;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:.2s;}
 .part-selection button.selected{background:var(--primary);color:#fff;border-color:var(--primary);}
-#mix-button{background:linear-gradient(45deg,#f3ec78,#af4261,#43cea2,#185a9d);color:#fff;font-weight:bold;}
 
 .color-palette-container{max-height:400px;overflow-y:auto;padding-right:10px;}
 .color-palette{display:grid;grid-template-columns:repeat(3,1fr);gap:25px 10px;}
 .color-swatch-wrapper{display:flex;flex-direction:column;align-items:center;cursor:pointer;}
 .color-swatch{width:45px;height:45px;border-radius:50%;border:2px solid var(--border);transition:.2s;}
 .color-swatch-wrapper:hover .color-swatch{transform:scale(1.1);box-shadow:0 0 8px var(--primary);}
-.color-swatch-label{margin-top:8px;font-size:10px;color:#6c757d;text-align:center;}
+.color-swatch-label{margin-top:8px;font-size:10px;color:#fff;text-align:center;font-weight:600;}
 
-/* ===== LISTA KOLORÓW ===== */
-.summary-container{border:1px solid var(--border);border-radius:6px;background:#fff1;padding:12px;margin-top:16px;color:var(--txt);font-size:14px;
-                   flex:0 0 auto;                /* rośnie z treścią */
-                   overflow:auto;}               /* nigdy nie ucina */
-#summary-list{column-count:3;column-gap:24px;}  #summary-list div{margin-bottom:4px;break-inside:avoid;}
+.summary-container{border:1px solid var(--border);border-radius:6px;background:#fff1;padding:12px;margin-top:16px;color:var(--txt);font-size:14px;}
+#summary-list{column-count:3;column-gap:24px;} #summary-list div{margin-bottom:4px;break-inside:avoid;}
+
+#price-box{margin-top:12px;font:600 16px/1.4 sans-serif;text-align:center;}
 </style>
 </head>
 
 <body>
 <div class="configurator-container">
     <div class="gun-view-wrapper">
-        <div class="gun-view" id="gun-view"><p style="text-align:center;padding-top:20px;color:#6c757d;">Ładowanie…</p></div>
+        <div class="gun-view" id="gun-view">
+            <p style="text-align:center;padding-top:20px;color:#6c757d;">Ładowanie…</p>
+        </div>
+
+        <!-- przyciski podglądu -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <button id="mix2-button" class="action-button">MIX ≤ 2 kolory</button>
+            <button id="mix-button"  class="action-button">MIX ∞</button>
+        </div>
+
         <button id="bg-button"   class="action-button">Zmień Tło</button>
         <button id="save-button" class="action-button">Zapisz Obraz</button>
-        <div class="summary-container"><div id="summary-list"></div></div>
+
+        <div class="summary-container">
+            <div id="summary-list"></div>
+            <div id="price-box">Szacowany koszt: 0 zł</div>
+            <button id="send-button" class="action-button">Wyślij do Wizards!</button>
+        </div>
     </div>
 
+    <!-- panel sterowania -->
     <div class="controls">
         <div class="control-section">
             <div class="control-section-header">
@@ -87,6 +113,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Hel
     </div>
 </div>
 
+<!-- formularz e-mail wyskoczy jako modal (tworzony przez JS) -->
 <script type="module" src="app.js"></script>
 </body>
 </html>
