@@ -19,12 +19,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const ENbtn    = document.getElementById('lang-gb');
     const H1       = document.getElementById('header-part-selection');
     const H2       = document.getElementById('header-color-selection');
-    /* nagłówka podsumowania już nie ma */
-    const sumList  = document.getElementById('summary-list');
+    const sumList  = document.getElementById('summary-list');   // bez nagłówka
 
     /* --- STATE --- */
     let lang='pl', activePart=null;
-    const selections={};
+    const selections={};  // {partId: "H-146 Graphite Black"}
 
     await loadSvg();
     buildUI();
@@ -73,8 +72,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     function selectPart(btn,id){
         partBox.querySelectorAll('button').forEach(b=>b.classList.remove('selected'));
-        btn.classList.add('selected');
-        activePart=id;
+        btn.classList.add('selected'); activePart=id;
     }
 
     /* ===== LANGUAGE ===== */
@@ -87,12 +85,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         H1.textContent = lang==='pl' ? '1. Wybierz część'      : '1. Select part';
         H2.textContent = lang==='pl' ? '2. Wybierz kolor (Cerakote)'
                                      : '2. Select color (Cerakote)';
-
         PLbtn.classList.toggle('active', lang==='pl');
         ENbtn.classList.toggle('active', lang==='en');
     }
 
-    /* ===== PALETA ===== */
+    /* ===== PALETTE ===== */
     function buildPalette(){
         palBox.innerHTML='';
         for(const [name,hex] of Object.entries(COLORS)){
@@ -127,18 +124,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 : [ov];
             shapes.forEach(s=>{
                 s.style.fill   = hex;
-                s.style.stroke = hex;  // dla lufy
+                s.style.stroke = hex;
             });
         });
-        selections[pid]=name;
-        updateSummary();
+        selections[pid]=name; updateSummary();
     }
     function defaultBlack(){
         const def='H-146 Graphite Black',hex=COLORS[def];
-        PARTS.forEach(p=>{
-            selections[p.id]=def;
-            applyColor(p.id,hex,def);
-        });
+        PARTS.forEach(p=>{ selections[p.id]=def; applyColor(p.id,hex,def); });
     }
     function randomize(){
         const keys=Object.keys(COLORS);
@@ -164,13 +157,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     /* ===== SUMMARY ===== */
+    function codeOnly(fullName){
+        /* zwraca pierwszy token, np. "H-146" */
+        return fullName.split(' ')[0]; 
+    }
     function updateSummary(){
         sumList.innerHTML='';
         PARTS.forEach(p=>{
-            const c=selections[p.id];
-            if(!c) return;
+            const full=selections[p.id];
+            if(!full) return;
             const div=document.createElement('div');
-            div.textContent=`${p[lang]} – ${c}`;
+            div.textContent = `${p[lang]} – ${codeOnly(full)}`;
             sumList.appendChild(div);
         });
     }
@@ -181,7 +178,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         if(!svg) return;
 
         const lines = PARTS
-            .map(p=>selections[p.id]?`${p[lang]} – ${selections[p.id]}`:null)
+            .map(p=>{
+                const full=selections[p.id];
+                return full ? `${p[lang]} – ${codeOnly(full)}` : null;
+            })
             .filter(Boolean);
 
         const scale=2;
@@ -221,7 +221,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             ctx.font=`${FONT_PX}px sans-serif`;
             lines.forEach((t,i)=>ctx.fillText(t,x0+PAD,PAD+FONT_PX*i*1.4));
 
-            /* pobieranie */
             const a=document.createElement('a');
             a.href=canvas.toDataURL('image/png');
             a.download='weapon-wizards-projekt.png';
