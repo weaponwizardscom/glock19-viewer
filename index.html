@@ -7,42 +7,35 @@
 
 <style>
 :root{
-    /* — regulujesz tylko te dwie wartości — */
-    --gun-scale: 0.8;   /* skala pistoletu      (0.7 – 1.1 …) */
-    --bg-scale : 1;     /* skala zdjęcia tła    (1 = 100 %)   */
+    --gun-scale: 1;          /* 1 = 100 %  (zmień, jeśli chcesz powiększyć / pomniejszyć pistolet) */
 
-    /* kolory / brand */
     --page-bg:#000; --container-bg:#000;
-    --txt:#fff;    --border:#dee2e6; --primary:#007bff;
+    --txt:#fff; --border:#dee2e6; --primary:#007bff;
 }
 
-/* ===== LAYOUT ===== */
+/* ===== LAYOUT =============================================== */
 body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
      background:var(--page-bg);display:flex;justify-content:center;padding:20px;}
 .configurator-container{background:var(--container-bg);border-radius:8px;box-shadow:0 8px 24px #0008;
     display:flex;flex-wrap:wrap;gap:24px;max-width:1200px;width:100%;padding:24px;}
 .gun-view-wrapper{flex:2 1 600px;display:flex;flex-direction:column;gap:10px;}
 
-/* ===== PODGLĄD ===== */
+/* ===== PODGLĄD ============================================= */
 .gun-view{
-    position:relative;width:100%;max-width:800px;
-    aspect-ratio:1289.79/1040.4;                    /* proporcje SVG */
-    background:#000 center/auto no-repeat;          /* url() dodaje JS */
-    background-size:calc(var(--bg-scale)*100%) auto;
-    border-radius:6px;
+    position:relative;width:100%;max-width:800px;aspect-ratio:4/3;      /* 1600×1200 = 4:3 */
+    background:#000 center/100% 100% no-repeat;                         /* tło – 100 % */
+    border-radius:6px;overflow:hidden;
 }
-.gun-view::before{content:"";position:absolute;inset:0;background:#0004;border-radius:6px;}
-.gun-svg{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(var(--gun-scale));
-         transform-origin:center;width:100%;height:100%;}
+.gun-svg{width:100%;height:100%;transform:scale(var(--gun-scale));transform-origin:center;}
 .color-overlay{pointer-events:none;mix-blend-mode:hard-light;opacity:.45;}
 
-/* ===== BUTTONS ===== */
+/* ===== BUTTONS ============================================= */
 .action-button{width:100%;padding:12px;font-size:16px;border:none;color:#fff;border-radius:6px;cursor:pointer;text-align:center;}
-#bg-button   {background:#6c757d;}   /* Zmień Tło */
+#bg-button   {background:#6c757d;}
 #save-button {background:var(--primary);}
 .reset-button{background:#dc3545;}
 
-/* ===== PANEL ===== */
+/* ===== PANEL / LISTY ======================================= */
 .controls{flex:1 1 300px;min-width:300px;display:flex;flex-direction:column;}
 .control-section{margin-bottom:20px;}
 .control-section-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px;}
@@ -96,6 +89,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Hel
         <div class="reset-button-container"><button id="reset-button" class="action-button reset-button">Resetuj Kolory</button></div>
     </div>
 </div>
+
 <script type="module" src="app.js"></script>
 </body>
 </html>
