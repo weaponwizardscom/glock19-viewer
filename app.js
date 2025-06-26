@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateText();
     updateSummary();
 
+    /* ===== SVG ===== */
     async function loadSvg(){
         const svgTxt=await fetch(SVG_FILE).then(r=>r.text());
         gunBox.innerHTML=svgTxt;
@@ -48,6 +49,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
+    /* ===== UI ===== */
     function buildUI(){
         PARTS.forEach(p=>{
             const b=document.createElement('button');
@@ -71,7 +73,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         btn.classList.add('selected'); activePart=id;
     }
 
-    /* --- LANG --- */
+    /* ===== LANGUAGE ===== */
     function setLang(l){ lang=l; updateText(); updateSummary(); }
     function updateText(){
         partBox.querySelectorAll('button').forEach(b=>{
@@ -83,28 +85,33 @@ document.addEventListener('DOMContentLoaded', async () => {
         sumTitle.textContent=lang==='pl'
             ?'Twoje zestawienie kolorów Cerakote'
             :'Your Cerakote color summary';
-
-        /* --- NOWE: tłumaczymy główne przyciski --- */
-        saveBtn.textContent  = lang==='pl' ? 'Zapisz Obraz'   : 'Save Image';
-        resetBtn.textContent = lang==='pl' ? 'Resetuj Kolory' : 'Reset Colors';
-
         PLbtn.classList.toggle('active',lang==='pl');
         ENbtn.classList.toggle('active',lang==='en');
     }
 
-    /* --- PALETTE --- */
+    /* ===== PALETTE ===== */
     function buildPalette(){
         palBox.innerHTML='';
         for(const [name,hex] of Object.entries(COLORS)){
-            const w=document.createElement('div'); w.className='color-swatch-wrapper'; w.title=name;
-            w.onclick=()=>applyColor(activePart,hex,name);
-            const dot=document.createElement('div'); dot.className='color-swatch'; dot.style.backgroundColor=hex;
-            const lbl=document.createElement('div'); lbl.className='color-swatch-label'; lbl.textContent=name;
-            w.append(dot,lbl); palBox.appendChild(w);
+            const wrap=document.createElement('div');
+            wrap.className='color-swatch-wrapper';
+            wrap.title=name;
+            wrap.onclick=()=>applyColor(activePart,hex,name);
+
+            const dot=document.createElement('div');
+            dot.className='color-swatch';
+            dot.style.backgroundColor=hex;
+
+            const lbl=document.createElement('div');
+            lbl.className='color-swatch-label';
+            lbl.textContent=name;
+
+            wrap.append(dot,lbl);
+            palBox.appendChild(wrap);
         }
     }
 
-    /* --- COLORING --- */
+    /* ===== COLORING ===== */
     function applyColor(pid,hex,name){
         if(!pid){
             alert(lang==='pl'?'Najpierw wybierz część!':'Select a part first!');
@@ -142,7 +149,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         activePart=null; updateSummary();
     }
 
-    /* --- SUMMARY --- */
+    /* ===== SUMMARY ===== */
     function updateSummary(){
         sumList.innerHTML='';
         PARTS.forEach(p=>{
@@ -152,6 +159,59 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    /* --- SAVE PNG (bez zmian) --- */
-    async function savePng(){ /* … */ }
+    /* ===== SAVE PNG ===== */
+    async function savePng(){
+        const svg=document.querySelector('.gun-svg');
+        if(!svg) return;
+
+        const lines=PARTS.map(p=>selections[p.id]?`${p[lang]} – ${selections[p.id]}`:null)
+                         .filter(Boolean);
+
+        const scale=2;
+        const box=svg.getBBox();
+        const W=box.width*scale + PANEL_W;
+        const H=box.height*scale;
+
+        const canvas=Object.assign(document.createElement('canvas'),{width:W,height:H});
+        const ctx=canvas.getContext('2d');
+
+        const base=new Image();
+        base.src=TEXTURE;
+        base.onload=drawAll;
+        base.onerror=()=>alert('Błąd tekstury');
+
+        async function drawAll(){
+            ctx.drawImage(base,0,0,box.width*scale,H);
+
+            await Promise.all([...svg.querySelectorAll('.color-overlay')]
+                .filter(ov=>ov.style.fill && ov.style.fill!=='transparent')
+                .map(ov=>{
+                    const tmp=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${svg.getAttribute('viewBox')}">
+                                   <g style="mix-blend-mode:hard-light;opacity:.45;">${ov.outerHTML}</g></svg>`;
+                    const url=URL.createObjectURL(new Blob([tmp],{type:'image/svg+xml'}));
+                    return new Promise(res=>{
+                        const img=new Image();
+                        img.onload=()=>{ctx.drawImage(img,0,0,box.width*scale,H);URL.revokeObjectURL(url);res();};
+                        img.src=url;
+                    });
+                }));
+
+            const x0=box.width*scale;
+            ctx.fillStyle='rgba(0,0,0,0.8)';
+            ctx.fillRect(x0,0,PANEL_W,H);
+
+            ctx.fillStyle='#fff';
+            ctx.font=`${FONT_PX}px sans-serif`;
+            lines.forEach((t,i)=>ctx.fillText(t,x0+PAD,PAD+FONT_PX*i*1.4));
+
+            /* safari fix */
+            const a=document.createElement('a');
+            a.href=canvas.toDataURL('image/png');
+            a.download='weapon-wizards-projekt.png';
+            a.style.display='none';
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(()=>document.body.removeChild(a),1000);
+        }
+    }
 });
