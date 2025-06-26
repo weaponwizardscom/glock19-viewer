@@ -7,9 +7,10 @@
 
 <style>
 :root{
-    --page-bg:#000; --container-bg:#000; --txt:#fff;
-    --border:#dee2e6; --primary:#007bff;
-    --gun-scale:0.8;                  /* << łatwa regulacja skali broni */
+    --page-bg:#000;
+    --container-bg:#000;
+    --txt:#fff; --border:#dee2e6; --primary:#007bff;
+    --gun-scale:0.8;           /* ← tu regulujesz wielkość pistoletu */
 }
 body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
      background:var(--page-bg);display:flex;justify-content:center;padding:20px;}
@@ -19,16 +20,27 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Hel
     max-width:1200px;width:100%;padding:24px;}
 
 .gun-view-wrapper{flex:2 1 600px;display:flex;flex-direction:column;gap:10px;}
-/* --- PODGLĄD --- */
+
+/* ===== PODGLĄD ===== */
 .gun-view{
-    position:relative;width:100%;max-width:800px;aspect-ratio:1289.79/1040.4;
-    background:#000 center/cover no-repeat;border-radius:6px;
+    position:relative;
+    width:100%;                 /* zachowuje proporcje 1289×1040 */
+    max-width:800px;
+    aspect-ratio:1289.79/1040.4;
+    background:#000 center/auto no-repeat;   /* tło w 100 %, bez skalowania */
+    border-radius:6px;
 }
 .gun-view::before{content:"";position:absolute;inset:0;background:#0004;border-radius:6px;}
-.gun-svg{width:100%;height:100%;transform:scale(var(--gun-scale));transform-origin:top left;}
+.gun-svg{
+    position:absolute;          /* centrowanie */
+    left:50%; top:50%;
+    transform:translate(-50%,-50%) scale(var(--gun-scale));
+    transform-origin:center;    /* ważne */
+    width:100%; height:100%;
+}
 .color-overlay{pointer-events:none;mix-blend-mode:hard-light;opacity:.45;}
 
-/* --- BUTTONS / PANEL (bez zmian stylistycznych) --- */
+/* ===== RESZTA STYLU (identyczna) ===== */
 .action-button{width:100%;padding:12px;font-size:16px;border:none;color:#fff;border-radius:6px;cursor:pointer;text-align:center;}
 #bg-button   {background:#6c757d;}
 #save-button {background:var(--primary);}
@@ -55,8 +67,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Hel
 .color-swatch-label{margin-top:8px;font-size:10px;color:#6c757d;text-align:center;}
 
 .summary-container{flex:1 1 0;border:1px solid var(--border);border-radius:6px;
-    background:#fff1;padding:12px;margin-top:16px;color:var(--txt);font-size:14px;
-    overflow-y:hidden;}
+    background:#fff1;padding:12px;margin-top:16px;color:var(--txt);font-size:14px;overflow-y:hidden;}
 #summary-list{column-count:3;column-gap:24px;}
 #summary-list div{margin-bottom:4px;break-inside:avoid;}
 </style>
@@ -64,17 +75,13 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Hel
 
 <body>
 <div class="configurator-container">
-    <!-- PODGLĄD -->
     <div class="gun-view-wrapper">
-        <div class="gun-view" id="gun-view">
-            <p style="text-align:center;padding-top:20px;color:#6c757d;">Ładowanie…</p>
-        </div>
+        <div class="gun-view" id="gun-view"><p style="text-align:center;padding-top:20px;color:#6c757d;">Ładowanie…</p></div>
         <button id="bg-button"   class="action-button">Zmień Tło</button>
         <button id="save-button" class="action-button">Zapisz Obraz</button>
         <div class="summary-container"><div id="summary-list"></div></div>
     </div>
 
-    <!-- PANEL -->
     <div class="controls">
         <div class="control-section">
             <div class="control-section-header">
@@ -95,7 +102,6 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Hel
         <div class="reset-button-container"><button id="reset-button" class="action-button reset-button">Resetuj Kolory</button></div>
     </div>
 </div>
-
 <script type="module" src="app.js"></script>
 </body>
 </html>
