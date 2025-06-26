@@ -6,7 +6,7 @@
 <title>Weapon-Wizards – Konfigurator</title>
 
 <style>
-:root{--page:#000;--box:#000;--gun:#000 center/cover no-repeat;
+:root{--page:#000;--box:#000;
       --txt:#fff;--border:#dee2e6;--pri:#007bff;}
 *{box-sizing:border-box;margin:0}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
@@ -14,42 +14,50 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 
 .configurator{background:var(--box);border-radius:8px;box-shadow:0 8px 24px #0008;
   display:flex;flex-wrap:wrap;gap:24px;max-width:1200px;width:100%;padding:24px;}
-
+/* ---- GUN ---- */
 .gun-wrap{flex:2 1 600px;display:flex;flex-direction:column;gap:10px;}
-.gun-view{position:relative;width:100%;max-width:800px;aspect-ratio:4/3;
-  background:var(--gun);border-radius:6px;}
-.gun-svg{width:100%;height:100%;}
+.gun-view{position:relative;width:100%;max-width:800px;aspect-ratio:4/3;border-radius:6px;
+  background:url("img/t1.png") center/cover no-repeat;}
+.gun-svg{width:100%;height:100%}
 .color-overlay{mix-blend-mode:hard-light;opacity:.45;pointer-events:none}
 
+/* ---- SIDE PANEL ---- */
 .controls{flex:1 1 300px;min-width:300px;display:flex;flex-direction:column;}
 .section{margin-bottom:20px}
 .sec-hdr{display:flex;justify-content:space-between;align-items:center;
-  border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px;}
-.sec-hdr h3{color:var(--txt);font-size:18px;}
+  border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px}
+.sec-hdr h3{color:var(--txt);font-size:18px}
 
-.lang img{width:24px;cursor:pointer;margin-left:8px;border:2px solid transparent;border-radius:3px;}
-.lang img.active{border-color:var(--pri);}
+.lang img{width:24px;cursor:pointer;margin-left:8px;border:2px solid transparent;border-radius:3px}
+.lang img.active{border-color:var(--pri)}
 
-.parts{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.parts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .parts button{padding:10px 6px;font-size:12px;font-weight:600;text-align:center;
   background:#f5f6f7;border:1px solid var(--border);border-radius:6px;cursor:pointer}
-.parts button.selected{background:var(--pri);color:#fff;}
-.mix{background:linear-gradient(45deg,#f3ec78,#af4261,#43cea2,#185a9d);color:#fff;font-weight:700;}
+.parts button.selected{background:var(--pri);color:#fff}
+.parts button.disabled{background:#444;color:#999;cursor:not-allowed}
 
-.palette-wrap{max-height:400px;overflow-y:auto;padding-right:8px;}
-.palette{display:grid;grid-template-columns:repeat(3,1fr);gap:25px 10px;}
+.mix{background:linear-gradient(45deg,#ffd700,#ff7a00,#ff007a,#00aaff,#00ff6a);
+     color:#000;font-weight:700}
+
+/* ---- PALETTE ---- */
+.palette-wrap{max-height:400px;overflow-y:auto;padding-right:8px}
+.palette{display:grid;grid-template-columns:repeat(3,1fr);gap:25px 10px}
 .sw{display:flex;flex-direction:column;align-items:center;cursor:pointer}
 .dot{width:45px;height:45px;border-radius:50%;border:2px solid var(--border);
   transition:transform .2s,box-shadow .2s}
-.sw:hover .dot{transform:scale(1.1);box-shadow:0 0 8px var(--pri);}
+.sw:hover .dot{transform:scale(1.1);box-shadow:0 0 8px var(--pri)}
 .lbl{margin-top:6px;color:#fff;font-size:11px;font-weight:600;text-align:center;line-height:1.25}
 
+/* ---- BUTTONS ---- */
 .btn{width:100%;padding:12px;font-size:16px;border:none;color:#fff;border-radius:6px;cursor:pointer}
 .gray{background:#6c757d}.blue{background:var(--pri)}.red{background:#dc3545}
 
+/* ---- SUMMARY ---- */
 .summary{border:1px solid var(--border);border-radius:6px;padding:12px;background:#111;margin-top:16px;color:var(--txt)}
 #summary-list{column-count:3;column-gap:20px}#summary-list div{break-inside:avoid;margin-bottom:4px;font-size:15px}
 
+/* ---- MODAL ---- */
 .modal{position:fixed;inset:0;background:#000a;display:flex;align-items:center;justify-content:center;z-index:1000}
 .modal.hidden{display:none}
 .box{background:#1b1b1b;padding:24px;border-radius:8px;width:90%;max-width:420px}
@@ -64,53 +72,53 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 <body>
 <div class="configurator">
 
- <div class="gun-wrap">
-   <div id="gun-view" class="gun-view">
-     <p style="text-align:center;padding-top:20px;color:#6c757d">Ładowanie…</p>
-   </div>
+  <div class="gun-wrap">
+    <div id="gun-view" class="gun-view"><p style="text-align:center;padding-top:20px;color:#6c757d">Ładowanie…</p></div>
 
-   <button id="bg-btn"   class="btn gray">Zmień Tło</button>
-   <button id="save-btn" class="btn blue">Zapisz Obraz</button>
+    <button id="bg-btn"   class="btn gray">Zmień Tło</button>
+    <button id="save-btn" class="btn blue">Zapisz Obraz</button>
 
-   <div class="summary"><div id="summary-list"></div></div>
+    <div class="summary"><div id="summary-list"></div></div>
 
-   <div style="margin-top:16px">
-     <div id="price" style="color:#fff;font-size:20px;font-weight:700">Szacowany koszt: 0 zł</div>
-     <button id="send-btn" class="btn red" style="margin-top:8px">Wyślij do Wizards!</button>
-   </div>
- </div>
+    <div style="margin-top:16px">
+      <div id="price" style="color:#fff;font-size:20px;font-weight:700">Szacowany koszt: 0 zł</div>
+      <button id="send-btn" class="btn red" style="margin-top:8px">Wyślij do Wizards!</button>
+    </div>
+  </div>
 
- <div class="controls">
-   <div class="section">
-     <div class="sec-hdr">
-       <h3 id="h-parts">1. Wybierz część</h3>
-       <div class="lang">
-         <img id="pl" src="https://flagicons.lipis.dev/flags/4x3/pl.svg" alt="pl">
-         <img id="en" src="https://flagicons.lipis.dev/flags/4x3/gb.svg" alt="en">
-       </div>
-     </div>
-     <div id="parts" class="parts"></div>
-   </div>
+  <div class="controls">
+    <div class="section">
+      <div class="sec-hdr">
+        <h3 id="h-parts">1. Wybierz część</h3>
+        <div class="lang">
+          <img id="pl" src="https://flagicons.lipis.dev/flags/4x3/pl.svg" alt="pl">
+          <img id="en" src="https://flagicons.lipis.dev/flags/4x3/gb.svg" alt="en">
+        </div>
+      </div>
+      <div id="parts" class="parts"></div>
+    </div>
 
-   <div class="section">
-     <div class="sec-hdr"><h3 id="h-col">2. Wybierz kolor (Cerakote)</h3></div>
-     <div class="palette-wrap"><div id="palette" class="palette"></div></div>
-   </div>
+    <div class="section">
+      <div class="sec-hdr"><h3 id="h-col">2. Wybierz kolor (Cerakote)</h3></div>
+      <div class="palette-wrap"><div id="palette" class="palette"></div></div>
+    </div>
 
-   <button id="reset-btn" class="btn red" style="margin-top:auto">Resetuj Kolory</button>
- </div>
+    <button id="reset-btn" class="btn red" style="margin-top:auto">Resetuj Kolory</button>
+  </div>
+
 </div>
 
+<!-- MODAL -->
 <div id="modal" class="modal hidden">
- <div class="box">
-   <h2>Wyślij projekt</h2>
-   <input id="m-name"  placeholder="Imię">
-   <input id="m-mail"  placeholder="E-mail">
-   <input id="m-phone" placeholder="Telefon">
-   <button id="m-send"   class="btn blue" style="margin-top:6px">Wyślij</button>
-   <button id="m-cancel" class="btn gray" style="margin-top:6px">Anuluj</button>
-   <p style="color:#bbb;font-size:12px;margin-top:6px">Po wysłaniu dołącz pobrany plik PNG.</p>
- </div>
+  <div class="box">
+    <h2>Wyślij projekt</h2>
+    <input id="m-name"  placeholder="Imię">
+    <input id="m-mail"  placeholder="E-mail">
+    <input id="m-phone" placeholder="Telefon">
+    <button id="m-send"   class="btn blue" style="margin-top:6px">Wyślij</button>
+    <button id="m-cancel" class="btn gray" style="margin-top:6px">Anuluj</button>
+    <p style="color:#bbb;font-size:12px;margin-top:6px">Po wysłaniu dołącz pobrany plik PNG.</p>
+  </div>
 </div>
 
 <script src="app.js"></script>
