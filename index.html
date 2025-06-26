@@ -1,51 +1,101 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Glock Viewer</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Weapon-Wizards – Konfigurator</title>
 
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{background:#111;font-family:Arial,Helvetica,sans-serif;color:#eee}
-    .viewer{
-      position:relative;
-      width:100%;
-      max-width:1328px;   /* ≈1600 × 0.83 → szerokość SVG po skalowaniu */
-      margin:auto;
-    }
-    #bg,
-    #gun{
-      width:100%;
-      height:auto;
-      display:block;
-    }
-    #bg{position:absolute;top:0;left:0;z-index:0}
-    #gun{position:relative;z-index:1}
-    /* proste przyciski wyboru tła */
-    #controls{
-      margin:20px auto 0;
-      text-align:center;
-    }
-    #controls button{
-      background:#333;border:1px solid #666;color:#ddd;
-      padding:6px 12px;margin:0 4px;cursor:pointer;
-    }
-    #controls button:hover{background:#555}
-  </style>
+<style>
+:root{
+    /* — regulujesz tylko te dwie wartości — */
+    --gun-scale: 0.8;   /* skala pistoletu      (0.7 – 1.1 …) */
+    --bg-scale : 1;     /* skala zdjęcia tła    (1 = 100 %)   */
+
+    /* kolory / brand */
+    --page-bg:#000; --container-bg:#000;
+    --txt:#fff;    --border:#dee2e6; --primary:#007bff;
+}
+
+/* ===== LAYOUT ===== */
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+     background:var(--page-bg);display:flex;justify-content:center;padding:20px;}
+.configurator-container{background:var(--container-bg);border-radius:8px;box-shadow:0 8px 24px #0008;
+    display:flex;flex-wrap:wrap;gap:24px;max-width:1200px;width:100%;padding:24px;}
+.gun-view-wrapper{flex:2 1 600px;display:flex;flex-direction:column;gap:10px;}
+
+/* ===== PODGLĄD ===== */
+.gun-view{
+    position:relative;width:100%;max-width:800px;
+    aspect-ratio:1289.79/1040.4;                    /* proporcje SVG */
+    background:#000 center/auto no-repeat;          /* url() dodaje JS */
+    background-size:calc(var(--bg-scale)*100%) auto;
+    border-radius:6px;
+}
+.gun-view::before{content:"";position:absolute;inset:0;background:#0004;border-radius:6px;}
+.gun-svg{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(var(--gun-scale));
+         transform-origin:center;width:100%;height:100%;}
+.color-overlay{pointer-events:none;mix-blend-mode:hard-light;opacity:.45;}
+
+/* ===== BUTTONS ===== */
+.action-button{width:100%;padding:12px;font-size:16px;border:none;color:#fff;border-radius:6px;cursor:pointer;text-align:center;}
+#bg-button   {background:#6c757d;}   /* Zmień Tło */
+#save-button {background:var(--primary);}
+.reset-button{background:#dc3545;}
+
+/* ===== PANEL ===== */
+.controls{flex:1 1 300px;min-width:300px;display:flex;flex-direction:column;}
+.control-section{margin-bottom:20px;}
+.control-section-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px;}
+.control-section-header h3{margin:0;color:var(--txt);}
+.lang-switcher img{width:24px;margin-left:8px;cursor:pointer;border:2px solid transparent;border-radius:3px;}
+.lang-switcher img.active{border-color:var(--primary);}
+
+.part-selection{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.part-selection button{padding:10px 12px;font:600 11px/1 sans-serif;text-align:center;color:#000;background:#f5f6f7;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:.2s;}
+.part-selection button.selected{background:var(--primary);color:#fff;border-color:var(--primary);}
+#mix-button{background:linear-gradient(45deg,#f3ec78,#af4261,#43cea2,#185a9d);color:#fff;font-weight:bold;}
+
+.color-palette-container{max-height:400px;overflow-y:auto;padding-right:10px;}
+.color-palette{display:grid;grid-template-columns:repeat(3,1fr);gap:25px 10px;}
+.color-swatch-wrapper{display:flex;flex-direction:column;align-items:center;cursor:pointer;}
+.color-swatch{width:45px;height:45px;border-radius:50%;border:2px solid var(--border);transition:.2s;}
+.color-swatch-wrapper:hover .color-swatch{transform:scale(1.1);box-shadow:0 0 8px var(--primary);}
+.color-swatch-label{margin-top:8px;font-size:10px;color:#6c757d;text-align:center;}
+
+.summary-container{flex:1 1 0;border:1px solid var(--border);border-radius:6px;background:#fff1;padding:12px;margin-top:16px;color:var(--txt);font-size:14px;overflow:hidden;}
+#summary-list{column-count:3;column-gap:24px;} #summary-list div{margin-bottom:4px;break-inside:avoid;}
+</style>
 </head>
 
 <body>
-  <h1 style="text-align:center;padding:12px 0 4px">Glock Viewer</h1>
+<div class="configurator-container">
+    <div class="gun-view-wrapper">
+        <div class="gun-view" id="gun-view"><p style="text-align:center;padding-top:20px;color:#6c757d;">Ładowanie…</p></div>
+        <button id="bg-button"   class="action-button">Zmień Tło</button>
+        <button id="save-button" class="action-button">Zapisz Obraz</button>
+        <div class="summary-container"><div id="summary-list"></div></div>
+    </div>
 
-  <div class="viewer">
-    <img id="bg" src="img/t1.png" alt="tło" />
-    <!-- wczytujemy SVG jako <object>, żeby zachować interaktywność klikanych ścieżek -->
-    <object id="gun" type="image/svg+xml" data="g17.svg"></object>
-  </div>
+    <div class="controls">
+        <div class="control-section">
+            <div class="control-section-header">
+                <h3 id="header-part-selection">1. Wybierz część</h3>
+                <div class="lang-switcher">
+                    <img id="lang-pl" src="https://flagicons.lipis.dev/flags/4x3/pl.svg" alt="PL">
+                    <img id="lang-gb" src="https://flagicons.lipis.dev/flags/4x3/gb.svg" alt="EN">
+                </div>
+            </div>
+            <div class="part-selection" id="part-selection-container"></div>
+        </div>
 
-  <div id="controls"></div>
+        <div class="control-section">
+            <div class="control-section-header"><h3 id="header-color-selection">2. Wybierz kolor (Cerakote)</h3></div>
+            <div class="color-palette-container"><div class="color-palette" id="color-palette"></div></div>
+        </div>
 
-  <script src="app.js"></script>
+        <div class="reset-button-container"><button id="reset-button" class="action-button reset-button">Resetuj Kolory</button></div>
+    </div>
+</div>
+<script type="module" src="app.js"></script>
 </body>
 </html>
