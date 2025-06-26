@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         do{ next = BG_LIST[Math.floor(Math.random()*BG_LIST.length)]; }
         while(next === currentBg);
         currentBg = next;
-        gunView.style.background = `url("${next}") center/80% no-repeat`;
+        gunView.style.background = `url("${next}") center/cover no-repeat`;
     }
 
     /* ===== PALETTE ===== */
