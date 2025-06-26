@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const SVG_FILE='g17.svg', TEXTURE='img/glock17.png';
     const FONT_PX=24, PANEL_W=380, PAD=32;
 
-    /* wczytujemy JSON-y */
+    /* wczytujemy dane */
     const [PARTS, COLORS] = await Promise.all([
         fetch('./data/parts.json').then(r=>r.json()),
         fetch('./data/colors.json').then(r=>r.json())
@@ -85,6 +85,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         H1.textContent = lang==='pl' ? '1. Wybierz część'      : '1. Select part';
         H2.textContent = lang==='pl' ? '2. Wybierz kolor (Cerakote)'
                                      : '2. Select color (Cerakote)';
+
+        /* --- tłumaczenie głównych przycisków --- */
+        saveBtn .textContent = lang==='pl' ? 'Zapisz Obraz'   : 'Save Image';
+        resetBtn.textContent = lang==='pl' ? 'Resetuj Kolory' : 'Reset Colors';
+
         PLbtn.classList.toggle('active', lang==='pl');
         ENbtn.classList.toggle('active', lang==='en');
     }
@@ -157,10 +162,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     /* ===== SUMMARY ===== */
-    function codeOnly(fullName){
-        /* zwraca pierwszy token, np. "H-146" */
-        return fullName.split(' ')[0]; 
-    }
+    function codeOnly(fullName){ return fullName.split(' ')[0]; }
     function updateSummary(){
         sumList.innerHTML='';
         PARTS.forEach(p=>{
