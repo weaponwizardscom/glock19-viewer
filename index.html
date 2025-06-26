@@ -1,41 +1,35 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Weapon-Wizards – Konfigurator</title>
 
 <style>
 :root{
-    --gun-scale: 1;          /* 1 = 100 %  (zmień, jeśli chcesz powiększyć / pomniejszyć pistolet) */
+    --gun-scale: 1;          /* skala pistoletu */
 
     --page-bg:#000; --container-bg:#000;
     --txt:#fff; --border:#dee2e6; --primary:#007bff;
 }
 
-/* ===== LAYOUT =============================================== */
+/* ===== LAYOUT ===== */
 body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
      background:var(--page-bg);display:flex;justify-content:center;padding:20px;}
 .configurator-container{background:var(--container-bg);border-radius:8px;box-shadow:0 8px 24px #0008;
     display:flex;flex-wrap:wrap;gap:24px;max-width:1200px;width:100%;padding:24px;}
 .gun-view-wrapper{flex:2 1 600px;display:flex;flex-direction:column;gap:10px;}
 
-/* ===== PODGLĄD ============================================= */
-.gun-view{
-    position:relative;width:100%;max-width:800px;aspect-ratio:4/3;      /* 1600×1200 = 4:3 */
-    background:#000 center/100% 100% no-repeat;                         /* tło – 100 % */
-    border-radius:6px;overflow:hidden;
-}
+/* ===== PODGLĄD ===== */
+.gun-view{position:relative;width:100%;max-width:800px;aspect-ratio:4/3;background:#000 center/100% 100% no-repeat;border-radius:6px;overflow:hidden;}
 .gun-svg{width:100%;height:100%;transform:scale(var(--gun-scale));transform-origin:center;}
 .color-overlay{pointer-events:none;mix-blend-mode:hard-light;opacity:.45;}
 
-/* ===== BUTTONS ============================================= */
+/* ===== BUTTONS ===== */
 .action-button{width:100%;padding:12px;font-size:16px;border:none;color:#fff;border-radius:6px;cursor:pointer;text-align:center;}
-#bg-button   {background:#6c757d;}
-#save-button {background:var(--primary);}
-.reset-button{background:#dc3545;}
+#bg-button{background:#6c757d;} #save-button{background:var(--primary);} .reset-button{background:#dc3545;}
 
-/* ===== PANEL / LISTY ======================================= */
+/* ===== PANEL ===== */
 .controls{flex:1 1 300px;min-width:300px;display:flex;flex-direction:column;}
 .control-section{margin-bottom:20px;}
 .control-section-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px;}
@@ -55,8 +49,11 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Hel
 .color-swatch-wrapper:hover .color-swatch{transform:scale(1.1);box-shadow:0 0 8px var(--primary);}
 .color-swatch-label{margin-top:8px;font-size:10px;color:#6c757d;text-align:center;}
 
-.summary-container{flex:1 1 0;border:1px solid var(--border);border-radius:6px;background:#fff1;padding:12px;margin-top:16px;color:var(--txt);font-size:14px;overflow:hidden;}
-#summary-list{column-count:3;column-gap:24px;} #summary-list div{margin-bottom:4px;break-inside:avoid;}
+/* ===== LISTA KOLORÓW ===== */
+.summary-container{border:1px solid var(--border);border-radius:6px;background:#fff1;padding:12px;margin-top:16px;color:var(--txt);font-size:14px;
+                   flex:0 0 auto;                /* rośnie z treścią */
+                   overflow:auto;}               /* nigdy nie ucina */
+#summary-list{column-count:3;column-gap:24px;}  #summary-list div{margin-bottom:4px;break-inside:avoid;}
 </style>
 </head>
 
