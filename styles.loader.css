@@ -26,33 +26,18 @@
 }
 
 
-/* === KOD 02 – vertical palette slider (mobile) === */
-@media (max-width: 991px){
-  .palette-slider{
-    display:block;
-    position:absolute;
-    right:4px;
-    top:0;
-    width:12px;
-    height:100%;
-    -webkit-appearance:none;
-    appearance:none;
-    background:transparent;
-    transform:rotate(180deg);
-    touch-action:none;
+/* KOD 03 – vertical slider style (mobile only) */
+@media (max-width: 767px) {
+  input.palette-slider-vertical {
+    -webkit-appearance: slider-vertical;
+    writing-mode: bt-lr;
+    width: 8px;
+    height: 100%;
+    position: absolute;
+    right: -14px;
+    top: 0;
+    margin: 0;
+    padding: 0;
+    background: transparent;
   }
-  .palette-slider::-webkit-slider-thumb{
-    -webkit-appearance:none;
-    appearance:none;
-    width:20px;
-    height:20px;
-    border-radius:50%;
-    background:var(--pri,#007bff);
-    border:2px solid #000;
-    cursor:pointer;
-  }
-}
-/* hide slider on desktop */
-@media (min-width: 992px){
-  .palette-slider{display:none !important;}
 }

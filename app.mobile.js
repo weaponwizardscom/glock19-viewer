@@ -32,45 +32,34 @@ export function initMobile () {
 }
 
 
-  /* === KOD 02: vertical palette slider (mobile only) === */
-  try{
-    const colorSection  = document.querySelector('.controls .section:nth-child(2)');
-    const paletteWrap   = colorSection ? colorSection.querySelector('.palette-wrap') : null;
-    if (paletteWrap){
-      // create slider element
-      const slider = document.createElement('input');
-      slider.type  = 'range';
-      slider.id    = 'palette-slider';
-      slider.className = 'palette-slider';
-      slider.min   = 0;
-      slider.value = 0;
-      slider.setAttribute('orient','vertical'); // some browsers
+// KOD 03 – vertical slider for color palette (mobile only)
+function addPaletteSlider() {
+  const paletteWrap = document.querySelector('.palette-wrap');
+  if (!paletteWrap) return;
+  // create slider element
+  const slider = document.createElement('input');
+  slider.type = 'range';
+  slider.min = '0';
+  slider.max = '100';
+  slider.value = '0';
+  slider.className = 'palette-slider-vertical';
+  // position absolute inside parent
+  paletteWrap.parentElement.style.position = 'relative';
+  paletteWrap.parentElement.appendChild(slider);
 
-      // make parent relative for absolute slider
-      colorSection.style.position = 'relative';
-      colorSection.appendChild(slider);
+  const syncFromSlider = () => {
+    const maxScroll = paletteWrap.scrollHeight - paletteWrap.clientHeight;
+    paletteWrap.scrollTop = maxScroll * (slider.value / 100);
+  };
+  const syncFromScroll = () => {
+    const maxScroll = paletteWrap.scrollHeight - paletteWrap.clientHeight;
+    slider.value = maxScroll ? (paletteWrap.scrollTop / maxScroll) * 100 : 0;
+  };
+  slider.addEventListener('input', syncFromSlider);
+  paletteWrap.addEventListener('scroll', syncFromScroll);
+  // initial sync
+  syncFromScroll();
+}
 
-      function updateSliderMax(){
-         const max = paletteWrap.scrollHeight - paletteWrap.clientHeight;
-         slider.max = max>0?max:0;
-      }
-      function syncSlider(){
-         slider.value = slider.max - paletteWrap.scrollTop;
-      }
-
-      updateSliderMax();
-      syncSlider();
-      paletteWrap.addEventListener('scroll', ()=>{
-         updateSliderMax();
-         syncSlider();
-      });
-      slider.addEventListener('input', ()=>{
-         paletteWrap.scrollTop = slider.max - slider.value;
-      });
-      window.addEventListener('resize', ()=>{
-         updateSliderMax();
-         syncSlider();
-      });
-    }
-  }catch(e){ console.error('[mobile slider]',e); }
-
+// invoke after mobile init
+document.addEventListener('DOMContentLoaded', addPaletteSlider);
