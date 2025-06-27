@@ -1,32 +1,43 @@
-/**
- * Mobile-specific functions – KOD 4
- */
-export function initMobile () {
-  console.log('[mobile] init – KOD 4');
+function waitForPalette(callback) {
+  const maxWait = 2000;
+  const interval = 100;
+  let waited = 0;
 
-  const gunWrap   = document.querySelector('.gun-wrap');
-  if (!gunWrap) return;
+  const check = () => {
+    const palette = document.getElementById('palette');
+    if (palette && palette.children.length > 0) {
+      callback(palette);
+    } else if (waited < maxWait) {
+      waited += interval;
+      setTimeout(check, interval);
+    } else {
+      console.warn('[mobile] Palette not found or empty');
+    }
+  };
 
-  // DOM refs
-  const summary   = document.querySelector('.summary');
-  const price     = document.getElementById('price');
-  const resetBtn  = document.getElementById('reset-btn');
-  const controls  = document.querySelector('.controls');
-  if (!controls) return;
-  const partSection   = controls.querySelectorAll('.section')[0];
-  const colorSection  = controls.querySelectorAll('.section')[1];
-
-  // Ensure order (already KOD 3), but for safety:
-  gunWrap.appendChild(partSection);
-  gunWrap.appendChild(colorSection);
-  gunWrap.appendChild(summary);
-  gunWrap.appendChild(resetBtn);
-  gunWrap.appendChild(price);
-
-  // send button should remain last inside gunWrap
-  const sendBtn = document.getElementById('send-btn');
-  gunWrap.appendChild(sendBtn);
-
-  // Hide empty controls
-  controls.style.display = 'none';
+  check();
 }
+
+window.addEventListener('load', () => {
+  waitForPalette((palette) => {
+    const wrap = document.getElementById('palette-wrap');
+    if (!wrap) return;
+
+    wrap.classList.add('ready');
+
+    const slider = document.createElement('input');
+    slider.type = 'range';
+    slider.className = 'vslider';
+    slider.min = 0;
+    slider.value = 0;
+
+    const maxScroll = palette.scrollHeight - wrap.clientHeight;
+    slider.max = maxScroll;
+
+    slider.addEventListener('input', () => {
+      palette.style.transform = `translateY(-${slider.value}px)`;
+    });
+
+    wrap.appendChild(slider);
+  });
+});
