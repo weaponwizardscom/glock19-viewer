@@ -1,17 +1,14 @@
-/* styles.mobile.css – KOD 11: vertical palette slider, swipe disabled */
+
+/* styles.mobile.css – KOD 12 */
 @media (max-width:768px){
 
+  .section{ position:relative; }
+
   .palette-wrap{
-    position:relative;
-    overflow-y:auto;          /* scrollable programmatically */
+    overflow-y:auto;
     overflow-x:hidden;
     -webkit-overflow-scrolling:touch;
-    padding-right:32px;       /* space for slider */
-  }
-
-  /* disable finger swipe scroll but keep taps */
-  .palette-wrap.no-touch-scroll{
-    overscroll-behavior:contain;
+    padding-right:32px;
   }
 
   .vslider{
@@ -19,31 +16,21 @@
     top:0;
     right:6px;
     height:100%;
-    writing-mode:bt-lr;           /* vertical in Safari */
+    writing-mode:bt-lr;
     -webkit-appearance:slider-vertical;
     width:22px;
     background:transparent;
-    z-index:5;
+    z-index:10;
   }
 
-  /* Track */
   .vslider::-webkit-slider-runnable-track,
-  .vslider::-moz-range-track{
-    width:4px;
-    background:#555;
-    border-radius:2px;
-  }
+  .vslider::-moz-range-track{ width:4px; background:#555; border-radius:2px; }
 
-  /* Thumb */
   .vslider::-webkit-slider-thumb,
   .vslider::-moz-range-thumb{
     -webkit-appearance:none;
-    width:20px;
-    height:20px;
+    width:20px;height:20px;
     background:#007bff;
-    border:none;
-    border-radius:50%;
-    cursor:pointer;
-    margin-left:-8px;
+    border:none;border-radius:50%;
   }
 }
