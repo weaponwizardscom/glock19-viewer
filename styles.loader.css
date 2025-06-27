@@ -24,3 +24,14 @@
 @keyframes ww-spin{
   to{transform:rotate(360deg);}
 }
+
+
+/* KOD 02 – ukrycie niepotrzebnego slidera i brak poziomego scrolla */
+.ww-vertical-slider,
+.palette-vertical-slider{
+    display:none !important;
+}
+
+.palette-wrap{
+    overflow-x:hidden !important;
+}
