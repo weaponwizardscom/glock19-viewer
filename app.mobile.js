@@ -1,5 +1,5 @@
 /**
- * Mobile-specific functions – KOD 01 – KOD 4
+ * Mobile-specific functions – KOD 4
  */
 export function initMobile () {
   console.log('[mobile] init – KOD 4');
@@ -29,23 +29,48 @@ export function initMobile () {
 
   // Hide empty controls
   controls.style.display = 'none';
-
-  /* === KOD 01: palette slider === */
-  const paletteWrap = document.querySelector('.palette-wrap');
-  const slider = document.getElementById('palette-slider');
-  if (paletteWrap && slider) {
-    function updateSliderMax() {
-      const max = paletteWrap.scrollHeight - paletteWrap.clientHeight;
-      slider.max = max > 0 ? max : 0;
-    }
-    updateSliderMax();
-    paletteWrap.addEventListener('scroll', () => {
-      slider.value = paletteWrap.scrollTop;
-    });
-    slider.addEventListener('input', () => {
-      paletteWrap.scrollTop = slider.value;
-    });
-    window.addEventListener('resize', updateSliderMax);
-  }
-
 }
+
+
+  /* === KOD 02: vertical palette slider (mobile only) === */
+  try{
+    const colorSection  = document.querySelector('.controls .section:nth-child(2)');
+    const paletteWrap   = colorSection ? colorSection.querySelector('.palette-wrap') : null;
+    if (paletteWrap){
+      // create slider element
+      const slider = document.createElement('input');
+      slider.type  = 'range';
+      slider.id    = 'palette-slider';
+      slider.className = 'palette-slider';
+      slider.min   = 0;
+      slider.value = 0;
+      slider.setAttribute('orient','vertical'); // some browsers
+
+      // make parent relative for absolute slider
+      colorSection.style.position = 'relative';
+      colorSection.appendChild(slider);
+
+      function updateSliderMax(){
+         const max = paletteWrap.scrollHeight - paletteWrap.clientHeight;
+         slider.max = max>0?max:0;
+      }
+      function syncSlider(){
+         slider.value = slider.max - paletteWrap.scrollTop;
+      }
+
+      updateSliderMax();
+      syncSlider();
+      paletteWrap.addEventListener('scroll', ()=>{
+         updateSliderMax();
+         syncSlider();
+      });
+      slider.addEventListener('input', ()=>{
+         paletteWrap.scrollTop = slider.max - slider.value;
+      });
+      window.addEventListener('resize', ()=>{
+         updateSliderMax();
+         syncSlider();
+      });
+    }
+  }catch(e){ console.error('[mobile slider]',e); }
+
