@@ -1,7 +1,6 @@
-/* ================== styles.mobile.css – KOD 8 ===================== */
+/* ================== styles.mobile.css – KOD 9 ===================== */
 /* Aktywny dla viewportów ≤1024 px                                     */
 
-/* Reset body padding */
 body{display:block; padding:0;}
 
 /* Sticky gun image */
@@ -14,27 +13,25 @@ body{padding-top:calc(100vw*3/4 + 20px);}
 /* Full width */
 .gun-wrap >*, .palette-wrap, .btn, input{width:100%;}
 
-/* Gap between top buttons */
+/* Gap between Change BG and Save buttons (already 16 via combo) */
 .gun-wrap > .btn + .btn{margin-top:16px;}
 
-/* === Odstępy KOD 8 === */
-/* 1. większy odstęp po drugim przycisku (Zapisz Obraz) → przed pierwszą sekcją .section */
-.gun-wrap > .section:first-of-type{margin-top:32px;}
+/* === Wyraźny odstęp PO przycisku 'Zapisz Obraz' === */
+#save-btn{margin-bottom:32px;}
 
-/* 2. większy odstęp między tabelą podsumowania a Resetuj kolory */
+/* Odstęp między Summary a Reset */
 .summary{margin-bottom:32px;}
-#reset-btn{margin-top:0;} /* już zbędny dodatkowy margines */
 
-/* Summary in 2 columns */
+/* Summary layout */
 #summary-list{column-count:2;}
 
-/* Centered price */
+/* Price centered */
 #price{text-align:center; margin-top:16px;}
 
 /* Palette scroll */
 .palette-wrap{max-height:400px; overflow-y:auto;}
 
-/* Hide empty controls */
+/* Hide original controls */
 .controls{display:none;}
 
 /* Blue send button */
