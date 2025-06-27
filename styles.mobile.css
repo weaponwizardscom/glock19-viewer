@@ -1,17 +1,13 @@
 
-/* styles.mobile.css – KOD 12 */
+/* styles.mobile.css – KOD 14 */
 @media (max-width:768px){
 
   .section{ position:relative; }
 
   .palette-wrap{
-    overflow-y:auto;
-    overflow-x:hidden;
-    -webkit-overflow-scrolling:touch;
-    padding-right:32px;
-  
-touch-action:none;
-}
+    overflow:hidden;            /* no native scroll */
+    padding-right:32px;         /* space for slider */
+  }
 
   .vslider{
     position:absolute;
@@ -34,5 +30,8 @@ touch-action:none;
     width:20px;height:20px;
     background:#007bff;
     border:none;border-radius:50%;
+  }
+  .palette{
+    transition:transform .2s ease-out;   /* smooth scroll via translate */
   }
 }
