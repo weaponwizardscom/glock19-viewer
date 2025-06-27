@@ -104,6 +104,31 @@
       #price{text-align:center;}
       #summary-list{column-count:2;}
     }
+  
+/* ===== MOBILE HORIZONTAL COLOR SCROLLER (KOD 03) ===== */
+@media (max-width:768px){
+  .palette-wrap{
+    overflow-x:auto;
+    overflow-y:hidden;
+    -webkit-overflow-scrolling:touch;
+    padding-bottom:12px;
+  }
+  .palette{
+    display:grid;
+    grid-auto-flow:column;
+    grid-auto-columns:70px;
+    gap:25px 10px;
+  }
+  .sw{
+    width:70px;
+    flex:0 0 auto;
+  }
+  .sw .dot{
+    width:55px;
+    height:55px;
+  }
+}
+
   </style>
 </head>
 <body>
