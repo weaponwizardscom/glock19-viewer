@@ -1,24 +1,24 @@
-
-/* palette-slider sync */
-document.addEventListener("DOMContentLoaded", () => {
-  const paletteWrap = document.querySelector(".palette-wrap");
+document.addEventListener("DOMContentLoaded", ()=>{
+  const wrap = document.querySelector(".palette-wrap");
   const slider = document.getElementById("palette-slider");
 
-  if (!paletteWrap || !slider) return;
+  if(!wrap || !slider) return;
+  if(!window.matchMedia("(max-width:768px)").matches) return;
 
-  function updateSliderMax() {
-    slider.max = Math.max(0, paletteWrap.scrollWidth - paletteWrap.clientWidth);
-    slider.disabled = slider.max <= 0;
+  function updateSliderRange(){
+    const max = Math.max(0, wrap.scrollHeight - wrap.clientHeight);
+    slider.max = max;
+    slider.disabled = max === 0;
   }
 
-  slider.addEventListener("input", () => {
-    paletteWrap.scrollLeft = slider.value;
-  });
+  slider.addEventListener("input", ()=>{
+    wrap.scrollTop = slider.value;
+  }, {passive:true});
 
-  paletteWrap.addEventListener("scroll", () => {
-    slider.value = paletteWrap.scrollLeft;
-  });
+  wrap.addEventListener("scroll", ()=>{
+    slider.value = wrap.scrollTop;
+  }, {passive:true});
 
-  window.addEventListener("resize", updateSliderMax);
-  updateSliderMax();
+  window.addEventListener("resize", updateSliderRange);
+  updateSliderRange();
 });

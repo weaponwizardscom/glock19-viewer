@@ -1,49 +1,48 @@
-
-/* styles.mobile.css – KOD 08 */
+/* styles.mobile.css – KOD 10 (vertical slider) */
 @media (max-width:768px){
 
   .palette-wrap{
-    overflow-x:auto;
-    overflow-y:hidden;
+    position:relative;
+    overflow-y:auto;
+    overflow-x:hidden;
     -webkit-overflow-scrolling:touch;
-    padding-bottom:16px;
+    padding-right:30px;          /* space for slider */
   }
 
-  .palette{
-    display:flex;
-    flex-wrap:nowrap;
-    gap:25px 10px;
+  .v-slider{
+    position:absolute;
+    top:0;
+    right:6px;
+    height:100%;
+    writing-mode:bt-lr;          /* vertical orientation */
+    -webkit-appearance:slider-vertical;
+    width:20px;
+    background:transparent;
   }
 
-  .sw{
-    flex:0 0 72px;
-  }
-
-  .sw .dot{
-    width:56px;
-    height:56px;
-  }
-
-  #palette-slider{
-    width:100%;
-    margin-top:8px;
-    -webkit-appearance:none;
-    height:4px;
+  .v-slider::-webkit-slider-runnable-track{
+    width:4px;
     background:#666;
     border-radius:2px;
   }
 
-  #palette-slider::-webkit-slider-thumb{
+  .v-slider::-webkit-slider-thumb{
     -webkit-appearance:none;
-    width:18px;
-    height:18px;
+    width:20px;
+    height:20px;
     background:#007bff;
     border-radius:50%;
+    margin-left:-8px;            /* center thumb */
   }
 
-  #palette-slider::-moz-range-thumb{
-    width:18px;
-    height:18px;
+  .v-slider::-moz-range-track{
+    width:4px;
+    background:#666;
+    border-radius:2px;
+  }
+  .v-slider::-moz-range-thumb{
+    width:20px;
+    height:20px;
     background:#007bff;
     border:none;
     border-radius:50%;
