@@ -1,5 +1,5 @@
 /**
- * Mobile-specific functions – KOD 4
+ * Mobile-specific functions – KOD 01 – KOD 4
  */
 export function initMobile () {
   console.log('[mobile] init – KOD 4');
@@ -29,4 +29,23 @@ export function initMobile () {
 
   // Hide empty controls
   controls.style.display = 'none';
+
+  /* === KOD 01: palette slider === */
+  const paletteWrap = document.querySelector('.palette-wrap');
+  const slider = document.getElementById('palette-slider');
+  if (paletteWrap && slider) {
+    function updateSliderMax() {
+      const max = paletteWrap.scrollHeight - paletteWrap.clientHeight;
+      slider.max = max > 0 ? max : 0;
+    }
+    updateSliderMax();
+    paletteWrap.addEventListener('scroll', () => {
+      slider.value = paletteWrap.scrollTop;
+    });
+    slider.addEventListener('input', () => {
+      paletteWrap.scrollTop = slider.value;
+    });
+    window.addEventListener('resize', updateSliderMax);
+  }
+
 }
