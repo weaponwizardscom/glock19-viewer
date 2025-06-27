@@ -1,10 +1,12 @@
-/* styles.mobile.css – KOD 15 (final) */
+/* styles.mobile.css – KOD 16 */
 @media (max-width:768px){
 
+  .section{ position:relative; }
+
   .palette-wrap{
-    overflow:hidden;          /* blokujemy natywne przewijanie */
-    padding-right:32px;       /* miejsce na suwak */
-    touch-action:none;        /* brak scroll gestu w palecie */
+    overflow:hidden;               /* Disable native scroll */
+    padding-right:32px;            /* room for slider */
+    touch-action:none;             /* Disable swipe scroll */
   }
 
   .vslider{
@@ -12,25 +14,31 @@
     top:0;
     right:6px;
     height:100%;
-    writing-mode:bt-lr;
-    -webkit-appearance:slider-vertical;
     width:22px;
+    writing-mode:bt-lr;            /* vertical slider */
+    -webkit-appearance:slider-vertical;
     background:transparent;
-    z-index:10;
+    z-index:15;
   }
 
   .vslider::-webkit-slider-runnable-track,
   .vslider::-moz-range-track{
-    width:4px; background:#555; border-radius:2px;
+    width:4px;
+    background:#666;
+    border-radius:2px;
   }
+
   .vslider::-webkit-slider-thumb,
   .vslider::-moz-range-thumb{
     -webkit-appearance:none;
-    width:20px; height:20px;
+    width:20px;
+    height:20px;
     background:#007bff;
-    border:none; border-radius:50%;
+    border:none;
+    border-radius:50%;
   }
 
-  /* płynne przesuwanie listy */
-  #palette{ transition:transform .25s ease-out; }
+  #palette{
+    transition:transform .25s ease-out;
+  }
 }
