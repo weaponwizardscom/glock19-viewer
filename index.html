@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Weapon‑Wizards – Konfigurator</title>
+  <title>Weapon-Wizards – Konfigurator</title>
 
-  <!-- Font face -->
+  <!-- Font -->
   <style>
     @font-face {
       font-family: "Eurostile";
@@ -17,17 +17,18 @@
 
   <!-- CSS -->
   <link rel="stylesheet" href="styles.base.css">
-  <link rel="stylesheet" href="styles.desktop.css" media="(min-width: 769px)">
-  <link rel="stylesheet" href="styles.mobile.css"  media="(max-width: 768px)">
+  <link rel="stylesheet" href="styles.desktop.css" media="(min-width: 1025px)">
+  <!-- Mobile / tablet do 1024 px -->
+  <link rel="stylesheet" href="styles.mobile.css"  media="(max-width: 1024px)">
 </head>
 <body>
-  <!-- 📌 struktura HTML niezmieniona -->
   <div class="configurator">
     <div class="gun-wrap">
       <div id="gun-view" class="gun-view" aria-live="polite">
         <p style="text-align:center;padding-top:20px;color:#6c757d">Ładowanie…</p>
       </div>
-      <button id="bg-btn" class="btn gray" type="button">Zmień Tło</button>
+
+      <button id="bg-btn"   class="btn gray" type="button">Zmień Tło</button>
       <button id="save-btn" class="btn blue" type="button">Zapisz Obraz</button>
 
       <div class="summary"><div id="summary-list"></div></div>
@@ -69,7 +70,7 @@
     </div>
   </div>
 
-  <!-- Loader -->
+  <!-- Scripts -->
   <script type="module" src="loader.js"></script>
 </body>
 </html>

@@ -1,28 +1,30 @@
-/* ==== mobile rules (mobile-active class) – KOD 4 ============================ */
+/* ================== styles.mobile.css – KOD 5 ===================== */
+/* Działa dla urządzeń ≤1024 px (zdefiniowane w index.html)           */
 
-/* Full‑width layout */
-body.mobile-active .gun-wrap > * { width:100%; }
+/* Sticky obraz */
+.gun-view{position:fixed; top:0; left:0; right:0; width:100vw; max-width:none; z-index:1000;}
+body{padding-top:calc(100vw*3/4 + 20px);}
 
-/* Buttons & inputs 100 % width */
-body.mobile-active .btn,
-body.mobile-active input { width:100%; }
+/* Kolumna */
+.configurator{gap:12px; flex-direction:column;}
 
-/* Extra spacing between bg/save buttons (already 16 px as sibling combinator) */
-body.mobile-active .gun-wrap > .btn + .btn { margin-top:16px; }
+/* Pełna szerokość wszystkich bezpośrednich dzieci gun-wrap */
+.gun-wrap > *{width:100%;}
 
-/* Centered price */
-body.mobile-active #price { text-align:center; margin-top:16px; }
+/* Przyciski i pola */
+.btn,input{width:100%;}
 
-/* 2‑column summary */
-body.mobile-active #summary-list { column-count:2; }
+/* Odstęp między Zmień tło a Zapisz obraz */
+.gun-wrap > .btn + .btn{margin-top:16px;}
 
-/* Custom large scrollbar for palette */
-body.mobile-active .palette-wrap { overflow-y:auto; }
+/* Podsumowanie – 2 kolumny */
+#summary-list{column-count:2;}
 
-body.mobile-active .palette-wrap::-webkit-scrollbar { width:14px; }
-body.mobile-active .palette-wrap::-webkit-scrollbar-track { background:#222; border-radius:7px; }
-body.mobile-active .palette-wrap::-webkit-scrollbar-thumb { background:#666; border-radius:7px; }
-body.mobile-active .palette-wrap::-webkit-scrollbar-thumb:hover { background:#888; }
+/* Koszt centralnie */
+#price{text-align:center; margin-top:16px;}
 
-/* Hide original controls container */
-body.mobile-active .controls { display:none; }
+/* Paleta z własnym przewijaniem (standardowe dla iOS/Android) */
+.palette-wrap{max-height:400px; overflow-y:auto;}
+
+/* Ukryj pusty .controls po przeniesieniu sekcji przez JS */
+.controls{display:none;}
