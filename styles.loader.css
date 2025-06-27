@@ -1,24 +1,32 @@
 
-/* KOD 17 – styl stałego pionowego suwaka */
-.ww-vertical-slider{
-  position: fixed;        /* dokładne pozycjonowanie JS */
-  right: 10px;
-  top: 0;
-  height: 60vh;
-  width: 24px;
-  z-index: 1000;
-  -webkit-appearance: slider-vertical;
-  appearance: slider-vertical;
-}
-@media (min-width:1024px){
-  .ww-vertical-slider{display:none;}
+/* KOD 19 – style slidera mobilnego */
+#palette{
+  max-height: 80vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  touch-action: none; /* dodatkowa blokada dla niektórych przeglądarek */
 }
 
-/* Kontener palety – blokujemy boczny scroll */
-#palette{
-  max-height:80vh;
-  overflow-y:auto;
-  overflow-x:hidden;
-  overscroll-behavior: contain;
-  touch-action: none;   /* dodatkowy blok scrolla (Edge/Chromium) */
+/* Slider mobilny */
+.ww-vertical-slider{
+  position: fixed;
+  right: 6px;
+  width: 28px;
+  -webkit-appearance: slider-vertical;
+  appearance: slider-vertical;
+  z-index: 1000;
+  background: transparent;
+}
+
+/* Desktop – chowamy slider i defaultowy pasek */
+@media (min-width: 1025px){
+  .ww-vertical-slider{display:none;}
+  #palette{
+    scrollbar-width: none;
+  }
+  #palette::-webkit-scrollbar{
+    width:0;
+    height:0;
+  }
 }
