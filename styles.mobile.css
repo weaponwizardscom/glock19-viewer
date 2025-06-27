@@ -1,30 +1,37 @@
-/* ================== styles.mobile.css – KOD 5 ===================== */
-/* Działa dla urządzeń ≤1024 px (zdefiniowane w index.html)           */
+/* ================== styles.mobile.css – KOD 6 ===================== */
+/* Aktywny dla viewportów ≤1024 px                                     */
+
+/* Body: usuń boczne paddingi i centrowanie */
+body{display:block; padding-left:0; padding-right:0;}
 
 /* Sticky obraz */
 .gun-view{position:fixed; top:0; left:0; right:0; width:100vw; max-width:none; z-index:1000;}
-body{padding-top:calc(100vw*3/4 + 20px);}
+body{padding-top:calc(100vw*3/4 + 20px);} /* zachowujemy 20px górnego odstępu */
 
-/* Kolumna */
-.configurator{gap:12px; flex-direction:column;}
+/* Kontener pełnej szerokości */
+.configurator{
+  gap:12px;
+  flex-direction:column;
+  max-width:none;
+  width:100%;
+}
 
-/* Pełna szerokość wszystkich bezpośrednich dzieci gun-wrap */
-.gun-wrap > *{width:100%;}
+/* Pełna szerokość dzieci */
+.gun-wrap >*, .palette-wrap, .btn, input{
+  width:100%;
+}
 
-/* Przyciski i pola */
-.btn,input{width:100%;}
-
-/* Odstęp między Zmień tło a Zapisz obraz */
+/* Odstęp między dwoma górnymi przyciskami */
 .gun-wrap > .btn + .btn{margin-top:16px;}
 
-/* Podsumowanie – 2 kolumny */
+/* Podsumowanie w 2 kolumnach */
 #summary-list{column-count:2;}
 
-/* Koszt centralnie */
+/* Centralny tekst kosztu */
 #price{text-align:center; margin-top:16px;}
 
-/* Paleta z własnym przewijaniem (standardowe dla iOS/Android) */
+/* Paleta z przewijaniem */
 .palette-wrap{max-height:400px; overflow-y:auto;}
 
-/* Ukryj pusty .controls po przeniesieniu sekcji przez JS */
+/* Ukryj pusty .controls */
 .controls{display:none;}
