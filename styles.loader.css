@@ -1,119 +1,32 @@
-/* styles.loader.css – independent, does not override existing classes */
-.ww-loader{
-  position:fixed;
-  inset:0;
-  background:#000;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:3000;
-  transition:opacity .4s ease-out, visibility .4s steps(1,end);
-}
-.ww-loader.ww-hide{
-  opacity:0;
-  visibility:hidden;
-}
-.ww-spinner{
-  width:60px;
-  height:60px;
-  border:6px solid rgba(255,255,255,.25);
-  border-top-color:#007bff;
-  border-radius:50%;
-  animation:ww-spin 1s linear infinite;
-}
-@keyframes ww-spin{
-  to{transform:rotate(360deg);}
-}
 
-
-/* KOD 04 – Styl dla przewijalnego kontenera z kolorami */
-.color-scroll-container {
-    height: 300px;
-    overflow-y: auto;
-    position: relative;
-}
-
-.color-scroll-slider {
-    writing-mode: bt-lr;
-    -webkit-appearance: slider-vertical;
-    appearance: slider-vertical;
-    width: 20px;
-    height: 300px;
-    position: absolute;
-    right: 0;
-    top: 0;
-}
-
-@media (min-width: 768px) {
-    .color-scroll-slider {
-        display: none;
-    }
-}
-
-/* KOD 05 – Vertical palette slider (mobile) */
-@media (max-width: 768px){
-  .palette-scroll-slider{
-    -webkit-appearance: slider-vertical;
-    appearance: slider-vertical;
-    width: 20px;
-    margin: 0;
-  }
-}
-
-
-/* KOD 06 – pionowy slider mobilny */
+/* KOD 10 – dopracowany pionowy slider mobile */
 .palette-scroll-wrapper {
     position: relative;
-    height: 300px;
+    max-height: 80vh;
     overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 32px;
 }
 
 #palette {
-    max-height: 300px;
+    max-height: 80vh;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .palette-vertical-slider {
     position: absolute;
-    right: -30px;
+    right: 4px;
     top: 0;
-    height: 300px;
-    writing-mode: bt-lr;
+    height: 100%;
+    width: 24px;
     -webkit-appearance: slider-vertical;
     appearance: slider-vertical;
-    width: 25px;
+    z-index: 10;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
     .palette-vertical-slider {
         display: none;
-    }
-}
-
-
-/* KOD 09 – final mobile vertical slider */
-.palette-scroll-wrapper{
-    position:relative;
-    max-height:80vh;
-    overflow-y:auto;
-    overflow-x:hidden;
-    width:100%;
-    box-sizing:border-box;
-    padding-right:32px; /* miejsce na suwak, by uniknąć poziomego przewijania */
-}
-
-.palette-vertical-slider{
-    position:absolute;
-    right:4px;
-    top:0;
-    height:100%;
-    width:24px;
-    -webkit-appearance: slider-vertical;
-    appearance: slider-vertical;
-}
-
-@media (min-width: 1024px){
-    .palette-vertical-slider{
-        display:none;
     }
 }
