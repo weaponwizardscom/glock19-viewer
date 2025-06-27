@@ -9,7 +9,9 @@
     overflow-x:hidden;
     -webkit-overflow-scrolling:touch;
     padding-right:32px;
-  }
+  
+touch-action:none;
+}
 
   .vslider{
     position:absolute;
