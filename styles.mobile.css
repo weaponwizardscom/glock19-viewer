@@ -1,12 +1,10 @@
-
-/* styles.mobile.css – KOD 14 */
+/* styles.mobile.css – KOD 15 (final) */
 @media (max-width:768px){
 
-  .section{ position:relative; }
-
   .palette-wrap{
-    overflow:hidden;            /* no native scroll */
-    padding-right:32px;         /* space for slider */
+    overflow:hidden;          /* blokujemy natywne przewijanie */
+    padding-right:32px;       /* miejsce na suwak */
+    touch-action:none;        /* brak scroll gestu w palecie */
   }
 
   .vslider{
@@ -22,16 +20,17 @@
   }
 
   .vslider::-webkit-slider-runnable-track,
-  .vslider::-moz-range-track{ width:4px; background:#555; border-radius:2px; }
-
+  .vslider::-moz-range-track{
+    width:4px; background:#555; border-radius:2px;
+  }
   .vslider::-webkit-slider-thumb,
   .vslider::-moz-range-thumb{
     -webkit-appearance:none;
-    width:20px;height:20px;
+    width:20px; height:20px;
     background:#007bff;
-    border:none;border-radius:50%;
+    border:none; border-radius:50%;
   }
-  .palette{
-    transition:transform .2s ease-out;   /* smooth scroll via translate */
-  }
+
+  /* płynne przesuwanie listy */
+  #palette{ transition:transform .25s ease-out; }
 }
