@@ -1,36 +1,32 @@
-document.addEventListener("DOMContentLoaded", ()=>{
-  if(!window.matchMedia("(max-width:768px)").matches) return;
+/**
+ * Mobile-specific functions – KOD 4
+ */
+export function initMobile () {
+  console.log('[mobile] init – KOD 4');
 
-  const palette = document.getElementById("palette");
-  if(!palette){ console.log("palette not found"); return; }
+  const gunWrap   = document.querySelector('.gun-wrap');
+  if (!gunWrap) return;
 
-  const wrap = palette.parentElement;
-  const section = wrap.parentElement;
+  // DOM refs
+  const summary   = document.querySelector('.summary');
+  const price     = document.getElementById('price');
+  const resetBtn  = document.getElementById('reset-btn');
+  const controls  = document.querySelector('.controls');
+  if (!controls) return;
+  const partSection   = controls.querySelectorAll('.section')[0];
+  const colorSection  = controls.querySelectorAll('.section')[1];
 
-  let slider = document.getElementById("palette-slider");
-  if(!slider){
-    slider = document.createElement("input");
-    slider.type = "range";
-    slider.id = "palette-slider";
-    slider.className = "vslider";
-    slider.min = "0";
-    slider.value = "0";
-    section.style.position = "relative";
-    section.appendChild(slider);
-  }
+  // Ensure order (already KOD 3), but for safety:
+  gunWrap.appendChild(partSection);
+  gunWrap.appendChild(colorSection);
+  gunWrap.appendChild(summary);
+  gunWrap.appendChild(resetBtn);
+  gunWrap.appendChild(price);
 
-  function updateRange(){
-    const max = Math.max(0, palette.scrollHeight - wrap.clientHeight);
-    slider.max = max;
-    slider.disabled = max===0;
-  }
+  // send button should remain last inside gunWrap
+  const sendBtn = document.getElementById('send-btn');
+  gunWrap.appendChild(sendBtn);
 
-  slider.addEventListener("input", ()=>{
-    const y = -Number(slider.value);
-    palette.style.transform = `translateY(${y}px)`;
-  }, {passive:true});
-
-  window.addEventListener("resize", updateRange);
-  window.addEventListener("load", updateRange);
-  updateRange();
-});
+  // Hide empty controls
+  controls.style.display = 'none';
+}
