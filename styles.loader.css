@@ -1,44 +1,20 @@
-
-/* KOD 11 – final approach: slider sibling to palette, palette scrolls */
-#palette {
-    max-height: 80vh;
-    overflow-y: auto;
-    overflow-x: hidden;
+/* KOD 13 – styl wrappera i slidera (mobile) */
+.palette-scroll-wrapper{
+  position:relative;
+  padding-right:32px; /* odstęp na slider */
 }
 
-.palette-parent {
-    position: relative;
-    padding-right: 32px; /* space for slider */
+.palette-vertical-slider{
+  position:absolute;
+  right:4px;
+  top:0;
+  width:24px;
+  height:100%;
+  -webkit-appearance: slider-vertical;
+  appearance: slider-vertical;
+  z-index:100;
 }
 
-.palette-vertical-slider {
-    position: absolute;
-    right: 4px;
-    top: 0;
-    height: 100%;
-    width: 24px;
-    -webkit-appearance: slider-vertical;
-    appearance: slider-vertical;
-    z-index: 10;
-}
-
-@media (min-width: 1024px) {
-    .palette-vertical-slider {
-        display: none;
-    }
-}
-
-/* KOD 12 – overlay vertical slider for mobile */
-@media (max-width: 1024px){
-  .ww-vertical-slider{
-      position: fixed;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      height: 80vh;
-      width: 26px;
-      -webkit-appearance: slider-vertical;
-      appearance: slider-vertical;
-      z-index: 10000;
-  }
+@media (min-width:1024px){
+  .palette-vertical-slider{display:none;}
 }

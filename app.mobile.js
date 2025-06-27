@@ -1,83 +1,46 @@
-
-// KOD 11 – slider as sibling to palette
+// KOD 13 – pionowy slider z własnym kontenerem scroll (mobile only)
 document.addEventListener('DOMContentLoaded', () => {
-    if (window.innerWidth > 1024) return;
-    const palette = document.getElementById('palette');
-    if (!palette) return;
+  if (window.innerWidth > 1024) return; // tylko mobile/tablet
 
-    const parent = palette.parentElement;
-    parent.classList.add('palette-parent');
+  const palette = document.getElementById('palette');
+  if (!palette) return;
 
-    const slider = document.createElement('input');
-    slider.type = 'range';
-    slider.className = 'palette-vertical-slider';
-    slider.min = 0;
-    slider.max = 100;
-    slider.value = 0;
+  // Utwórz kontener przewijalny
+  const scrollWrap = document.createElement('div');
+  scrollWrap.className = 'palette-scroll-wrapper';
+  scrollWrap.style.maxHeight = '70vh';      // 70% wysokości ekranu
+  scrollWrap.style.overflowY = 'auto';
+  scrollWrap.style.overflowX = 'hidden';
+  scrollWrap.style.position = 'relative';
+  scrollWrap.style.paddingRight = '32px';   // miejsce na slider
 
-    parent.appendChild(slider);
+  // Wstaw wrapper w miejsce palety
+  palette.parentNode.insertBefore(scrollWrap, palette);
+  scrollWrap.appendChild(palette);
 
-    const updateSlider = () => {
-        const maxScroll = palette.scrollHeight - palette.clientHeight;
-        if (maxScroll <= 0) {
-            slider.style.display = 'none';
-            return;
-        }
-        slider.style.display = '';
-        slider.value = (palette.scrollTop / maxScroll) * 100;
-    };
+  // Utwórz slider
+  const slider = document.createElement('input');
+  slider.type = 'range';
+  slider.className = 'palette-vertical-slider';
+  slider.min = 0;
+  slider.max = 100;
+  slider.value = 0;
 
-    const scrollPalette = () => {
-        const maxScroll = palette.scrollHeight - palette.clientHeight;
-        palette.scrollTop = (slider.value / 100) * maxScroll;
-    };
+  scrollWrap.appendChild(slider);
 
-    palette.addEventListener('scroll', updateSlider);
-    slider.addEventListener('input', scrollPalette);
+  // Synchronizacja slider <-> scroll
+  const syncSlider = () => {
+    const maxScroll = scrollWrap.scrollHeight - scrollWrap.clientHeight;
+    slider.value = maxScroll ? (scrollWrap.scrollTop / maxScroll) * 100 : 0;
+  };
+  const syncScroll = () => {
+    const maxScroll = scrollWrap.scrollHeight - scrollWrap.clientHeight;
+    scrollWrap.scrollTop = (slider.value / 100) * maxScroll;
+  };
 
-    updateSlider(); // initial
-});
+  scrollWrap.addEventListener('scroll', syncSlider);
+  slider.addEventListener('input', syncScroll);
 
-// KOD 12 – overlay slider controlling palette scroll
-document.addEventListener('DOMContentLoaded', () => {
-    if(window.innerWidth > 1024) return;
-    const palette = document.getElementById('palette');
-    if(!palette) return;
-
-    // disable horizontal scroll for body
-    document.documentElement.style.overflowX = 'hidden';
-    document.body.style.overflowX = 'hidden';
-
-    const slider = document.createElement('input');
-    slider.type = 'range';
-    slider.min = 0;
-    slider.max = 100;
-    slider.value = 0;
-    slider.className = 'ww-vertical-slider';
-
-    document.body.appendChild(slider);
-
-    function syncSlider(){
-        const maxScroll = palette.scrollHeight - palette.clientHeight;
-        if(maxScroll <= 0){
-            slider.style.display = 'none';
-            return;
-        }
-        slider.value = (palette.scrollTop / maxScroll) * 100;
-    }
-
-    function scrollPalette(){
-        const maxScroll = palette.scrollHeight - palette.clientHeight;
-        palette.scrollTop = (slider.value / 100) * maxScroll;
-    }
-
-    palette.addEventListener('scroll', syncSlider);
-    slider.addEventListener('input', scrollPalette);
-
-    // ensure palette container has overflow-y auto
-    palette.style.maxHeight = '80vh';
-    palette.style.overflowY = 'auto';
-
-    // initial sync
-    syncSlider();
+  // Inicjalne ustawienie
+  syncSlider();
 });
