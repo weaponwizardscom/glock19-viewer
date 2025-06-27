@@ -1,46 +1,31 @@
-// KOD 13 – pionowy slider z własnym kontenerem scroll (mobile only)
+
+// KOD 14 – final vertical slider mobile
 document.addEventListener('DOMContentLoaded', () => {
-  if (window.innerWidth > 1024) return; // tylko mobile/tablet
+  if (window.innerWidth > 1024) return; // only mobile/tablet
 
-  const palette = document.getElementById('palette');
-  if (!palette) return;
+  const wrap = document.querySelector('.palette-wrap');
+  if (!wrap) return;
 
-  // Utwórz kontener przewijalny
-  const scrollWrap = document.createElement('div');
-  scrollWrap.className = 'palette-scroll-wrapper';
-  scrollWrap.style.maxHeight = '70vh';      // 70% wysokości ekranu
-  scrollWrap.style.overflowY = 'auto';
-  scrollWrap.style.overflowX = 'hidden';
-  scrollWrap.style.position = 'relative';
-  scrollWrap.style.paddingRight = '32px';   // miejsce na slider
+  // Create slider if not present
+  if (!wrap.querySelector('.palette-vertical-slider')) {
+    const slider = document.createElement('input');
+    slider.type = 'range';
+    slider.className = 'palette-vertical-slider';
+    slider.min = 0;
+    slider.max = 100;
+    slider.value = 0;
+    wrap.appendChild(slider);
 
-  // Wstaw wrapper w miejsce palety
-  palette.parentNode.insertBefore(scrollWrap, palette);
-  scrollWrap.appendChild(palette);
+    const updateSlider = () => {
+      const max = wrap.scrollHeight - wrap.clientHeight;
+      slider.value = max ? (wrap.scrollTop / max) * 100 : 0;
+    };
+    const updateScroll = () => {
+      const max = wrap.scrollHeight - wrap.clientHeight;
+      wrap.scrollTop = (slider.value / 100) * max;
+    };
 
-  // Utwórz slider
-  const slider = document.createElement('input');
-  slider.type = 'range';
-  slider.className = 'palette-vertical-slider';
-  slider.min = 0;
-  slider.max = 100;
-  slider.value = 0;
-
-  scrollWrap.appendChild(slider);
-
-  // Synchronizacja slider <-> scroll
-  const syncSlider = () => {
-    const maxScroll = scrollWrap.scrollHeight - scrollWrap.clientHeight;
-    slider.value = maxScroll ? (scrollWrap.scrollTop / maxScroll) * 100 : 0;
-  };
-  const syncScroll = () => {
-    const maxScroll = scrollWrap.scrollHeight - scrollWrap.clientHeight;
-    scrollWrap.scrollTop = (slider.value / 100) * maxScroll;
-  };
-
-  scrollWrap.addEventListener('scroll', syncSlider);
-  slider.addEventListener('input', syncScroll);
-
-  // Inicjalne ustawienie
-  syncSlider();
+    wrap.addEventListener('scroll', updateSlider);
+    slider.addEventListener('input', updateScroll);
+  }
 });
