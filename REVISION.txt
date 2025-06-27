@@ -1,2 +1,10 @@
 Revision 01
 Removed unused loader and JS, added .gitignore.
+
+Revision 02
+- Confirmed no .DS_Store
+- Removed loader css reference and file.
+
+Revision 03
+- Added PWA support (manifest.json, service-worker.js)
+- Updated index.html with manifest link and SW registration.
