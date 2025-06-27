@@ -5,7 +5,9 @@ const ASSETS = [
   '/app.js',
   '/data/colors.json',
   '/data/parts.json',
-  '/g17.svg'
+  '/g17.svg',
+      '/img/192.png',
+      '/img/512.png'
 ];
 self.addEventListener('install', (event) => {
   event.waitUntil(
