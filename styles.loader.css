@@ -1,8 +1,8 @@
 
-/* KOD 15 – fixed vertical slider styling */
+/* KOD 16 – styl suwaka, slider fixed z prawej */
 #palette{
   max-height:80vh;
-  overflow-y:auto;
+  overflow-y:scroll;      /* scroll programowy */
   overflow-x:hidden;
 }
 
@@ -15,7 +15,7 @@
   z-index:1000;
 }
 
-/* hide on desktop */
+/* ukryj na desktopie */
 @media (min-width:1024px){
   .ww-vertical-slider{display:none;}
 }
