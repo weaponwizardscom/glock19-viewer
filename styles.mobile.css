@@ -1,37 +1,40 @@
-/* ================== styles.mobile.css – KOD 6 ===================== */
+/* ================== styles.mobile.css – KOD 7 ===================== */
 /* Aktywny dla viewportów ≤1024 px                                     */
 
-/* Body: usuń boczne paddingi i centrowanie */
-body{display:block; padding-left:0; padding-right:0;}
+/* Reset body margins */
+body{display:block; padding:0;}
 
-/* Sticky obraz */
+/* Sticky image */
 .gun-view{position:fixed; top:0; left:0; right:0; width:100vw; max-width:none; z-index:1000;}
-body{padding-top:calc(100vw*3/4 + 20px);} /* zachowujemy 20px górnego odstępu */
+body{padding-top:calc(100vw*3/4 + 20px);}
 
-/* Kontener pełnej szerokości */
-.configurator{
-  gap:12px;
-  flex-direction:column;
-  max-width:none;
-  width:100%;
-}
+/* Column layout */
+.configurator{gap:12px; flex-direction:column; max-width:none; width:100%;}
 
-/* Pełna szerokość dzieci */
-.gun-wrap >*, .palette-wrap, .btn, input{
-  width:100%;
-}
+/* Full‑width children */
+.gun-wrap >*, .palette-wrap, .btn, input{width:100%;}
 
-/* Odstęp między dwoma górnymi przyciskami */
+/* Extra gap between top buttons */
 .gun-wrap > .btn + .btn{margin-top:16px;}
 
-/* Podsumowanie w 2 kolumnach */
+/* === Nowe odstępy (KOD 7) === */
+/* 1) odstęp między 'Zapisz Obraz' a sekcją 'Wybierz część' */
+#parts{margin-top:24px;}
+
+/* 2) odstęp między 'summary' a 'Resetuj kolory' */
+#reset-btn{margin-top:24px;}
+
+/* Summary two columns */
 #summary-list{column-count:2;}
 
-/* Centralny tekst kosztu */
+/* Price centered */
 #price{text-align:center; margin-top:16px;}
 
-/* Paleta z przewijaniem */
+/* Palette-scroll */
 .palette-wrap{max-height:400px; overflow-y:auto;}
 
-/* Ukryj pusty .controls */
+/* Hide original controls */
 .controls{display:none;}
+
+/* === Zmiana koloru przycisku 'Wyślij' na niebieski === */
+#send-btn{background:var(--pri);} /* var --pri = #007bff */
