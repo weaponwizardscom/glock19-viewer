@@ -1,40 +1,41 @@
-/* ================== styles.mobile.css – KOD 7 ===================== */
+/* ================== styles.mobile.css – KOD 8 ===================== */
 /* Aktywny dla viewportów ≤1024 px                                     */
 
-/* Reset body margins */
+/* Reset body padding */
 body{display:block; padding:0;}
 
-/* Sticky image */
+/* Sticky gun image */
 .gun-view{position:fixed; top:0; left:0; right:0; width:100vw; max-width:none; z-index:1000;}
 body{padding-top:calc(100vw*3/4 + 20px);}
 
 /* Column layout */
 .configurator{gap:12px; flex-direction:column; max-width:none; width:100%;}
 
-/* Full‑width children */
+/* Full width */
 .gun-wrap >*, .palette-wrap, .btn, input{width:100%;}
 
-/* Extra gap between top buttons */
+/* Gap between top buttons */
 .gun-wrap > .btn + .btn{margin-top:16px;}
 
-/* === Nowe odstępy (KOD 7) === */
-/* 1) odstęp między 'Zapisz Obraz' a sekcją 'Wybierz część' */
-#parts{margin-top:24px;}
+/* === Odstępy KOD 8 === */
+/* 1. większy odstęp po drugim przycisku (Zapisz Obraz) → przed pierwszą sekcją .section */
+.gun-wrap > .section:first-of-type{margin-top:32px;}
 
-/* 2) odstęp między 'summary' a 'Resetuj kolory' */
-#reset-btn{margin-top:24px;}
+/* 2. większy odstęp między tabelą podsumowania a Resetuj kolory */
+.summary{margin-bottom:32px;}
+#reset-btn{margin-top:0;} /* już zbędny dodatkowy margines */
 
-/* Summary two columns */
+/* Summary in 2 columns */
 #summary-list{column-count:2;}
 
-/* Price centered */
+/* Centered price */
 #price{text-align:center; margin-top:16px;}
 
-/* Palette-scroll */
+/* Palette scroll */
 .palette-wrap{max-height:400px; overflow-y:auto;}
 
-/* Hide original controls */
+/* Hide empty controls */
 .controls{display:none;}
 
-/* === Zmiana koloru przycisku 'Wyślij' na niebieski === */
-#send-btn{background:var(--pri);} /* var --pri = #007bff */
+/* Blue send button */
+#send-btn{background:var(--pri);}
