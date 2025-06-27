@@ -93,3 +93,34 @@ export function initMobile () {
   // initial update
   updateSlider();
 })();
+
+
+// KOD 06 – pionowy slider mobilny (działa)
+document.addEventListener('DOMContentLoaded', () => {
+    const palette = document.getElementById('palette');
+    if (!palette || window.innerWidth > 768) return;
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'palette-scroll-wrapper';
+    palette.parentNode.insertBefore(wrapper, palette);
+    wrapper.appendChild(palette);
+
+    const slider = document.createElement('input');
+    slider.type = 'range';
+    slider.className = 'palette-vertical-slider';
+    slider.min = 0;
+    slider.max = 100;
+    slider.value = 0;
+
+    wrapper.appendChild(slider);
+
+    palette.addEventListener('scroll', () => {
+        const percent = palette.scrollTop / (palette.scrollHeight - palette.clientHeight);
+        slider.value = percent * 100;
+    });
+
+    slider.addEventListener('input', () => {
+        const percent = slider.value / 100;
+        palette.scrollTop = percent * (palette.scrollHeight - palette.clientHeight);
+    });
+});

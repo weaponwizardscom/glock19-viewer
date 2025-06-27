@@ -59,3 +59,33 @@
     margin: 0;
   }
 }
+
+
+/* KOD 06 – pionowy slider mobilny */
+.palette-scroll-wrapper {
+    position: relative;
+    height: 300px;
+    overflow-y: auto;
+}
+
+#palette {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.palette-vertical-slider {
+    position: absolute;
+    right: -30px;
+    top: 0;
+    height: 300px;
+    writing-mode: bt-lr;
+    -webkit-appearance: slider-vertical;
+    appearance: slider-vertical;
+    width: 25px;
+}
+
+@media (min-width: 768px) {
+    .palette-vertical-slider {
+        display: none;
+    }
+}
