@@ -1,32 +1,26 @@
-
-/* KOD 19 – style slidera mobilnego */
-#palette{
-  max-height: 80vh;
-  overflow-y: auto;
-  overflow-x: hidden;
-  overscroll-behavior: contain;
-  touch-action: none; /* dodatkowa blokada dla niektórych przeglądarek */
+/* styles.loader.css – independent, does not override existing classes */
+.ww-loader{
+  position:fixed;
+  inset:0;
+  background:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:3000;
+  transition:opacity .4s ease-out, visibility .4s steps(1,end);
 }
-
-/* Slider mobilny */
-.ww-vertical-slider{
-  position: fixed;
-  right: 6px;
-  width: 28px;
-  -webkit-appearance: slider-vertical;
-  appearance: slider-vertical;
-  z-index: 1000;
-  background: transparent;
+.ww-loader.ww-hide{
+  opacity:0;
+  visibility:hidden;
 }
-
-/* Desktop – chowamy slider i defaultowy pasek */
-@media (min-width: 1025px){
-  .ww-vertical-slider{display:none;}
-  #palette{
-    scrollbar-width: none;
-  }
-  #palette::-webkit-scrollbar{
-    width:0;
-    height:0;
-  }
+.ww-spinner{
+  width:60px;
+  height:60px;
+  border:6px solid rgba(255,255,255,.25);
+  border-top-color:#007bff;
+  border-radius:50%;
+  animation:ww-spin 1s linear infinite;
+}
+@keyframes ww-spin{
+  to{transform:rotate(360deg);}
 }
