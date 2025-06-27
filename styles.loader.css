@@ -1,17 +1,14 @@
 
-/* KOD 10 – dopracowany pionowy slider mobile */
-.palette-scroll-wrapper {
-    position: relative;
-    max-height: 80vh;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding-right: 32px;
-}
-
+/* KOD 11 – final approach: slider sibling to palette, palette scrolls */
 #palette {
     max-height: 80vh;
     overflow-y: auto;
     overflow-x: hidden;
+}
+
+.palette-parent {
+    position: relative;
+    padding-right: 32px; /* space for slider */
 }
 
 .palette-vertical-slider {

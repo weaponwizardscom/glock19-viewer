@@ -1,13 +1,12 @@
 
-// KOD 10 – pionowy slider dopasowany do layoutu (mobile)
+// KOD 11 – slider as sibling to palette
 document.addEventListener('DOMContentLoaded', () => {
+    if (window.innerWidth > 1024) return;
     const palette = document.getElementById('palette');
-    if (!palette || window.innerWidth > 1024) return;
+    if (!palette) return;
 
-    const wrapper = document.createElement('div');
-    wrapper.className = 'palette-scroll-wrapper';
-    palette.parentNode.insertBefore(wrapper, palette);
-    wrapper.appendChild(palette);
+    const parent = palette.parentElement;
+    parent.classList.add('palette-parent');
 
     const slider = document.createElement('input');
     slider.type = 'range';
@@ -16,20 +15,25 @@ document.addEventListener('DOMContentLoaded', () => {
     slider.max = 100;
     slider.value = 0;
 
-    wrapper.appendChild(slider);
+    parent.appendChild(slider);
 
-    const syncSlider = () => {
+    const updateSlider = () => {
         const maxScroll = palette.scrollHeight - palette.clientHeight;
-        if (maxScroll > 0) {
-            slider.value = (palette.scrollTop / maxScroll) * 100;
+        if (maxScroll <= 0) {
+            slider.style.display = 'none';
+            return;
         }
+        slider.style.display = '';
+        slider.value = (palette.scrollTop / maxScroll) * 100;
     };
 
-    const scrollTo = () => {
+    const scrollPalette = () => {
         const maxScroll = palette.scrollHeight - palette.clientHeight;
         palette.scrollTop = (slider.value / 100) * maxScroll;
     };
 
-    palette.addEventListener('scroll', syncSlider);
-    slider.addEventListener('input', scrollTo);
+    palette.addEventListener('scroll', updateSlider);
+    slider.addEventListener('input', scrollPalette);
+
+    updateSlider(); // initial
 });
