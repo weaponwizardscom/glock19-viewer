@@ -1,44 +1,29 @@
-/* styles.mobile.css – KOD 16 */
+/* styles.mobile.css – KOD 17 */
 @media (max-width:768px){
-
-  .section{ position:relative; }
-
   .palette-wrap{
-    overflow:hidden;               /* Disable native scroll */
-    padding-right:32px;            /* room for slider */
-    touch-action:none;             /* Disable swipe scroll */
+    overflow:hidden;
+    padding-right:32px;
+    touch-action:none;
   }
-
   .vslider{
     position:absolute;
-    top:0;
-    right:6px;
+    top:0; right:6px;
     height:100%;
-    width:22px;
-    writing-mode:bt-lr;            /* vertical slider */
+    writing-mode:bt-lr;
     -webkit-appearance:slider-vertical;
+    width:22px;
     background:transparent;
-    z-index:15;
+    z-index:10;
   }
-
   .vslider::-webkit-slider-runnable-track,
   .vslider::-moz-range-track{
-    width:4px;
-    background:#666;
-    border-radius:2px;
+    width:4px; background:#555; border-radius:2px;
   }
-
   .vslider::-webkit-slider-thumb,
   .vslider::-moz-range-thumb{
     -webkit-appearance:none;
-    width:20px;
-    height:20px;
-    background:#007bff;
-    border:none;
-    border-radius:50%;
+    width:20px; height:20px;
+    background:#007bff; border:none; border-radius:50%;
   }
-
-  #palette{
-    transition:transform .25s ease-out;
-  }
+  #palette{ transition:transform .25s ease-out; }
 }
