@@ -1,4 +1,4 @@
-/* styles.mobile.css – KOD 04 (horizontal palette scroll) */
+/* styles.mobile.css – KOD 05 (flex-based horizontal palette) */
 .palette-wrap{
   overflow-x:auto;
   overflow-y:hidden;
@@ -7,12 +7,13 @@
 }
 
 .palette{
-  white-space:nowrap;
+  display:flex;
+  flex-wrap:nowrap;
+  gap:25px 10px;
 }
 
 .sw{
-  display:inline-block;
-  width:70px;
+  flex:0 0 70px;
 }
 
 .sw .dot{
@@ -20,4 +21,10 @@
   height:55px;
 }
 
-/* optional: slightly bigger hit-area */
+/* (Optional) enable smoother scroll on Safari iOS */
+.palette-wrap{
+  scroll-snap-type:x mandatory;
+}
+.sw{
+  scroll-snap-align:start;
+}
