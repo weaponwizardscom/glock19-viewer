@@ -17,7 +17,9 @@
 /* ========= WSPÓLNE =================================================== */
 :root{
   --page:#000;--box:#000;--txt:#fff;--border:#dee2e6;--pri:#007bff;
-  --sb-track:#404040;--sb-thumb:#007bff;                   /* suwak */
+  /* suwak mobilny */
+  --sb-track:#414141;
+  --sb-thumb:#007bff;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{
@@ -25,30 +27,31 @@ body{
   background:var(--page);display:flex;justify-content:center;padding:20px;
 }
 
-/* ---------- KONFIGURATOR (desktop: 2 kolumny) ------------------------ */
+/* ---------- KONFIGURATOR – desktop: 2 kolumny ----------------------- */
 .configurator{
   background:var(--box);border-radius:8px;box-shadow:0 8px 24px #0008;
   display:flex;flex-wrap:wrap;gap:24px;max-width:1200px;width:100%;padding:24px;
 }
-.controls,.summary,#reset-btn,#price,#send-btn{order:0}   /* zerujemy desktop */
+/* kolejność zerujemy na desktopie */
+.controls,.summary,#reset-btn,#price,#send-btn{order:0}
 
-/* ---------- LEWA KOLUMNA -------------------------------------------- */
+/* ---------- LEWA KOLUMNA ------------------------------------------- */
 .gun-wrap{flex:2 1 600px;display:flex;flex-direction:column;gap:10px}
 .gun-view{position:relative;aspect-ratio:4/3;width:100%;max-width:800px;
   border-radius:6px;background:#111 center/cover no-repeat}
 .color-overlay{pointer-events:none;mix-blend-mode:hard-light;opacity:.45}
 
-/* ---------- PRZYCISKI ------------------------------------------------ */
+/* ---------- PRZYCISKI ---------------------------------------------- */
 .btn{width:100%;padding:12px;font-size:16px;border:none;color:#fff;border-radius:6px;cursor:pointer}
 .gray{background:#6c757d}.blue{background:var(--pri)}.red{background:#dc3545}
 
-/* ---------- PODSUMOWANIE -------------------------------------------- */
+/* ---------- PODSUMOWANIE ------------------------------------------- */
 .summary{border:1px solid var(--border);border-radius:6px;background:#111;margin-top:16px;padding:12px;color:var(--txt)}
 #summary-list{column-count:3;column-gap:20px}
 #summary-list div{break-inside:avoid;margin-bottom:4px;font-size:15px}
 #price{font-family:'Eurostile',sans-serif;font-weight:900;font-size:22px;margin-top:12px;color:#fff;text-align:right}
 
-/* ---------- PRAWA KOLUMNA ------------------------------------------- */
+/* ---------- PRAWA KOLUMNA ------------------------------------------ */
 .controls{flex:1 1 300px;min-width:300px;display:flex;flex-direction:column}
 .section{margin-bottom:20px}
 .sec-hdr{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px}
@@ -61,24 +64,29 @@ body{
 .parts button.disabled{background:#444;color:#888;cursor:not-allowed}
 .mix{background:linear-gradient(45deg,#ffd700,#ff7a00,#ff007a,#00aaff,#00ff6a);color:#000;font-weight:700}
 
-/* ---------- PALETA + SUWAK ------------------------------------------ */
-.palette-wrap{max-height:400px;overflow:hidden;padding-right:16px;position:relative}
+/* ---------- PALETA + SUWAK (mobile) --------------------------------- */
+.palette-wrap{
+  max-height:400px;overflow:hidden;padding-right:24px;position:relative;
+  overscroll-behavior:contain;             /* brak pull-to-refresh */
+}
 .palette{display:grid;grid-template-columns:repeat(3,1fr);gap:25px 10px}
 .sw{display:flex;flex-direction:column;align-items:center;cursor:pointer}
 .dot{width:45px;height:45px;border-radius:50%;border:2px solid var(--border);transition:.2s}
 .sw:hover .dot{transform:scale(1.1);box-shadow:0 0 8px var(--pri)}
 .lbl{margin-top:6px;font-size:11px;font-weight:600;color:#fff;text-align:center;line-height:1.25}
 
-/* suwak przewijania (widoczny tylko ≤768 px) */
+/* SUWAK – 16 px szer., 90 px kciuk */
 .palette-slider{
-  position:absolute;top:0;right:0;width:8px;height:100%;
-  writing-mode:bt-lr;-webkit-appearance:none;background:var(--sb-track);border-radius:4px
+  position:absolute;top:0;right:0;width:16px;height:100%;z-index:2;
+  -webkit-appearance:none;writing-mode:bt-lr;background:var(--sb-track);border-radius:8px;
+  touch-action:none;                        /* pewny chwyt palcem */
 }
 .palette-slider::-webkit-slider-thumb{
-  -webkit-appearance:none;width:8px;height:48px;background:var(--sb-thumb);border-radius:4px;cursor:pointer
+  -webkit-appearance:none;width:16px;height:90px;background:var(--sb-thumb);
+  border-radius:8px;cursor:pointer;
 }
 .palette-slider::-moz-range-thumb{
-  width:8px;height:48px;background:var(--sb-thumb);border:none;border-radius:4px;cursor:pointer
+  width:16px;height:90px;background:var(--sb-thumb);border:none;border-radius:8px;cursor:pointer;
 }
 
 /* ---------- MODAL ---------------------------------------------------- */
@@ -89,15 +97,24 @@ body{
 .box input{width:100%;padding:10px;margin-bottom:10px;border-radius:6px;border:1px solid #555;background:#000;color:#fff;font-size:14px}
 .note{font-size:12px;color:#ff4444;margin-top:6px;text-align:center}
 
-/* ---------- MOBILE ≤768 px ------------------------------------------ */
+/* ---------- MOBILE SPECYFIKA ≤ 768 px -------------------------------- */
 @media(max-width:768px){
+  /* przyklejony obraz */
   .gun-view{position:fixed;top:0;left:0;right:0;width:100vw;max-width:none;z-index:1000}
   body{padding-top:calc(100vw*3/4 + 20px)}
   .configurator{gap:12px}
-  #price{text-align:center}
+
+  /* zmieniona kolejność (już z poprzedniego etapu) */
+  .controls {order:2}   /* części + paleta */
+  .summary  {order:4}
+  #reset-btn{order:2}   /* wewnątrz .controls – zostaje na końcu panelu */
+  #price    {order:5;text-align:center}
+  #send-btn {order:6}
+
   #summary-list{column-count:2}
 }
-@media(min-width:769px){ .palette-slider{display:none} }  /* ukryj suwak na desktopie */
+/* desktop – ukryj pionowy slider */
+@media(min-width:769px){ .palette-slider{display:none} }
 </style>
 </head>
 
@@ -138,8 +155,8 @@ body{
       <div class="sec-hdr"><h3 id="h-col">2. Wybierz kolor (Cerakote)</h3></div>
       <div class="palette-wrap">
         <div id="palette" class="palette"></div>
-        <!-- NOWY SUWAK -->
-        <input id="palette-slider" class="palette-slider" type="range" value="0" min="0">
+        <!-- SUWAK -->
+        <input type="range" id="palette-slider" class="palette-slider" value="0" min="0">
       </div>
     </div>
 
@@ -163,32 +180,50 @@ body{
 <!-- GŁÓWNY SKRYPT (bez zmian) -->
 <script src="app.js"></script>
 
-<!-- ========== SKRYPT OBSŁUGI SUWAKA (Tylko  mobil) =================== -->
+<!-- ========== OBSŁUGA KOLEJNOŚCI & SUWAKA ============================ -->
 <script>
-document.addEventListener('DOMContentLoaded', ()=>{
+document.addEventListener('DOMContentLoaded',()=>{
+
+  /* --- przywracanie kolejności w mobile (z poprzedniego etapu) --- */
+  const mq        = window.matchMedia('(max-width:768px)');
+  const gunWrap   = document.querySelector('.gun-wrap');
+  const controls  = document.querySelector('.controls');
+  const summary   = document.querySelector('.summary');
+  function reorder(){
+    if(mq.matches){
+      if(controls.parentNode !== gunWrap){
+        gunWrap.insertBefore(controls, summary);  /* wstaw przed podsumowaniem */
+      }
+    }else{
+      if(controls.parentNode === gunWrap){
+        document.querySelector('.configurator').appendChild(controls);
+      }
+    }
+  }
+  mq.addEventListener ? mq.addEventListener('change',reorder) : mq.addListener(reorder);
+  reorder();
+
+  /* --- suwak palety -------------------------------------------------- */
   const palette = document.getElementById('palette');
   const slider  = document.getElementById('palette-slider');
 
-  /* ustawia max = wysokość przewijalna */
   function setMax(){
     const max = Math.max(0, palette.scrollHeight - palette.clientHeight);
     slider.max = max;
-    if (+slider.value > max) slider.value = max;
+    if(+slider.value > max) slider.value = max;
   }
+  /* suwak -> scroll */
+  slider.addEventListener('input', ()=> palette.scrollTop = slider.value );
+  /* scroll -> suwak (np. po reset-colour mix) */
+  palette.addEventListener('scroll', ()=> slider.value = palette.scrollTop );
 
-  /* scroll  → slider */
-  palette.addEventListener('scroll', ()=> { slider.value = palette.scrollTop; });
-
-  /* slider  → scroll */
-  slider.addEventListener('input', ()=> { palette.scrollTop = slider.value; });
-
-  /* blokujemy gest przewijania strony pod paletą */
+  /* blokada przewijania strony pod paletą */
   palette.addEventListener('touchmove', e=>{
     e.stopPropagation(); e.preventDefault();
   }, { passive:false });
 
-  /* po wygenerowaniu kolorów w app.js dajemy mu chwilę i ustawiamy max */
-  setTimeout(setMax, 120);
+  /* czekamy aż app.js wygeneruje kolory, potem ustawiamy max */
+  setTimeout(setMax, 150);
   window.addEventListener('resize', setMax);
 });
 </script>
