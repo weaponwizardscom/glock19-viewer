@@ -1,0 +1,10 @@
+/* sticky główny obraz */
+.gun-view{position:fixed; top:0; left:0; right:0; width:100vw; max-width:none; z-index:1000;}
+body{padding-top:calc(100vw*3/4 + 20px);} /* 4:3 ratio + 20px */
+.configurator{gap:12px; flex-direction:column;}
+#price{text-align:center;}
+#summary-list{column-count:2;}
+
+/* Ustaw kolejność elementów */
+.gun-wrap   { order: 0; }
+.controls   { order: 1; }
