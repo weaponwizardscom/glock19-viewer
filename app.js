@@ -219,3 +219,32 @@ document.addEventListener("DOMContentLoaded",()=>{
     
     });
     
+
+/* === Vertical palette slider (mobile only) [KOD 07] === */
+(function(){
+    if(window.innerWidth > 768) return;
+    const paletteWrap = document.querySelector('.palette-wrap');
+    const palette = document.getElementById('palette');
+    if(!paletteWrap || !palette) return;
+
+    // Create slider
+    const slider = document.createElement('input');
+    slider.type = 'range';
+    slider.className = 'palette-vertical-slider';
+    slider.min = 0;
+    slider.max = 100;
+    slider.value = 0;
+    paletteWrap.appendChild(slider);
+
+    // Sync palette to slider
+    function syncToSlider(){
+        const percent = paletteWrap.scrollTop / (paletteWrap.scrollHeight - paletteWrap.clientHeight);
+        slider.value = percent * 100;
+    }
+    function syncToScroll(){
+        const percent = slider.value / 100;
+        paletteWrap.scrollTop = percent * (paletteWrap.scrollHeight - paletteWrap.clientHeight);
+    }
+    paletteWrap.addEventListener('scroll', syncToSlider);
+    slider.addEventListener('input', syncToScroll);
+})();

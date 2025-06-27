@@ -104,6 +104,28 @@
       #price{text-align:center;}
       #summary-list{column-count:2;}
     }
+
+/* === Vertical palette slider (mobile only) [KOD 07] === */
+.palette-wrap{
+    position:relative;
+    max-height:400px;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+}
+.palette-vertical-slider{
+    position:absolute;
+    right:-28px;
+    top:0;
+    height:400px;
+    width:22px;
+    writing-mode:bt-lr;
+    -webkit-appearance: slider-vertical;
+    appearance: slider-vertical;
+    margin:0;
+}
+@media (min-width:768px){
+    .palette-vertical-slider{display:none;}
+}
   </style>
 </head>
 <body>
