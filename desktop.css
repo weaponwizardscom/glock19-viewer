@@ -1,0 +1,7 @@
+
+/* Układ 2‑kolumnowy na desktopie */
+@media screen and (min-width:1024px){
+  #main{flex-direction:row;align-items:flex-start;}
+  #viewer{flex:2 1 60%;max-width:60%;}
+  #controls{flex:1 1 40%;max-width:360px;}
+}
