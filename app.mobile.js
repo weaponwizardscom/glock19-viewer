@@ -1,8 +1,9 @@
 /**
- * Mobile-specific functions – KOD 4
+ * Mobile-specific functions – KOD 4 → KOD 01 (palette slider enabled)
+ * Complete replacement file.
  */
 export function initMobile () {
-  console.log('[mobile] init – KOD 4');
+  console.log('[mobile] init – KOD 01');
 
   const gunWrap   = document.querySelector('.gun-wrap');
   if (!gunWrap) return;
@@ -16,17 +17,23 @@ export function initMobile () {
   const partSection   = controls.querySelectorAll('.section')[0];
   const colorSection  = controls.querySelectorAll('.section')[1];
 
-  // Ensure order (already KOD 3), but for safety:
+  /* === REORDER FOR MOBILE === */
   gunWrap.appendChild(partSection);
   gunWrap.appendChild(colorSection);
   gunWrap.appendChild(summary);
   gunWrap.appendChild(resetBtn);
   gunWrap.appendChild(price);
 
-  // send button should remain last inside gunWrap
+  // send button remains last
   const sendBtn = document.getElementById('send-btn');
   gunWrap.appendChild(sendBtn);
 
-  // Hide empty controls
-  controls.style.display = 'none';
+  /* === NEW: enable horizontal slider for palette === */
+  const paletteWrap = colorSection?.querySelector('.palette-wrap');
+  if (paletteWrap){
+    paletteWrap.classList.add('mobile-scroll');
+  }
+
+  /* === Make controls visible on mobile (remove previous hide) === */
+  controls.style.display = '';
 }
