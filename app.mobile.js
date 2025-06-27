@@ -124,3 +124,44 @@ document.addEventListener('DOMContentLoaded', () => {
         palette.scrollTop = percent * (palette.scrollHeight - palette.clientHeight);
     });
 });
+
+
+/* KOD 09 – final mobile vertical slider */
+document.addEventListener('DOMContentLoaded', ()=>{
+    const palette = document.getElementById('palette');
+    if(!palette) return;
+    if(document.querySelector('.palette-vertical-slider')) return; // already set
+
+    // Wrap palette
+    const wrap = document.createElement('div');
+    wrap.className = 'palette-scroll-wrapper';
+    palette.parentNode.insertBefore(wrap, palette);
+    wrap.appendChild(palette);
+
+    // Create slider
+    const slider = document.createElement('input');
+    slider.type = 'range';
+    slider.className = 'palette-vertical-slider';
+    slider.min = 0;
+    slider.step = 1;
+    slider.value = 0;
+
+    // After layout, set slider max
+    const updateMax = () => {
+        const maxScroll = palette.scrollHeight - palette.clientHeight;
+        slider.max = maxScroll > 0 ? maxScroll : 0;
+    };
+    requestAnimationFrame(updateMax);
+    window.addEventListener('resize', updateMax);
+
+    // Sync scroll
+    palette.addEventListener('scroll', () => {
+        slider.value = palette.scrollTop;
+    });
+
+    slider.addEventListener('input', () => {
+        palette.scrollTop = slider.value;
+    });
+
+    wrap.appendChild(slider);
+});

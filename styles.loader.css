@@ -89,3 +89,31 @@
         display: none;
     }
 }
+
+
+/* KOD 09 – final mobile vertical slider */
+.palette-scroll-wrapper{
+    position:relative;
+    max-height:80vh;
+    overflow-y:auto;
+    overflow-x:hidden;
+    width:100%;
+    box-sizing:border-box;
+    padding-right:32px; /* miejsce na suwak, by uniknąć poziomego przewijania */
+}
+
+.palette-vertical-slider{
+    position:absolute;
+    right:4px;
+    top:0;
+    height:100%;
+    width:24px;
+    -webkit-appearance: slider-vertical;
+    appearance: slider-vertical;
+}
+
+@media (min-width: 1024px){
+    .palette-vertical-slider{
+        display:none;
+    }
+}
