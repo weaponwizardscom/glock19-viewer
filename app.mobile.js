@@ -32,34 +32,27 @@ export function initMobile () {
 }
 
 
-// KOD 03 – vertical slider for color palette (mobile only)
-function addPaletteSlider() {
-  const paletteWrap = document.querySelector('.palette-wrap');
-  if (!paletteWrap) return;
-  // create slider element
-  const slider = document.createElement('input');
-  slider.type = 'range';
-  slider.min = '0';
-  slider.max = '100';
-  slider.value = '0';
-  slider.className = 'palette-slider-vertical';
-  // position absolute inside parent
-  paletteWrap.parentElement.style.position = 'relative';
-  paletteWrap.parentElement.appendChild(slider);
+// KOD 04 – Dodanie pionowego slidera do przewijania kolorów
+const colorContainer = document.querySelector('.color-picker');
+const slider = document.createElement('input');
+slider.type = 'range';
+slider.className = 'color-scroll-slider';
+slider.min = 0;
+slider.max = 100;
+slider.value = 0;
 
-  const syncFromSlider = () => {
-    const maxScroll = paletteWrap.scrollHeight - paletteWrap.clientHeight;
-    paletteWrap.scrollTop = maxScroll * (slider.value / 100);
-  };
-  const syncFromScroll = () => {
-    const maxScroll = paletteWrap.scrollHeight - paletteWrap.clientHeight;
-    slider.value = maxScroll ? (paletteWrap.scrollTop / maxScroll) * 100 : 0;
-  };
-  slider.addEventListener('input', syncFromSlider);
-  paletteWrap.addEventListener('scroll', syncFromScroll);
-  // initial sync
-  syncFromScroll();
-}
+const wrapper = document.createElement('div');
+wrapper.className = 'color-scroll-container';
+colorContainer.parentNode.replaceChild(wrapper, colorContainer);
+wrapper.appendChild(colorContainer);
+wrapper.appendChild(slider);
 
-// invoke after mobile init
-document.addEventListener('DOMContentLoaded', addPaletteSlider);
+colorContainer.addEventListener('scroll', () => {
+    const percent = colorContainer.scrollTop / (colorContainer.scrollHeight - colorContainer.clientHeight);
+    slider.value = percent * 100;
+});
+
+slider.addEventListener('input', () => {
+    const percent = slider.value / 100;
+    colorContainer.scrollTop = percent * (colorContainer.scrollHeight - colorContainer.clientHeight);
+});

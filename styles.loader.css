@@ -26,18 +26,26 @@
 }
 
 
-/* KOD 03 – vertical slider style (mobile only) */
-@media (max-width: 767px) {
-  input.palette-slider-vertical {
-    -webkit-appearance: slider-vertical;
+/* KOD 04 – Styl dla przewijalnego kontenera z kolorami */
+.color-scroll-container {
+    height: 300px;
+    overflow-y: auto;
+    position: relative;
+}
+
+.color-scroll-slider {
     writing-mode: bt-lr;
-    width: 8px;
-    height: 100%;
+    -webkit-appearance: slider-vertical;
+    appearance: slider-vertical;
+    width: 20px;
+    height: 300px;
     position: absolute;
-    right: -14px;
+    right: 0;
     top: 0;
-    margin: 0;
-    padding: 0;
-    background: transparent;
-  }
+}
+
+@media (min-width: 768px) {
+    .color-scroll-slider {
+        display: none;
+    }
 }
