@@ -1,32 +1,45 @@
 /**
- * Mobile-specific functions – KOD 4
+ * app.mobile.js – KOD 06 (palette slider sync)
+ * Replacement file.
  */
-export function initMobile () {
-  console.log('[mobile] init – KOD 4');
+export function initMobile(){
+  console.log('[mobile] init – KOD 06');
 
-  const gunWrap   = document.querySelector('.gun-wrap');
-  if (!gunWrap) return;
+  const gunWrap = document.querySelector('.gun-wrap');
+  if(!gunWrap)return;
 
-  // DOM refs
-  const summary   = document.querySelector('.summary');
-  const price     = document.getElementById('price');
-  const resetBtn  = document.getElementById('reset-btn');
-  const controls  = document.querySelector('.controls');
-  if (!controls) return;
-  const partSection   = controls.querySelectorAll('.section')[0];
-  const colorSection  = controls.querySelectorAll('.section')[1];
+  const summary=document.querySelector('.summary');
+  const price=document.getElementById('price');
+  const resetBtn=document.getElementById('reset-btn');
+  const controls=document.querySelector('.controls');
+  if(!controls)return;
+  const partSection=controls.querySelectorAll('.section')[0];
+  const colorSection=controls.querySelectorAll('.section')[1];
 
-  // Ensure order (already KOD 3), but for safety:
+  // Reorder
   gunWrap.appendChild(partSection);
   gunWrap.appendChild(colorSection);
   gunWrap.appendChild(summary);
   gunWrap.appendChild(resetBtn);
   gunWrap.appendChild(price);
+  gunWrap.appendChild(document.getElementById('send-btn'));
 
-  // send button should remain last inside gunWrap
-  const sendBtn = document.getElementById('send-btn');
-  gunWrap.appendChild(sendBtn);
+  // Activate slider sync
+  const wrap=colorSection.querySelector('.palette-wrap');
+  const slider=document.getElementById('palette-slider');
+  if(wrap && slider){
+    function updateSliderMax(){
+      const max=wrap.scrollWidth - wrap.clientWidth;
+      slider.max=max>0?max:0;
+      slider.disabled=max<=0;
+    }
+    updateSliderMax();
+    window.addEventListener('resize',updateSliderMax);
 
-  // Hide empty controls
-  controls.style.display = 'none';
+    slider.addEventListener('input',()=>{wrap.scrollLeft=slider.value;});
+    wrap.addEventListener('scroll',()=>{slider.value=wrap.scrollLeft;});
+  }
+
+  // show controls
+  controls.style.display='';
 }
