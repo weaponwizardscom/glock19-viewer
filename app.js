@@ -29,6 +29,15 @@ document.addEventListener("DOMContentLoaded",()=>{
   const sendBtn=$("send-btn"),modal=$("modal"),mSend=$("m-send"),mCancel=$("m-cancel"),
         mName=$("m-name"),mMail=$("m-mail"),mPhone=$("m-phone");
   const modalTitle=$("modal-title"),modalNote=$("modal-note");
+  // Wybór broni
+  const weaponSelector=$("weapon-selector"), weaponTitle=$("weapon-title"), weaponGlock=$("weapon-glock");
+  const configurator=document.querySelector(".configurator");
+
+  weaponGlock.onclick=()=>{
+      weaponSelector.classList.add("hidden");
+      configurator.classList.remove("hidden");
+      initializeApp();
+  };
   
   /* === DANE APLIKACJI (ładowane z JSON) === */
   let PARTS = [];
@@ -64,7 +73,7 @@ document.addEventListener("DOMContentLoaded",()=>{
       }
   }
 
-  initializeApp();
+
   
   /* Preload BG */
   function preloadBGs(){BG.forEach(src=>{const i=new Image();i.src=src;});}
@@ -149,6 +158,7 @@ document.addEventListener("DOMContentLoaded",()=>{
       mPhone.placeholder  =l==="pl"?"Telefon":"Phone";
       modalTitle.textContent=l==="pl"?"Wyślij projekt":"Send project";
       modalNote.textContent =l==="pl"?"Po wysłaniu dołącz pobrany plik PNG." :"After sending, attach the downloaded PNG.";
+      weaponTitle.textContent = l==="pl" ? "Wybierz broń" : "Select weapon";
 
       [langPlDesktop, langPlMobile].forEach(f=>f.classList.toggle("active", l==="pl"));
       [langEnDesktop, langEnMobile].forEach(f=>f.classList.toggle("active", l==="en"));
