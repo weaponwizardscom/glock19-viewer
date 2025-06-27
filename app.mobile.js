@@ -1,32 +1,47 @@
 /**
- * Specjalne zachowania tylko dla wersji mobilnej.
- * Reorder elementów według nowej kolejności.
+ * mobile layout reorder – KOD 2 ➜ KOD 3 (2025‑06‑27)
+ * Nowy porządek:
+ *  1. gun-view
+ *  2. bg & save buttons (larger gap)
+ *  3. Wybierz część (partSection)
+ *  4. Wybierz kolor (colorSection)
+ *  5. Tabela z wybranymi kolorami (summary)
+ *  6. Resetuj kolory
+ *  7. Szacowany koszt
+ *  8. Wyślij
  */
-export function initMobile() {
-  console.log('[mobile] reorder start');
+export function initMobile () {
+  console.log('[mobile] reorder v2');
+  const gunWrap   = document.querySelector('.gun-wrap');
+  if (!gunWrap) return;
 
-  const gunWrap = document.querySelector('.gun-wrap');
-  const price   = document.getElementById('price');
-  const sendBtn = document.getElementById('send-btn');
-  const controls = document.querySelector('.controls');
-  if (!gunWrap || !controls) return;
-
+  // DOM refs
+  const bgBtn     = document.getElementById('bg-btn');
+  const saveBtn   = document.getElementById('save-btn');
+  const summary   = document.querySelector('.summary');
+  const price     = document.getElementById('price');
+  const sendBtn   = document.getElementById('send-btn');
+  const resetBtn  = document.getElementById('reset-btn');
+  const controls  = document.querySelector('.controls');
+  if (!controls) return;
   const [partSection, colorSection] = controls.querySelectorAll('.section');
-  const resetBtn = document.getElementById('reset-btn');
 
-  // 1‑3 już w gunWrap na górze, nic nie ruszamy.
+  // 1‑2 already correct (gun-view, bgBtn, saveBtn)
 
-  // 4. Wybierz kolor (colorSection)
-  gunWrap.insertBefore(colorSection, price);
+  // 3. Wybierz część
+  gunWrap.insertBefore(partSection, summary);
 
-  // 5. Resetuj kolory (resetBtn)
+  // 4. Wybierz kolor
+  gunWrap.insertBefore(colorSection, summary);
+
+  // 6. Resetuj kolory (before price)
   gunWrap.insertBefore(resetBtn, price);
 
-  // 6. (puste) — możemy zostawić odstęp, nic nie podmieniamy.
+  // Optional: hide empty controls container
+  controls.style.display = 'none';
 
-  // 7. Szacowany koszt (price) — pozostaje
-  // 8. Wyślij do Wizards (sendBtn) — pozostaje po price (już w DOM)
-  // 9. Wybierz część (partSection) — pozostaje w controls na końcu
+  // Extra spacing between bg & save buttons
+  if (saveBtn) saveBtn.style.marginTop = '16px';
 
-  console.log('[mobile] reorder done');
+  console.log('[mobile] reorder v2 done');
 }

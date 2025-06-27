@@ -1,10 +1,24 @@
+/* ==== mobile (≤768 px) – KOD 3 ================================================= */
+
 /* sticky główny obraz */
 .gun-view{position:fixed; top:0; left:0; right:0; width:100vw; max-width:none; z-index:1000;}
 body{padding-top:calc(100vw*3/4 + 20px);} /* 4:3 ratio + 20px */
+
+/* cala kolumna w jednej osi */
 .configurator{gap:12px; flex-direction:column;}
-#price{text-align:center;}
+
+/* pełna szerokość elementów w gun‑wrap */
+.gun-wrap > * { width:100%; }
+
+/* większy odstęp między Zmień tło a Zapisz obraz */
+.gun-wrap > .btn + .btn { margin-top:16px; }
+
+/* centrowanie tekstów kosztu */
+#price{text-align:center; width:100%; margin-top:16px;}
+
+/* summary kolory w 2 kolumnach, aby pasowało do mobile */
 #summary-list{column-count:2;}
 
-/* Ustaw kolejność elementów */
+/* Ustaw kolejność cont. na podstawie JS – CSS fallback */
 .gun-wrap   { order: 0; }
-.controls   { order: 1; }
+.controls   { order: 1; display:none; }
