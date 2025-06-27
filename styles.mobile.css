@@ -1,24 +1,28 @@
-/* ==== mobile (≤768 px) – KOD 3 ================================================= */
+/* ==== mobile rules (mobile-active class) – KOD 4 ============================ */
 
-/* sticky główny obraz */
-.gun-view{position:fixed; top:0; left:0; right:0; width:100vw; max-width:none; z-index:1000;}
-body{padding-top:calc(100vw*3/4 + 20px);} /* 4:3 ratio + 20px */
+/* Full‑width layout */
+body.mobile-active .gun-wrap > * { width:100%; }
 
-/* cala kolumna w jednej osi */
-.configurator{gap:12px; flex-direction:column;}
+/* Buttons & inputs 100 % width */
+body.mobile-active .btn,
+body.mobile-active input { width:100%; }
 
-/* pełna szerokość elementów w gun‑wrap */
-.gun-wrap > * { width:100%; }
+/* Extra spacing between bg/save buttons (already 16 px as sibling combinator) */
+body.mobile-active .gun-wrap > .btn + .btn { margin-top:16px; }
 
-/* większy odstęp między Zmień tło a Zapisz obraz */
-.gun-wrap > .btn + .btn { margin-top:16px; }
+/* Centered price */
+body.mobile-active #price { text-align:center; margin-top:16px; }
 
-/* centrowanie tekstów kosztu */
-#price{text-align:center; width:100%; margin-top:16px;}
+/* 2‑column summary */
+body.mobile-active #summary-list { column-count:2; }
 
-/* summary kolory w 2 kolumnach, aby pasowało do mobile */
-#summary-list{column-count:2;}
+/* Custom large scrollbar for palette */
+body.mobile-active .palette-wrap { overflow-y:auto; }
 
-/* Ustaw kolejność cont. na podstawie JS – CSS fallback */
-.gun-wrap   { order: 0; }
-.controls   { order: 1; display:none; }
+body.mobile-active .palette-wrap::-webkit-scrollbar { width:14px; }
+body.mobile-active .palette-wrap::-webkit-scrollbar-track { background:#222; border-radius:7px; }
+body.mobile-active .palette-wrap::-webkit-scrollbar-thumb { background:#666; border-radius:7px; }
+body.mobile-active .palette-wrap::-webkit-scrollbar-thumb:hover { background:#888; }
+
+/* Hide original controls container */
+body.mobile-active .controls { display:none; }

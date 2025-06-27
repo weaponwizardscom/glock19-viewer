@@ -1,47 +1,32 @@
 /**
- * mobile layout reorder – KOD 2 ➜ KOD 3 (2025‑06‑27)
- * Nowy porządek:
- *  1. gun-view
- *  2. bg & save buttons (larger gap)
- *  3. Wybierz część (partSection)
- *  4. Wybierz kolor (colorSection)
- *  5. Tabela z wybranymi kolorami (summary)
- *  6. Resetuj kolory
- *  7. Szacowany koszt
- *  8. Wyślij
+ * Mobile-specific functions – KOD 4
  */
 export function initMobile () {
-  console.log('[mobile] reorder v2');
+  console.log('[mobile] init – KOD 4');
+
   const gunWrap   = document.querySelector('.gun-wrap');
   if (!gunWrap) return;
 
   // DOM refs
-  const bgBtn     = document.getElementById('bg-btn');
-  const saveBtn   = document.getElementById('save-btn');
   const summary   = document.querySelector('.summary');
   const price     = document.getElementById('price');
-  const sendBtn   = document.getElementById('send-btn');
   const resetBtn  = document.getElementById('reset-btn');
   const controls  = document.querySelector('.controls');
   if (!controls) return;
-  const [partSection, colorSection] = controls.querySelectorAll('.section');
+  const partSection   = controls.querySelectorAll('.section')[0];
+  const colorSection  = controls.querySelectorAll('.section')[1];
 
-  // 1‑2 already correct (gun-view, bgBtn, saveBtn)
+  // Ensure order (already KOD 3), but for safety:
+  gunWrap.appendChild(partSection);
+  gunWrap.appendChild(colorSection);
+  gunWrap.appendChild(summary);
+  gunWrap.appendChild(resetBtn);
+  gunWrap.appendChild(price);
 
-  // 3. Wybierz część
-  gunWrap.insertBefore(partSection, summary);
+  // send button should remain last inside gunWrap
+  const sendBtn = document.getElementById('send-btn');
+  gunWrap.appendChild(sendBtn);
 
-  // 4. Wybierz kolor
-  gunWrap.insertBefore(colorSection, summary);
-
-  // 6. Resetuj kolory (before price)
-  gunWrap.insertBefore(resetBtn, price);
-
-  // Optional: hide empty controls container
+  // Hide empty controls
   controls.style.display = 'none';
-
-  // Extra spacing between bg & save buttons
-  if (saveBtn) saveBtn.style.marginTop = '16px';
-
-  console.log('[mobile] reorder v2 done');
 }

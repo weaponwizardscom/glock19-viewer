@@ -1,24 +1,22 @@
 /**
- * Loader with DOMContentLoaded re-dispatch for late‑loaded modules.
+ * Universal loader – supports mobile up to 1024 px (iPhone & iPad).
+ * Adds `mobile-active` class to <body> gdy ładowana jest wersja mobilna.
  */
-const mqMobile = window.matchMedia('(max-width: 768px)');
+const mqMobile = window.matchMedia('(max-width: 1024px)');
 
 (async () => {
-  // 1. Załaduj główny moduł z logiką konfiguratora
   await import('./app.common.js');
 
-  // 2. Jeżeli DOMContentLoaded już było, wywołujemy je ponownie,
-  //    bo app.common.js mógł dodać słuchacza po fakcie.
+  // Fire DOMContentLoaded for late listeners
   if (document.readyState !== 'loading') {
     document.dispatchEvent(new Event('DOMContentLoaded'));
   }
 
-  // 3. Mobile‑specific reorder (≤768 px)
   if (mqMobile.matches) {
+    document.body.classList.add('mobile-active');
     const mod = await import('./app.mobile.js');
     if (typeof mod.initMobile === 'function') mod.initMobile();
   }
 })();
 
-// Odśwież stronę przy zmianie breakpointu (np. obrót ekranu)
 mqMobile.addEventListener('change', () => location.reload());
