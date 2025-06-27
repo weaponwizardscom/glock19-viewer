@@ -1,0 +1,37 @@
+/* styles.loader.css – independent, does not override existing classes */
+.ww-loader{
+  position:fixed;
+  inset:0;
+  background:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:3000;
+  transition:opacity .4s ease-out, visibility .4s steps(1,end);
+}
+.ww-loader.ww-hide{
+  opacity:0;
+  visibility:hidden;
+}
+.ww-spinner{
+  width:60px;
+  height:60px;
+  border:6px solid rgba(255,255,255,.25);
+  border-top-color:#007bff;
+  border-radius:50%;
+  animation:ww-spin 1s linear infinite;
+}
+@keyframes ww-spin{
+  to{transform:rotate(360deg);}
+}
+
+
+/* KOD 02 – ukrycie niepotrzebnego slidera i brak poziomego scrolla */
+.ww-vertical-slider,
+.palette-vertical-slider{
+    display:none !important;
+}
+
+.palette-wrap{
+    overflow-x:hidden !important;
+}

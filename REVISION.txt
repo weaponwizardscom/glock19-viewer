@@ -1,0 +1,2 @@
+Revision 01
+Removed unused loader and JS, added .gitignore.
