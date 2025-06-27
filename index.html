@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Weapon-Wizards – Konfigurator</title>
 
-  <!-- Font -->
+  <!-- ------------- FONT ------------------------------------------------>
   <style>
     @font-face {
       font-family: "Eurostile";
@@ -15,14 +15,14 @@
     }
   </style>
 
-  <!-- CSS -->
+  <!-- ------------- CSS -------------------------------------------------->
   <link rel="stylesheet" href="styles.base.css">
-  <link rel="stylesheet" href="styles.desktop.css" media="(min-width: 1025px)">
-  <!-- Mobile / tablet do 1024 px -->
-  <link rel="stylesheet" href="styles.mobile.css"  media="(max-width: 1024px)">
+  <link rel="stylesheet" href="styles.desktop.css" media="(min-width: 769px)">
+  <link rel="stylesheet" href="styles.mobile.css"  media="(max-width: 768px)">
 </head>
 <body>
   <div class="configurator">
+    <!-- LEWA KOLUMNA -------------------------------------------------->
     <div class="gun-wrap">
       <div id="gun-view" class="gun-view" aria-live="polite">
         <p style="text-align:center;padding-top:20px;color:#6c757d">Ładowanie…</p>
@@ -36,7 +36,9 @@
       <button id="send-btn" class="btn red" type="button" style="margin-top:8px">Wyślij do Wizards!</button>
     </div>
 
+    <!-- PRAWA KOLUMNA ------------------------------------------------- -->
     <div class="controls">
+      <!-- Wybór części -->
       <div class="section">
         <div class="sec-hdr">
           <h3 id="h-parts">1. Wybierz część</h3>
@@ -48,6 +50,7 @@
         <div id="parts" class="parts"></div>
       </div>
 
+      <!-- Paleta -->
       <div class="section">
         <div class="sec-hdr"><h3 id="h-col">2. Wybierz kolor (Cerakote)</h3></div>
         <div class="palette-wrap"><div id="palette" class="palette"></div></div>
@@ -57,7 +60,7 @@
     </div>
   </div>
 
-  <!-- Modal -->
+  <!-- MODAL ----------------------------------------------------------- -->
   <div id="modal" class="modal hidden" role="dialog" aria-modal="true">
     <div class="box">
       <h2 id="modal-title">Wyślij projekt</h2>
@@ -70,7 +73,7 @@
     </div>
   </div>
 
-  <!-- Scripts -->
-  <script type="module" src="loader.js"></script>
+  <!-- ------------- JAVASCRIPT ---------------------------------------- -->
+  <script src="app.js"></script>
 </body>
 </html>

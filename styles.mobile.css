@@ -1,0 +1,38 @@
+/* ================== styles.mobile.css – KOD 9 ===================== */
+/* Aktywny dla viewportów ≤1024 px                                     */
+
+body{display:block; padding:0;}
+
+/* Sticky gun image */
+.gun-view{position:fixed; top:0; left:0; right:0; width:100vw; max-width:none; z-index:1000;}
+body{padding-top:calc(100vw*3/4 + 20px);}
+
+/* Column layout */
+.configurator{gap:12px; flex-direction:column; max-width:none; width:100%;}
+
+/* Full width */
+.gun-wrap >*, .palette-wrap, .btn, input{width:100%;}
+
+/* Gap between Change BG and Save buttons (already 16 via combo) */
+.gun-wrap > .btn + .btn{margin-top:16px;}
+
+/* === Wyraźny odstęp PO przycisku 'Zapisz Obraz' === */
+#save-btn{margin-bottom:32px;}
+
+/* Odstęp między Summary a Reset */
+.summary{margin-bottom:32px;}
+
+/* Summary layout */
+#summary-list{column-count:2;}
+
+/* Price centered */
+#price{text-align:center; margin-top:16px;}
+
+/* Palette scroll */
+.palette-wrap{max-height:400px; overflow-y:auto;}
+
+/* Hide original controls */
+.controls{display:none;}
+
+/* Blue send button */
+#send-btn{background:var(--pri);}
