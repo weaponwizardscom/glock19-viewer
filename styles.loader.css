@@ -1,21 +1,24 @@
 
-/* KOD 16 – styl suwaka, slider fixed z prawej */
-#palette{
-  max-height:80vh;
-  overflow-y:scroll;      /* scroll programowy */
-  overflow-x:hidden;
-}
-
+/* KOD 17 – styl stałego pionowego suwaka */
 .ww-vertical-slider{
-  position:fixed;
-  right:10px;
-  width:26px;
+  position: fixed;        /* dokładne pozycjonowanie JS */
+  right: 10px;
+  top: 0;
+  height: 60vh;
+  width: 24px;
+  z-index: 1000;
   -webkit-appearance: slider-vertical;
   appearance: slider-vertical;
-  z-index:1000;
 }
-
-/* ukryj na desktopie */
 @media (min-width:1024px){
   .ww-vertical-slider{display:none;}
+}
+
+/* Kontener palety – blokujemy boczny scroll */
+#palette{
+  max-height:80vh;
+  overflow-y:auto;
+  overflow-x:hidden;
+  overscroll-behavior: contain;
+  touch-action: none;   /* dodatkowy blok scrolla (Edge/Chromium) */
 }

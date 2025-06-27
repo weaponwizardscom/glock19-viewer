@@ -1,63 +1,66 @@
 
-/* KOD 16 – stały slider, przewija paletę wyłącznie suwakiem (mobile) */
-document.addEventListener('DOMContentLoaded', () => {
-  // pokazujemy slider tylko na mobile/tablet
-  if (window.innerWidth > 1024) return;
-
+/* KOD 17 – statyczny slider, paleta przewijana TYLKO suwakiem */
+/* Założenie: w dokumencie istnieje div#palette (kontener z próbkami) */
+(function() {
+  if (window.innerWidth > 1024) return;         // tylko mobile / tablet
   const palette = document.getElementById('palette');
   if (!palette) return;
 
-  /* 1. Wyłączamy natywne przewijanie palety palcem/kołem myszy */
-  const blockScroll = (e) => e.preventDefault();
-  palette.addEventListener('wheel', blockScroll, { passive: false });
-  palette.addEventListener('touchmove', blockScroll, { passive: false });
+  /* ---------- BLOKOWANIE NATIVE SCROLLA PALETY ---------- */
+  const blockEvt = e => e.preventDefault();
+  palette.addEventListener('touchmove', blockEvt, {passive:false});
+  palette.addEventListener('wheel',     blockEvt, {passive:false});
 
-  /* 2. Dodajemy slider (jeden globalny) */
-  // usuwamy poprzednie, jeśli były
-  const old = document.querySelector('.ww-vertical-slider');
-  if (old) old.remove();
+  /* ---------- TWORZENIE / POZYSKANIE STAŁEGO SLIDERA ---------- */
+  let slider = document.querySelector('.ww-vertical-slider');
+  if (!slider) {
+    slider = document.createElement('input');
+    slider.type = 'range';
+    slider.className = 'ww-vertical-slider';
+    document.body.appendChild(slider);
+  }
 
-  const slider = document.createElement('input');
-  slider.type = 'range';
-  slider.className = 'ww-vertical-slider';
-  slider.min = 0;
-  slider.max = 100;
-  slider.value = 0;
-
-  document.body.appendChild(slider);
-
-  /* 3. Funkcje pomocnicze */
-  const setSliderPosition = () => {
-    // wysokość slidera = wysokość palety na ekranie
-    const palRect = palette.getBoundingClientRect();
-    slider.style.height = palRect.height + 'px';
-    slider.style.top = palRect.top + 'px';
+  /* Styl dynamiczny – wysokość i pozycja slidera równa się wysokości i górze palety */
+  const applyPos = () => {
+    const rect = palette.getBoundingClientRect();
+    slider.style.position = 'fixed';
+    slider.style.right    = '10px';
+    slider.style.top      = rect.top + 'px';
+    slider.style.height   = rect.height + 'px';
   };
 
-  const syncSlider = () => {
-    const maxScroll = palette.scrollHeight - palette.clientHeight;
-    if (maxScroll > 0) {
-      slider.value = (palette.scrollTop / maxScroll) * 100;
-    } else {
-      slider.value = 0;
-    }
+  /* Ustaw max suwaka = maksymalny scrollTop palety */
+  const setSliderLimits = () => {
+    const max = Math.max(0, palette.scrollHeight - palette.clientHeight);
+    slider.min = 0;
+    slider.max = max;
+    slider.step = 1;
   };
 
-  const scrollPalette = () => {
-    const maxScroll = palette.scrollHeight - palette.clientHeight;
-    palette.scrollTop = (slider.value / 100) * maxScroll;
+  /* Synchronizacja kierunek: slider -> scroll */
+  slider.addEventListener('input', () => {
+    palette.scrollTop = parseInt(slider.value, 10);
+  });
+
+  /* Synchronizacja kierunek: scroll -> slider  (przydatne jeśli kiedyś ruszymy paletę skryptowo) */
+  palette.addEventListener('scroll', () => {
+    slider.value = palette.scrollTop;
+  });
+
+  /* Init */
+  const init = () => {
+    applyPos();
+    setSliderLimits();
+    slider.value = palette.scrollTop;
   };
 
-  /* 4. Wiązanie zdarzeń */
-  slider.addEventListener('input', scrollPalette);
-  window.addEventListener('resize', setSliderPosition);
-  window.addEventListener('scroll', setSliderPosition);
+  /* Reakcja na zmianę rozmiaru / orientacji */
+  window.addEventListener('resize', () => {
+    applyPos();
+    setSliderLimits();
+  });
 
-  // paleta może zmieniać wysokość przy zmianie orientacji – obserwator
-  const resizeObserver = new ResizeObserver(setSliderPosition);
-  resizeObserver.observe(palette);
-
-  /* 5. Inicjalizacja */
-  setSliderPosition();
-  syncSlider();
-});
+  /* Delay, żeby poczekać na obrazki w palecie */
+  window.addEventListener('load', init);
+  document.addEventListener('DOMContentLoaded', init);
+})();
