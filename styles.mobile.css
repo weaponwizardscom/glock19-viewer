@@ -1,0 +1,23 @@
+/* styles.mobile.css – KOD 04 (horizontal palette scroll) */
+.palette-wrap{
+  overflow-x:auto;
+  overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;
+  padding-bottom:12px;
+}
+
+.palette{
+  white-space:nowrap;
+}
+
+.sw{
+  display:inline-block;
+  width:70px;
+}
+
+.sw .dot{
+  width:55px;
+  height:55px;
+}
+
+/* optional: slightly bigger hit-area */
