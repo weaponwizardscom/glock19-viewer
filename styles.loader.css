@@ -27,3 +27,18 @@
         display: none;
     }
 }
+
+/* KOD 12 – overlay vertical slider for mobile */
+@media (max-width: 1024px){
+  .ww-vertical-slider{
+      position: fixed;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 80vh;
+      width: 26px;
+      -webkit-appearance: slider-vertical;
+      appearance: slider-vertical;
+      z-index: 10000;
+  }
+}
