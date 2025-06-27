@@ -5,20 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Weapon-Wizards – Konfigurator</title>
 
-  <!-- KOD 09 style sheets -->
+  <style>
+    @font-face {
+      font-family: "Eurostile";
+      font-weight: 900;
+      font-style: normal;
+      src: local("Eurostile Extended Black"), local("Eurostile");
+    }
+  </style>
+
   <link rel="stylesheet" href="styles.base.css">
   <link rel="stylesheet" href="styles.desktop.css" media="(min-width: 1025px)">
   <link rel="stylesheet" href="styles.mobile.css"  media="(max-width: 1024px)">
-  <!-- Loader specific styles -->
-  <link rel="stylesheet" href="styles.loader.css">
 </head>
 <body>
-  <!-- Full‑screen loader (does not alter existing layout) -->
-  <div id="loader-overlay" class="ww-loader" aria-label="Ładowanie">
-    <div class="ww-spinner"></div>
-  </div>
-
-  <!-- EXISTING MARKUP START (unchanged from KOD 09) -->
   <div class="configurator">
     <div class="gun-wrap">
       <div id="gun-view" class="gun-view" aria-live="polite">
@@ -30,7 +30,7 @@
 
       <div class="summary"><div id="summary-list"></div></div>
       <div id="price">Szacowany koszt:&nbsp;&nbsp;0&nbsp;zł</div>
-      <button id="send-btn" class="btn pri" type="button" style="margin-top:8px">Wyślij do Wizards!</button>
+      <button id="send-btn" class="btn red" type="button" style="margin-top:8px">Wyślij do Wizards!</button>
     </div>
 
     <div class="controls">
@@ -65,16 +65,7 @@
       <p class="note" id="modal-note">Po wysłaniu dołącz pobrany plik PNG.</p>
     </div>
   </div>
-  <!-- EXISTING MARKUP END -->
 
   <script type="module" src="loader.js"></script>
-
-  <!-- Hide loader on full page load -->
-  <script>
-    window.addEventListener('load', () => {
-      const o = document.getElementById('loader-overlay');
-      if(o) o.classList.add('ww-hide');
-    });
-  </script>
 </body>
 </html>
