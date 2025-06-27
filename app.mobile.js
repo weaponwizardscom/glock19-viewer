@@ -32,27 +32,64 @@ export function initMobile () {
 }
 
 
-// KOD 04 – Dodanie pionowego slidera do przewijania kolorów
-const colorContainer = document.querySelector('.color-picker');
-const slider = document.createElement('input');
-slider.type = 'range';
-slider.className = 'color-scroll-slider';
-slider.min = 0;
-slider.max = 100;
-slider.value = 0;
-
-const wrapper = document.createElement('div');
-wrapper.className = 'color-scroll-container';
-colorContainer.parentNode.replaceChild(wrapper, colorContainer);
-wrapper.appendChild(colorContainer);
-wrapper.appendChild(slider);
-
-colorContainer.addEventListener('scroll', () => {
-    const percent = colorContainer.scrollTop / (colorContainer.scrollHeight - colorContainer.clientHeight);
-    slider.value = percent * 100;
-});
-
-slider.addEventListener('input', () => {
+('input', () => {
     const percent = slider.value / 100;
     colorContainer.scrollTop = percent * (colorContainer.scrollHeight - colorContainer.clientHeight);
 });
+
+
+// KOD 05 – Vertical slider for color palette (mobile only)
+(function(){
+  if (window.innerWidth > 768) return; // only mobile
+  const paletteWrap = document.querySelector('.palette-wrap');
+  if (!paletteWrap) return;
+
+  const palette = document.getElementById('palette');
+  if (!palette) return;
+
+  // only add slider once
+  if (paletteWrap.querySelector('.palette-scroll-slider')) return;
+
+  paletteWrap.style.position = 'relative';
+
+  // make sure palette can scroll vertically
+  paletteWrap.style.maxHeight = paletteWrap.style.maxHeight || '400px';
+  paletteWrap.style.overflowY = 'auto';
+
+  const slider = document.createElement('input');
+  slider.type = 'range';
+  slider.className = 'palette-scroll-slider';
+  slider.min = 0;
+  slider.max = 100;
+  slider.value = 0;
+
+  // style inline for now; additional CSS in styles.loader.css can override
+  slider.style.position = 'absolute';
+  slider.style.right = '-15px';
+  slider.style.top = '0';
+  slider.style.height = '100%';
+  slider.style.writingMode = 'bt-lr';
+  slider.style.webkitAppearance = 'slider-vertical';
+  slider.style.appearance = 'none';
+  slider.style.transform = 'rotate(180deg)';
+  slider.style.background = 'transparent';
+
+  paletteWrap.appendChild(slider);
+
+  // sync scroll ↔ slider
+  function updateSlider(){
+    const maxScroll = paletteWrap.scrollHeight - paletteWrap.clientHeight;
+    slider.value = (paletteWrap.scrollTop / maxScroll) * 100;
+  }
+
+  paletteWrap.addEventListener('scroll', updateSlider);
+
+  slider.addEventListener('input', () => {
+    const percent = slider.value / 100;
+    const maxScroll = paletteWrap.scrollHeight - paletteWrap.clientHeight;
+    paletteWrap.scrollTop = percent * maxScroll;
+  });
+
+  // initial update
+  updateSlider();
+})();

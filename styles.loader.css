@@ -49,3 +49,13 @@
         display: none;
     }
 }
+
+/* KOD 05 – Vertical palette slider (mobile) */
+@media (max-width: 768px){
+  .palette-scroll-slider{
+    -webkit-appearance: slider-vertical;
+    appearance: slider-vertical;
+    width: 20px;
+    margin: 0;
+  }
+}
