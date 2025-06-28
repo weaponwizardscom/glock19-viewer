@@ -1,10 +1,6 @@
 export default {
-  base: './',
-  publicDir: 'public',
+  base: '/glock19-viewer/',
   build: {
-    outDir: 'dist',
-    rollupOptions: {
-      input: 'index.html'
-    }
+    outDir: 'dist'
   }
 }
