@@ -1,5 +1,5 @@
 /* === KONFIG === */
-const SVG_FILES = ["g17.svg", "g17b.svg"];   // 0 = widok bazowy, 1 = drugi kąt
+const SVG_FILES = ["g17.svg", "g172.svg"];   // 0 = widok bazowy, 1 = drugi kąt
 const TEXTURES  = ["img/glock17.png", "img/glock17b.png"];
 const BG        = ["img/t1.png","img/t2.png","img/t3.png","img/t4.png","img/t5.png","img/t6.png","img/t7.png"];
 
