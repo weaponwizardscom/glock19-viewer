@@ -1,9 +1,16 @@
 // vite.config.js
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vite'
 
+// -------------------------------------------------------
+//  Konfiguracja dla GitHub Pages
+//  • base:  musi odpowiadać nazwie repozytorium
+//           ("/glock19-viewer/")
+//  • build.outDir: katalog, w którym Vite zapisze wynik
+// -------------------------------------------------------
 export default defineConfig({
-  /**  <<<–– NAJWAŻNIEJSZE  ––►
-   *  Dzięki temu wszystkie odwołania w dist/ będą
-   *  miały prefiks /glock19-viewer/ i 404 zniknie.  */
   base: '/glock19-viewer/',
-});
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true           // czyści stary build przed nowym
+  }
+})
