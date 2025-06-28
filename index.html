@@ -6,57 +6,48 @@
   <meta name="theme-color" content="#000000">
   <title>Weapon-Wizards – Konfigurator</title>
 
-  <!-- arkusz loadera (opcjonalny) -->
-
-  <!-- ------------- FONT ------------------------------------------------>
   <style>
-    @font-face {
-      font-family: "Eurostile";
-      font-weight: 900;
-      font-style: normal;
-      src: local("Eurostile Extended Black"), local("Eurostile");
-    }
+    /* --- FONT ---------------------------------------------------- */
+    @font-face{font-family:"Eurostile";font-weight:900;font-style:normal;
+      src:local("Eurostile Extended Black"),local("Eurostile");}
 
-    /* ========== WSPÓLNE ============================================== */
-    :root {
-      --page: #000;
-      --box:  #000;
-      --txt:  #fff;
-      --border:#dee2e6;
-      --pri:  #007bff;
-    }
+    /* --- KOLORY / ZMIENNE --------------------------------------- */
+    :root{--page:#000;--box:#000;--txt:#fff;--border:#dee2e6;--pri:#007bff}
     *{box-sizing:border-box;margin:0;padding:0}
-    body{
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-      background:var(--page);display:flex;justify-content:center;padding:20px
-    }
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+         background:var(--page);display:flex;justify-content:center;padding:20px}
 
-    /* --------- KONFIGURATOR (desktop: 2 kolumny) --------------------- */
-    .configurator{
-      background:var(--box);border-radius:8px;box-shadow:0 8px 24px #0008;
-      display:flex;flex-wrap:wrap;gap:24px;max-width:1200px;width:100%;padding:24px;
-    }
+    /* --- KONFIGURATOR ------------------------------------------- */
+    .configurator{background:var(--box);border-radius:8px;box-shadow:0 8px 24px #0008;
+      display:flex;flex-wrap:wrap;gap:24px;max-width:1200px;width:100%;padding:24px}
     .controls,.summary,#reset-btn,#price,#send-btn{order:0}
 
-    /* --------- LEWA KOLUMNA ----------------------------------------- */
+    /* --- LEWA KOLUMNA (obraz + strzałki) ------------------------- */
     .gun-wrap{flex:2 1 600px;display:flex;flex-direction:column;gap:10px}
-    .gun-view{
-      position:relative;aspect-ratio:4/3;width:100%;max-width:800px;
-      border-radius:6px;background:#111 center/cover no-repeat;
-    }
+    .gun-view{position:relative;aspect-ratio:4/3;width:100%;max-width:800px;
+      border-radius:6px;background:#111 center/cover no-repeat;overflow:hidden}
     .color-overlay{pointer-events:none;mix-blend-mode:hard-light;opacity:.45}
 
-    /* --------- PRZYCISKI -------------------------------------------- */
+    /* strzałki nawigacyjne */
+    .nav-arrow{position:absolute;top:0;bottom:0;width:15%;min-width:60px;
+      cursor:pointer;display:flex;align-items:center;justify-content:center;
+      background:linear-gradient(to right,rgba(0,0,0,.35),transparent);
+      opacity:.2;transition:.2s}
+    .nav-arrow.right{right:0;left:auto;background:linear-gradient(to left,rgba(0,0,0,.35),transparent)}
+    .nav-arrow:hover{opacity:.5}
+    .nav-arrow svg{width:42px;height:42px;fill:#fff}
+
+    /* --- PRZYCISKI ---------------------------------------------- */
     .btn{width:100%;padding:12px;font-size:16px;border:none;color:#fff;border-radius:6px;cursor:pointer}
     .btn.gray{background:#6c757d}.btn.blue{background:var(--pri)}.btn.red{background:#dc3545}
 
-    /* --------- PODSUMOWANIE ----------------------------------------- */
+    /* --- PODSUMOWANIE ------------------------------------------- */
     .summary{border:1px solid var(--border);border-radius:6px;background:#111;margin-top:16px;padding:12px;color:var(--txt)}
     #summary-list{column-count:3;column-gap:20px}
     #summary-list div{break-inside:avoid;margin-bottom:4px;font-size:15px}
     #price{font-family:"Eurostile",sans-serif;font-weight:900;font-size:22px;margin-top:12px;color:#fff;text-align:right}
 
-    /* --------- PRAWA KOLUMNA (controls) ----------------------------- */
+    /* --- PRAWA KOLUMNA (controls) ------------------------------- */
     .controls{flex:1 1 300px;min-width:300px;display:flex;flex-direction:column}
     .section{margin-bottom:20px}
     .sec-hdr{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px}
@@ -76,7 +67,7 @@
     .sw:hover .dot{transform:scale(1.1);box-shadow:0 0 8px var(--pri)}
     .lbl{margin-top:6px;font-size:11px;font-weight:600;color:#fff;text-align:center;line-height:1.25}
 
-    /* --------- MODAL ------------------------------------------------- */
+    /* --- MODAL --------------------------------------------------- */
     .modal{position:fixed;inset:0;background:#000a;display:flex;align-items:center;justify-content:center;z-index:1000}
     .modal.hidden{display:none}
     .box{background:#1b1b1b;padding:24px;border-radius:8px;width:90%;max-width:420px}
@@ -84,7 +75,7 @@
     .box input{width:100%;padding:10px;margin-bottom:10px;border-radius:6px;border:1px solid #555;background:#000;color:#fff;font-size:14px}
     .note{font-size:12px;color:#ff4444;margin-top:6px;text-align:center}
 
-    /* ========== MOBILE ≤768 px ONLY ================================= */
+    /* --- MOBILE -------------------------------------------------- */
     @media (max-width:768px){
       .gun-view{position:fixed;top:0;left:0;right:0;width:100vw;max-width:none;z-index:1000}
       body{padding-top:calc(100vw*3/4 + 20px)}
@@ -93,8 +84,8 @@
       #summary-list{column-count:2}
     }
   </style>
-  <script type="module" crossorigin src="/glock19-viewer/assets/index-R0n-369v.js"></script>
-  <link rel="stylesheet" crossorigin href="/glock19-viewer/assets/index-CNAppJgE.css">
+
+  <script type="module" src="app.js"></script>
 </head>
 
 <body>
@@ -102,13 +93,19 @@
     <!-- LEWA KOLUMNA -->
     <div class="gun-wrap">
       <div id="gun-view" class="gun-view" aria-live="polite">
+        <!-- strzałki nawigacji -->
+        <div id="prev" class="nav-arrow left" aria-label="Poprzedni widok">
+          <svg viewBox="0 0 24 24"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        </div>
+        <div id="next" class="nav-arrow right" aria-label="Następny widok">
+          <svg viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+        </div>
         <p style="text-align:center;padding-top:20px;color:#6c757d">Ładowanie…</p>
       </div>
 
       <button id="bg-btn"   class="btn gray" type="button">Zmień Tło</button>
       <button id="save-btn" class="btn blue" type="button">Zapisz Obraz</button>
 
-      <!-- podsumowanie / cena / wyślij -->
       <div class="summary"><div id="summary-list"></div></div>
       <div id="price">Szacowany koszt:&nbsp;&nbsp;0&nbsp;zł</div>
       <button id="send-btn" class="btn blue" type="button" style="margin-top:8px">Wyślij do Wizards!</button>
@@ -148,33 +145,5 @@
       <p class="note" id="modal-note">Po wysłaniu dołącz pobrany plik PNG.</p>
     </div>
   </div>
-
-  <!-- GŁÓWNY SKRYPT -->
-
-  <!-- PRZESTAWIENIE KOLEJNOŚCI W MOBILE -->
-  <script>
-    (function(){
-      const mq = window.matchMedia('(max-width:768px)');
-      const configurator = document.querySelector('.configurator');
-      const gunWrap      = document.querySelector('.gun-wrap');
-      const controls     = document.querySelector('.controls');
-      const summary      = document.querySelector('.summary');
-
-      function reorder(){
-        if(mq.matches){
-          if(controls.parentNode !== gunWrap){
-            gunWrap.insertBefore(controls, summary);
-          }
-        }else{
-          if(controls.parentNode === gunWrap){
-            configurator.appendChild(controls);
-          }
-        }
-      }
-      mq.addEventListener ? mq.addEventListener('change', reorder)
-                          : mq.addListener(reorder);
-      reorder();
-    })();
-  </script>
 </body>
 </html>
