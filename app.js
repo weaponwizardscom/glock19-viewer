@@ -1,7 +1,10 @@
 /* === KONFIG === */
-const SVG_FILES = ["g17.svg", "g172.svg"];   // 0 = widok bazowy, 1 = drugi kąt
-const TEXTURES  = ["img/glock17.png", "img/glock17b.png"];
-const BG        = ["img/t1.png","img/t2.png","img/t3.png","img/t4.png","img/t5.png","img/t6.png","img/t7.png"];
+const SVG_FILES = ["public/g17.svg", "public/g172.svg"];      // 0 = widok bazowy, 1 = drugi kąt
+const TEXTURES  = ["public/img/glock17.png", "public/img/glock17b.png"];
+const BG        = [
+  "public/img/t1.png","public/img/t2.png","public/img/t3.png",
+  "public/img/t4.png","public/img/t5.png","public/img/t6.png","public/img/t7.png"
+];
 
 const PRICE={zamek:400,szkielet:400,spust:150,lufa:200,zerdz:50,pazur:50,
              zrzut:50,blokadap:50,blokada2:50,pin:50,stopka:150}; // płytka = 0
@@ -33,8 +36,7 @@ const PARTS=[
 ];
 
 // ──────────────────────────────────────────────────────────────────────────────
-// ⬇︎ TU JEST KOMPLETNA LISTA WSZYSTKICH KOLORÓW – IDENTYCZNA JAK W POPRZEDNIEJ
-//     WERSJI (jeśli dodałeś własne, możesz je tu dopisać)
+// ⬇︎ KOMPLETNA LISTA WSZYSTKICH KOLORÓW
 const COLORS={
 "H-140 Bright White":"#FFFFFF","H-242 Hidden White":"#E5E4E2","H-136 Snow White":"#F5F5F5",
 "H-297 Stormtrooper White":"#F2F2F2","H-300 Armor Clear":"#F5F5F5","H-331 Parakeet Green":"#C2D94B",
@@ -196,7 +198,10 @@ function resetAll(){
 }
 
 /* default colour */
-function defaultBlack(){PARTS.filter(p=>!p.disabled).forEach(p=>applyColor(p.id,COLORS["H-146 Graphite Black"],"H-146",true));}
+function defaultBlack(){
+  PARTS.filter(p=>!p.disabled)
+       .forEach(p=>applyColor(p.id,COLORS["H-146 Graphite Black"],"H-146",true));
+}
 
 /* BG */
 function changeBg(){bgIdx=(bgIdx+1)%BG.length;gunBox.style.backgroundImage=`url('${BG[bgIdx]}')`;}
@@ -204,7 +209,13 @@ function changeBg(){bgIdx=(bgIdx+1)%BG.length;gunBox.style.backgroundImage=`url(
 /* summary + price */
 function updateSummary(){
   const list=$("summary-list");list.innerHTML="";
-  PARTS.forEach(p=>{if(selections[p.id]){const d=document.createElement("div");d.textContent=`${p[lang]} – ${selections[p.id]}`;list.appendChild(d);}});
+  PARTS.forEach(p=>{
+    if(selections[p.id]){
+      const d=document.createElement("div");
+      d.textContent=`${p[lang]} – ${selections[p.id]}`;
+      list.appendChild(d);
+    }
+  });
 }
 function updatePrice(){
   const cols=new Set(Object.values(selections)).size;
