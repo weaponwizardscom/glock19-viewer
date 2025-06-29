@@ -1,13 +1,15 @@
 import { test, expect } from '@playwright/test';
 
 test('viewer loads and main SVG is present', async ({ page }) => {
-  // otwieramy stronę z uwzględnieniem base "/glock19-viewer/"
-  await page.goto('/glock19-viewer/');
+  // Ścieżka bazowa: w CI (vite preview) to "/"
+  // Jeśli w przyszłości uruchomimy testy e2e na produkcji,
+  // można dodać zmienną środowiskową BASE_PATH.
+  await page.goto('/');
 
-  // sprawdzamy, że SVG konfiguratora istnieje
-  await expect(page.locator('svg')).toHaveCount(1);
+  // czekamy maksymalnie 10 s na pojawienie się SVG
+  await expect(page.locator('svg'), { timeout: 10_000 }).toHaveCount(1);
 
-  // upewniamy się, że jest co najmniej jeden przycisk (część lub kolor)
-  const btns = await page.locator('button').count();
-  expect(btns).toBeGreaterThan(0);
+  // co najmniej jeden przycisk (kolor / część)
+  const btnCount = await page.locator('button').count();
+  expect(btnCount).toBeGreaterThan(0);
 });
