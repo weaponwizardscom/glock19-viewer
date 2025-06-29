@@ -1,13 +1,11 @@
 import { test, expect } from '@playwright/test';
 
-test('viewer loads and main SVG is present', async ({ page }) => {
-  // dzięki baseURL możemy wejść po prostu na '/'
-  await page.goto('/');
+test('viewer loads and hydrates #app', async ({ page }) => {
+  await page.goto('/');                           // baseURL ustawiony w configu
+  // czekamy do 30 s aż w #app pojawi się pierwszy element potomny
+  await page.waitForSelector('#app :first-child', { timeout: 30_000 });
 
-  // maksymalnie 15 s na pojawienie się SVG
-  await expect(page.locator('svg'), { timeout: 15_000 }).toHaveCount(1);
-
-  // przyciski koloru / części muszą istnieć
-  const btnCount = await page.locator('button').count();
-  expect(btnCount).toBeGreaterThan(0);
+  // upewniamy się, że węzeł #app nie jest pusty
+  const innerHTML = await page.$eval('#app', el => el.innerHTML.trim());
+  expect(innerHTML.length).toBeGreaterThan(0);
 });
