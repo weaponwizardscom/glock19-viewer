@@ -5,12 +5,12 @@
   <title>Glock 19 Configurator</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Favicon i PWA-ikonki -->
-  <link rel="icon"       href="/img/favicon.svg" />
-  <link rel="manifest"   href="/glock19-viewer/manifest.webmanifest" />
+  <!-- favicon + manifest -->
+  <link rel="icon" href="/img/favicon.svg" />
+  <link rel="manifest" href="/glock19-viewer/manifest.webmanifest" />
 
-  <!-- (jeśli masz własny plik CSS, zostaw poniżej) -->
-  <link rel="stylesheet" href="/style.css" />
+  <!-- GŁÓWNY CSS (relatywny, żeby Vite przepisał ścieżkę) -->
+  <link rel="stylesheet" href="./style.css" />
 </head>
 
 <body>
@@ -23,10 +23,10 @@
   </header>
 
   <main>
-    <!-- GŁÓWNY PODGLĄD -->
+    <!-- PODGLĄD SVG + tło -->
     <section id="viewer">
       <div id="gun-view"></div>
-      <div id="bg-btn">⟳</div>
+      <button id="bg-btn">⟳</button>
     </section>
 
     <!-- PALETA KOLORÓW -->
@@ -41,7 +41,7 @@
       <div id="parts"></div>
     </section>
 
-    <!-- PODSUMOWANIE CENY -->
+    <!-- PODSUMOWANIE -->
     <section id="summary">
       <h2>Cena</h2>
       <div id="price">0 zł</div>
@@ -52,15 +52,15 @@
     </section>
   </main>
 
-  <!-- MODAL ZAMÓWIENIA -->
+  <!-- MODAL -->
   <div id="modal" hidden>
     <div class="dialog">
       <h3 id="modal-title">Wyślij zamówienie</h3>
       <p  id="modal-note">Podaj dane kontaktowe:</p>
 
-      <label>Imię i nazwisko<input id="m-name"  type="text" /></label>
-      <label>E-mail           <input id="m-mail"  type="email" /></label>
-      <label>Telefon          <input id="m-phone" type="tel" /></label>
+      <label>Imię i nazwisko<input id="m-name"  type="text"  /></label>
+      <label>E-mail          <input id="m-mail"  type="email"/></label>
+      <label>Telefon         <input id="m-phone" type="tel"  /></label>
 
       <button id="m-send">Wyślij</button>
       <button id="m-cancel">Anuluj</button>
