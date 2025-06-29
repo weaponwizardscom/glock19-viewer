@@ -8,6 +8,12 @@ jobs:
   pages:
     runs-on: ubuntu-latest
 
+    # ⬇️   DODANE UPRAWNIENIA – bez nich Deploy Pages wywala błąd
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
     steps:
       - uses: actions/checkout@v4
 
@@ -15,20 +21,12 @@ jobs:
         with:
           node-version: 20
 
-      # instalacja zależności + generacja locka,
-      # najlepsza opcja przy aktywnej pracy nad paczką
       - run: npm install
-
-      # buduje statyczną stronę (Vite → dist/)
       - run: npm run build
 
-      # pobiera silniki Chromium dla Playwright
       - run: npx playwright install --with-deps
-
-      # smoke-test: sprawdza SVG i przyciski
       - run: npx playwright test
 
-      # publikacja do GitHub Pages tylko gdy test przeszedł
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
