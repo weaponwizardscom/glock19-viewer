@@ -1,12 +1,5 @@
 import * as cfg from './config.js';
-
-document.addEventListener("DOMContentLoaded",()=>{
-
-    /* === KONFIG === */
-    
-                 zrzut:50,blokadap:50,blokada2:50,pin:50,stopka:150}; // płytka = 0
-    
-    /* === DOM === */
+/* === DOM === */
     const $=id=>document.getElementById(id);
     const gunBox=$("gun-view"),partsBox=$("parts"),palette=$("palette"),priceBox=$("price");
     const bgBtn=$("bg-btn"),saveBtn=$("save-btn"),resetBtn=$("reset-btn");
@@ -16,6 +9,7 @@ document.addEventListener("DOMContentLoaded",()=>{
           modalTitle=$("modal-title"),modalNote=$("modal-note");
     
     /* === DANE === */
+    const PARTS=[
      {id:"zamek",    pl:"Zamek",           en:"Slide"},
      {id:"szkielet", pl:"Szkielet",        en:"Frame"},
      {id:"spust",    pl:"Spust",           en:"Trigger"},
@@ -30,7 +24,8 @@ document.addEventListener("DOMContentLoaded",()=>{
      {id:"plytka",   pl:"Płytka",          en:"Back plate",disabled:true}
     ];
     
-    Object.assign(cfg.COLORS,{
+    const COLORS={/* skrócone tutaj (pełna lista jak w index) */}
+    Object.assign(COLORS,{
      "H-140 Bright White":"#FFFFFF","H-242 Hidden White":"#E5E4E2","H-136 Snow White":"#F5F5F5",
      "H-297 Stormtrooper White":"#F2F2F2","H-300 Armor Clear":"#F5F5F5","H-331 Parakeet Green":"#C2D94B",
      "H-141 Prison Pink":"#E55C9C","H-306 Springfield Grey":"#A2A4A6","H-312 Frost":"#C9C8C6",
@@ -56,17 +51,17 @@ document.addEventListener("DOMContentLoaded",()=>{
     let lang="pl", selections={},activePart=null,bgIdx=0;
     
     /* === INIT === */
-    (async()=>{await preloadcfg.BGs();await loadSvg();buildUI();defaultBlack();changeBg();})();
+    (async()=>{await preloadBGs();await loadSvg();buildUI();defaultBlack();changeBg();})();
     
-    /* preload cfg.BG */
-    function preloadcfg.BGs(){cfg.BG.forEach(src=>{const i=new Image();i.src=src;});}
+    /* preload BG */
+    function preloadBGs(){BG.forEach(src=>{const i=new Image();i.src=src;});}
     
     /* SVG */
     async function loadSvg(){
-      gunBox.innerHTML=await fetch(cfg.SVG_FILE).then(r=>r.text());
+      gunBox.innerHTML=await fetch(SVG_FILE).then(r=>r.text());
       const svg=gunBox.querySelector("svg");const layer=document.createElementNS("http://www.w3.org/2000/svg","g");
       layer.id="color-overlays";svg.appendChild(layer);
-      cfg.PARTS.filter(p=>!p.disabled).forEach(p=>{
+      PARTS.filter(p=>!p.disabled).forEach(p=>{
         const base=svg.querySelector("#"+p.id);if(!base)return;
         ["1","2"].forEach(n=>{const ov=base.cloneNode(true);ov.id=`color-overlay-${n}-${p.id}`;ov.classList.add("color-overlay");layer.appendChild(ov);});
       });
@@ -75,7 +70,7 @@ document.addEventListener("DOMContentLoaded",()=>{
     /* UI */
     function buildUI(){
       /* części */
-      cfg.PARTS.forEach(p=>{
+      PARTS.forEach(p=>{
         const b=document.createElement("button");
         b.textContent=p[lang];b.dataset.id=p.id;
         if(p.disabled){b.classList.add("disabled");b.disabled=true;}
@@ -88,7 +83,7 @@ document.addEventListener("DOMContentLoaded",()=>{
         m.onclick=()=>mix(i?undefined:2);partsBox.appendChild(m);
       });
       /* paleta */
-      Object.entries(cfg.COLORS).forEach(([full,hex])=>{
+      Object.entries(COLORS).forEach(([full,hex])=>{
         const [code,...rest]=full.split(" ");const name=rest.join(" ");
         const sw=document.createElement("div");sw.className="sw";sw.title=full;
         sw.onclick=()=>applyColor(activePart,hex,code);
@@ -106,6 +101,7 @@ document.addEventListener("DOMContentLoaded",()=>{
     /* Lang */
     function setLang(l){lang=l;
       partsBox.querySelectorAll("button").forEach(b=>{
+        const p=PARTS.find(x=>x.id===b.dataset.id);if(p)b.textContent=p[lang];
       });
       hParts.textContent=l==="pl"?"1. Wybierz część":"1. Select part";
       hCol.textContent  =l==="pl"?"2. Wybierz kolor (Cerakote)":"2. Select colour (Cerakote)";
@@ -143,12 +139,13 @@ document.addEventListener("DOMContentLoaded",()=>{
     
     /* MIX */
     function mix(maxCols){
-      cfg.PARTS.filter(p=>!p.disabled).forEach(p=>{
+      const keys=Object.keys(COLORS),used=new Set();
+      PARTS.filter(p=>!p.disabled).forEach(p=>{
         let pick;
         do{pick=keys[Math.floor(Math.random()*keys.length)];}
         while(maxCols && used.size>=maxCols && !used.has(pick.split(" ")[0]));
         used.add(pick.split(" ")[0]);
-        applyColor(p.id,cfg.COLORS[pick],pick.split(" ")[0]);
+        applyColor(p.id,COLORS[pick],pick.split(" ")[0]);
       });
     }
     
@@ -161,20 +158,20 @@ document.addEventListener("DOMContentLoaded",()=>{
     }
     
     /* default colour */
-    function defaultBlack(){cfg.PARTS.filter(p=>!p.disabled).forEach(p=>applyColor(p.id,cfg.COLORS["H-146 Graphite Black"],"H-146"));}
+    function defaultBlack(){PARTS.filter(p=>!p.disabled).forEach(p=>applyColor(p.id,COLORS["H-146 Graphite Black"],"H-146"));}
     
-    /* cfg.BG */
-    function changeBg(){bgIdx=(bgIdx+1)%cfg.BG.length;gunBox.style.backgroundImage=`url('${cfg.BG[bgIdx]}')`;}
+    /* BG */
+    function changeBg(){bgIdx=(bgIdx+1)%BG.length;gunBox.style.backgroundImage=`url('${BG[bgIdx]}')`;}
     
     /* summary + price */
     function updateSummary(){
       const list=$("summary-list");list.innerHTML="";
-      cfg.PARTS.forEach(p=>{if(selections[p.id]){const d=document.createElement("div");d.textContent=`${p[lang]} – ${selections[p.id]}`;list.appendChild(d);}});
+      PARTS.forEach(p=>{if(selections[p.id]){const d=document.createElement("div");d.textContent=`${p[lang]} – ${selections[p.id]}`;list.appendChild(d);}});
     }
     function updatePrice(){
       const cols=new Set(Object.values(selections)).size;
-      let total=Object.keys(selections).reduce((s,id)=>s+(cfg.PRICE[id]||0),0);
-      total=cols<=2?Math.min(total,cfg.MIX2):Math.min(total,cfg.MIXN);
+      let total=Object.keys(selections).reduce((s,id)=>s+(PRICE[id]||0),0);
+      total=cols<=2?Math.min(total,MIX2):Math.min(total,MIXN);
       priceBox.innerHTML=(lang==="pl"?"Szacowany koszt:&nbsp;&nbsp;":"Estimated cost:&nbsp;&nbsp;")+total+"&nbsp;zł";
       return total;
     }
@@ -183,8 +180,8 @@ document.addEventListener("DOMContentLoaded",()=>{
     const loadImg=s=>new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.src=s;});
     async function savePng(){
       const cvs=document.createElement("canvas");cvs.width=1600;cvs.height=1200;const ctx=cvs.getContext("2d");
-      ctx.drawImage(await loadImg(cfg.BG[bgIdx]),0,0,1600,1200);
-      ctx.drawImage(await loadImg(cfg.TEXTURE),0,0,1600,1200);
+      ctx.drawImage(await loadImg(BG[bgIdx]),0,0,1600,1200);
+      ctx.drawImage(await loadImg(TEXTURE),0,0,1600,1200);
       const svg=gunBox.querySelector("svg");
       await Promise.all([...svg.querySelectorAll(".color-overlay")].filter(o=>o.style.fill!=="transparent").map(async ov=>{
         const xml=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${svg.getAttribute("viewBox")}"><g style="mix-blend-mode:hard-light;opacity:.45">${ov.outerHTML}</g></svg>`;
@@ -204,7 +201,7 @@ document.addEventListener("DOMContentLoaded",()=>{
       const body=[(lang==="pl"?"Imię":"Name")+": "+name,
                   "Telefon: "+tel,"E-mail: "+mail,
                   (lang==="pl"?"Koszt":"Cost")+": "+cost+" zł","","Kolory:",
-                  ...cfg.PARTS.map(p=>`${p[lang]} – ${selections[p.id]||"–"}`),"",
+                  ...PARTS.map(p=>`${p[lang]} – ${selections[p.id]||"–"}`),"",
                   (lang==="pl"?"Dołącz pobrany plik PNG.":"Attach the downloaded PNG.")].join("%0D%0A");
       location.href=`mailto:contact@weapon-wizards.com?subject=Projekt%20Weapon%20Wizards&cc=${encodeURIComponent(mail)}&body=${body}`;
       modal.classList.add("hidden");
