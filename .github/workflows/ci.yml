@@ -8,11 +8,16 @@ jobs:
   pages:
     runs-on: ubuntu-latest
 
-    # ⬇️   DODANE UPRAWNIENIA – bez nich Deploy Pages wywala błąd
+    # uprawnienia potrzebne do Pages + OIDC
     permissions:
       contents: read
       pages: write
       id-token: write
+
+    # ⬇️  przypisujemy środowisko „github-pages”
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - uses: actions/checkout@v4
@@ -31,4 +36,7 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
-      - uses: actions/deploy-pages@v4
+
+      # zapisujemy URL w output, żeby trafił do environment.url
+      - id: deployment
+        uses: actions/deploy-pages@v4
