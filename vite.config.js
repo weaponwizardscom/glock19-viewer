@@ -1,26 +1,16 @@
-import { defineConfig } from 'vite';
-import { VitePWA } from 'vite-plugin-pwa';
+// vite.config.js
+import { defineConfig } from 'vite'
 
+// -------------------------------------------------------
+//  Konfiguracja dla GitHub Pages
+//  • base:  musi odpowiadać nazwie repozytorium
+//           ("/glock19-viewer/")
+//  • build.outDir: katalog, w którym Vite zapisze wynik
+// -------------------------------------------------------
 export default defineConfig({
   base: '/glock19-viewer/',
-  build: { outDir: 'dist' },
-  plugins: [
-    VitePWA({
-      registerType: 'autoUpdate',
-      includeAssets: ['img/**', 'manifest/**', 'favicon.svg'],
-      manifest: {
-        name: 'Glock Viewer',
-        short_name: 'G19 Viewer',
-        start_url: '/glock19-viewer/',
-        scope: '/glock19-viewer/',
-        display: 'standalone',
-        background_color: '#000000',
-        theme_color: '#000000',
-        icons: [
-          { src: 'manifest/icon-192.png', sizes: '192x192', type: 'image/png' },
-          { src: 'manifest/icon-512.png', sizes: '512x512', type: 'image/png' }
-        ]
-      }
-    })
-  ]
-});
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true           // czyści stary build przed nowym
+  }
+})

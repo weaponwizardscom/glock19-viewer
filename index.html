@@ -4,15 +4,9 @@
   <meta charset="utf-8" />
   <title>Glock 19 Configurator</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <!-- favicon + manifest -->
   <link rel="icon" href="/img/favicon.svg" />
-  <link rel="manifest" href="/glock19-viewer/manifest.webmanifest" />
-
-  <!-- GŁÓWNY CSS (relatywny, żeby Vite przepisał ścieżkę) -->
   <link rel="stylesheet" href="./style.css" />
 </head>
-
 <body>
   <header>
     <h1 id="h-title">Glock 19 Viewer</h1>
@@ -23,25 +17,21 @@
   </header>
 
   <main>
-    <!-- PODGLĄD SVG + tło -->
     <section id="viewer">
       <div id="gun-view"></div>
       <button id="bg-btn">⟳</button>
     </section>
 
-    <!-- PALETA KOLORÓW -->
     <section>
       <h2 id="h-col">Kolory</h2>
       <div id="palette"></div>
     </section>
 
-    <!-- WYBÓR CZĘŚCI -->
     <section>
       <h2 id="h-parts">Części</h2>
       <div id="parts"></div>
     </section>
 
-    <!-- PODSUMOWANIE -->
     <section id="summary">
       <h2>Cena</h2>
       <div id="price">0 zł</div>
@@ -52,23 +42,18 @@
     </section>
   </main>
 
-  <!-- MODAL -->
   <div id="modal" hidden>
     <div class="dialog">
-      <h3 id="modal-title">Wyślij zamówienie</h3>
-      <p  id="modal-note">Podaj dane kontaktowe:</p>
-
-      <label>Imię i nazwisko<input id="m-name"  type="text"  /></label>
-      <label>E-mail          <input id="m-mail"  type="email"/></label>
-      <label>Telefon         <input id="m-phone" type="tel"  /></label>
-
+      <h3 id="modal-title">Wyślij projekt</h3>
+      <p id="modal-note">Podaj dane kontaktowe:</p>
+      <label>Imię i nazwisko<input id="m-name" type="text" /></label>
+      <label>E-mail<input id="m-mail" type="email" /></label>
+      <label>Telefon<input id="m-phone" type="tel" /></label>
       <button id="m-send">Wyślij</button>
       <button id="m-cancel">Anuluj</button>
     </div>
   </div>
 
-  <!-- SKRYPTY -->
   <script type="module" src="./app.js"></script>
-  <script type="module" src="./registerSW.js"></script>
 </body>
 </html>

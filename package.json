@@ -6,13 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
-    "test": "playwright test"
+    "preview": "vite preview"
   },
   "devDependencies": {
-    "@playwright/test": "^1.53.1",
-    "vite": "^5.2.10",
-    "vite-plugin-pwa": "^0.17.5"
+    "vite": "^7.0.0"
   },
   "dependencies": {
     "@capacitor/ios": "^7.4.0"
