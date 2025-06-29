@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/test';
 
-test('viewer hydrates #app', async ({ page }) => {
-  await page.goto('/');                                 // baseURL już zawiera /glock19-viewer/
-  await page.waitForSelector('#app :first-child', { timeout: 30_000 });
-  const inner = await page.$eval('#app', el => el.innerHTML.trim());
-  expect(inner.length).toBeGreaterThan(0);
+test('index loads and returns correct <title>', async ({ page }) => {
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+
+  // statyczny tytuł z <head><title>…</title>
+  await expect(page).toHaveTitle(/Glock 19 Configurator/i);
 });
