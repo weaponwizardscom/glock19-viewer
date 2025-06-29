@@ -1,4 +1,4 @@
-name: Build & Deploy
+name: Build, Test & Deploy
 
 on:
   push:
@@ -7,13 +7,28 @@ on:
 jobs:
   pages:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm ci
+
+      # instalacja zależności + generacja locka,
+      # najlepsza opcja przy aktywnej pracy nad paczką
+      - run: npm install
+
+      # buduje statyczną stronę (Vite → dist/)
       - run: npm run build
+
+      # pobiera silniki Chromium dla Playwright
+      - run: npx playwright install --with-deps
+
+      # smoke-test: sprawdza SVG i przyciski
+      - run: npx playwright test
+
+      # publikacja do GitHub Pages tylko gdy test przeszedł
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
