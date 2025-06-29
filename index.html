@@ -9,10 +9,7 @@
 <body>
   <div id="app"></div>
 
-  <!-- wejściowy plik źródłowy;
-       dev-serwer i Capacitor używają go bez zmian,
-       a podczas `vite build` zostanie automatycznie
-       zamieniony w pliku dist/index.html na zhashowany bundle -->
-  <script type="module" src="/app.js"></script>
+  <!-- ENTRY → ścieżka względna, zgodna z base:'/glock19-viewer/' -->
+  <script type="module" src="./app.js"></script>
 </body>
 </html>
