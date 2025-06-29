@@ -1,6 +1,12 @@
-// refactored app.js imports constants from config.js
 import * as cfg from './config.js';
-/* === DOM === */
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+    /* === KONFIG === */
+    
+                 zrzut:50,blokadap:50,blokada2:50,pin:50,stopka:150}; // płytka = 0
+    
+    /* === DOM === */
     const $=id=>document.getElementById(id);
     const gunBox=$("gun-view"),partsBox=$("parts"),palette=$("palette"),priceBox=$("price");
     const bgBtn=$("bg-btn"),saveBtn=$("save-btn"),resetBtn=$("reset-btn");
@@ -10,7 +16,6 @@ import * as cfg from './config.js';
           modalTitle=$("modal-title"),modalNote=$("modal-note");
     
     /* === DANE === */
-    const cfg.PARTS=[
      {id:"zamek",    pl:"Zamek",           en:"Slide"},
      {id:"szkielet", pl:"Szkielet",        en:"Frame"},
      {id:"spust",    pl:"Spust",           en:"Trigger"},
@@ -25,7 +30,6 @@ import * as cfg from './config.js';
      {id:"plytka",   pl:"Płytka",          en:"Back plate",disabled:true}
     ];
     
-    const cfg.COLORS={/* skrócone tutaj (pełna lista jak w index) */}
     Object.assign(cfg.COLORS,{
      "H-140 Bright White":"#FFFFFF","H-242 Hidden White":"#E5E4E2","H-136 Snow White":"#F5F5F5",
      "H-297 Stormtrooper White":"#F2F2F2","H-300 Armor Clear":"#F5F5F5","H-331 Parakeet Green":"#C2D94B",
@@ -102,7 +106,6 @@ import * as cfg from './config.js';
     /* Lang */
     function setLang(l){lang=l;
       partsBox.querySelectorAll("button").forEach(b=>{
-        const p=cfg.PARTS.find(x=>x.id===b.dataset.id);if(p)b.textContent=p[lang];
       });
       hParts.textContent=l==="pl"?"1. Wybierz część":"1. Select part";
       hCol.textContent  =l==="pl"?"2. Wybierz kolor (Cerakote)":"2. Select colour (Cerakote)";
@@ -140,7 +143,6 @@ import * as cfg from './config.js';
     
     /* MIX */
     function mix(maxCols){
-      const keys=Object.keys(cfg.COLORS),used=new Set();
       cfg.PARTS.filter(p=>!p.disabled).forEach(p=>{
         let pick;
         do{pick=keys[Math.floor(Math.random()*keys.length)];}
