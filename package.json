@@ -12,7 +12,7 @@
   "devDependencies": {
     "@playwright/test": "^1.53.1",
     "vite": "^7.0.0",
-    "vite-plugin-pwa": "^0.20.9"
+    "vite-plugin-pwa": "^0.18.3"
   },
   "dependencies": {
     "@capacitor/ios": "^7.4.0"
